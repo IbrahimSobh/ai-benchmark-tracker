@@ -1,0 +1,4 @@
+# Raw publisher pages are copies of other sites' content: kept locally, never published.
+data/raw/
+__pycache__/
+*.pyc

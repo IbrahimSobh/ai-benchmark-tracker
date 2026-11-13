@@ -1,0 +1,40 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Frontier AI benchmarks: summary and insights, week of 2026-11-13</title><style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e1d8;--card:#ffffff;--accent:#2f5d8a;--head:#f3f1ea}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#ecebe6;--muted:#a3a19a;--line:#33322f;--card:#1f1f1d;--accent:#8db6e0;--head:#262624}}
+:root[data-theme="dark"]{--bg:#161615;--fg:#ecebe6;--muted:#a3a19a;--line:#33322f;--card:#1f1f1d;--accent:#8db6e0;--head:#262624}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:960px;margin:0 auto;padding:32px 16px 64px}
+a{color:var(--accent)}
+h1{font-size:1.9rem;line-height:1.25;margin:0 0 8px}
+h2{font-size:1.25rem;margin:36px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+.nav{font-size:.9rem;margin-bottom:24px}
+.muted,.nav{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px 20px 16px;margin:16px 0}
+table{display:block;overflow-x:auto;border-collapse:collapse;font-size:.88rem;margin:12px 0;max-width:100%}
+th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white-space:nowrap}
+th{background:var(--head);font-weight:600}
+ul.weeks{list-style:none;padding:0}
+ul.weeks li{padding:10px 0;border-bottom:1px solid var(--line)}
+ul.weeks .date{font-weight:600;margin-right:12px}
+footer{margin-top:48px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+details{margin:12px 0}
+</style></head><body><main><nav class="nav"><a href="index.html">All weeks</a></nav><h1>Frontier AI benchmarks: summary and insights, week of 2026-11-13</h1>
+<p>Written from <a href="2026-11-13-report.html">tables for 2026-11-13</a> (data collected 2026-11-13). If that tables file is collected again, check these insights still match.</p>
+<h2>Summary</h2>
+<p>This is the first week of the tracker (collected 2026-11-13), so there are no week-to-week changes yet. No single model leads every test. Claude Fable 5.2 ranks first on SWE Atlas, GDPx, Agent Arena and WebDev Arena, but on SWE Atlas and WebDev Arena its lead is too close to call. Other models lead elsewhere: Kimi K3.1 Pro on Terminal-Bench 4.0, Gemini 4 Argon on MCP-Atlas, Claude Opus 5.5 on GDPval-AA and Claude Opus 5 on SWE-Bench Pro V2. Several of these top spots are statistical ties, so the honest headline is "a small group of leaders" rather than one winner.</p>
+<h2>Insights</h2>
+<ol>
+<li>
+<p><strong>Claude Fable 5.2 leads most often, but not everywhere.</strong> On SWE Atlas (Scale's test of professional coding work: answering questions about a codebase, writing tests and refactoring), it leads with 80.5%, but Claude Opus 5.5, Claude Fable 5.1 and Gemini 4 Carbon are too close to call (<a href="https://labs.scale.com/leaderboard/swe-atlas">source</a>). On Terminal-Bench 4.0 (coding tasks done in a computer terminal), it scores 59.6%, behind Kimi K3.1 Pro at 67.2%, with no margin published (<a href="https://artificialanalysis.ai/evaluations/terminalbench-4-0">source</a>). Separately, in public votes on Agent Arena (people rating AI agents on their own real tasks), it leads with a score of 0.303, clearly ahead of the rest (<a href="https://arena.ai/leaderboard/agent">source</a>).</p>
+</li>
+<li>
+<p><strong>The two work benchmarks disagree on who is first.</strong> On GDPval-AA (realistic office-work tasks, rated with a chess-style Elo score), Claude Opus 5.5 leads with 1866, but Kimi K3.1 Pro (1861), Muse Wonder Full, Claude Sonnet 5.5 and Claude Fable 5.2 are all too close to call (<a href="https://artificialanalysis.ai/evaluations/gdpval-aa">source</a>). On GDPx (very hard expert tasks in fields such as chip design, finance and law), Claude Fable 5.2 leads with 16.4% ahead of Claude Opus 5.5 at 12.0%, though GDPx publishes no margin (<a href="https://gdpx.semianalysis.com/">source</a>, GDPx by SemiAnalysis). The low GDPx top score shows that even the best models still fail most of these expert tasks.</p>
+</li>
+<li>
+<p><strong>Higher scores often cost much more per task.</strong> On GDPx, Claude Fable 5.2 scores 16.4% at $88.15 per task, while Gemini 4 Carbon scores 10.9% at $16.29 per task (<a href="https://gdpx.semianalysis.com/">source</a>, GDPx by SemiAnalysis). In Agent Arena's public votes, Gemini 4 Carbon ranks third at a median cost of $1.46 per task, while the leader, Claude Fable 5.2, costs $7.43 (<a href="https://arena.ai/leaderboard/agent">source</a>). For many everyday uses, a cheaper model near the top may be the better choice.</p>
+</li>
+<li>
+<p><strong>One coding test is nearly maxed out, so it can no longer pick a winner.</strong> On SWE-Bench Pro V2 (fixing real issues in software projects), the top score is 99.4% (Claude Opus 5), and three other models are too close to call (<a href="https://labs.scale.com/leaderboard/swe_bench_pro_public_v2">source</a>). SWE Atlas still spreads models out, from 80.5% at the top to 62.1% at twelfth place, which makes SWE Atlas the more useful coding signal for now (<a href="https://labs.scale.com/leaderboard/swe-atlas">source</a>).</p>
+</li>
+</ol><footer><p>Scores belong to their publishers: <a href="https://labs.scale.com/leaderboard">Scale Labs</a>, <a href="https://artificialanalysis.ai">Artificial Analysis</a>, <a href="https://gdpx.semianalysis.com/">GDPx by SemiAnalysis</a> (top 3 quoted) and <a href="https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset">Arena</a> (CC-BY-4.0). Every table links to its source; check the source for the full and current leaderboard.</p><p>Summaries and insights are written by AI (Claude) from the tables and published automatically.</p></footer></main></body></html>
