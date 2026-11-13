@@ -117,8 +117,25 @@ def read_csv(p: Path) -> list[dict]:
 
 
 def previous_csv(day: str) -> Path | None:
+    """The most recent earlier run (used for 'source missing since last run' alerts)."""
     files = sorted(p for p in (DATA / "clean").glob("*.csv") if p.stem < day)
     return files[-1] if files else None
+
+
+COMPARE_DAYS = 7
+
+
+def baseline_csv(day: str) -> Path | None:
+    """The earlier run the 'Change' column compares with: the run closest to 7 days before `day`.
+
+    Extra manual runs in between are skipped, so the comparison stays week-to-week. Ties go to the
+    older run. If every earlier run is less than 7 days old, the oldest of them is the closest.
+    """
+    target = dt.date.fromisoformat(day) - dt.timedelta(days=COMPARE_DAYS)
+    files = [p for p in (DATA / "clean").glob("*.csv") if p.stem < day]
+    if not files:
+        return None
+    return min(files, key=lambda p: (abs((dt.date.fromisoformat(p.stem) - target).days), p.stem))
 
 
 def fmt(x: float | None, unit: str) -> str:
@@ -149,7 +166,7 @@ def report(day: str | None = None) -> Path:
     cur_file = DATA / "clean" / f"{day}.csv" if day else files[-1]
     day = cur_file.stem
     cur = read_csv(cur_file)
-    prev_file = previous_csv(day)
+    prev_file = baseline_csv(day)
     prev = read_csv(prev_file) if prev_file else []
     prev_idx = {(r["benchmark"], r["model"], r["setup"]): r for r in prev}
     alerts_file = DATA / "alerts" / f"{day}.json"

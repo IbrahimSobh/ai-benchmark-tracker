@@ -28,8 +28,10 @@ A scheduled Claude task runs every week and follows `prompts/weekly_task.md`: co
 insights, build the site, commit and push. GitHub Pages then publishes `docs/`. Insights are published
 without manual review; the site footer says they are AI-written.
 
-The script can also run at any time by hand. The "Change" column compares with the most recent
-earlier run, so running more often than weekly makes it a day-to-day change.
+The task can also run at any time ("Run now" on the routine's claude.ai page). Each run date gets its
+own entry; a second run on the same day replaces that day's entry. The "Change" column compares with
+the earlier run closest to 7 days back (`baseline_csv` in `tracker.py`), so extra manual runs never
+shorten the week-to-week comparison.
 
 ## Sources and how each is collected
 
