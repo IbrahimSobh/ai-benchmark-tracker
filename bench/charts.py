@@ -135,6 +135,47 @@ def margin_chart(rows: list[dict], title: str = "") -> str:
     return "<div class='chartwrap'>" + "".join(out) + "</div>"
 
 
+def scale_for(rows: list[dict]) -> tuple[float, float, list[float], float]:
+    """Shared axis for one benchmark: (min, max, ticks, step) covering every score and interval."""
+    has_m = rows[0]["margin_low"] is not None
+    lows = [r["margin_low"] if has_m and r["margin_low"] is not None else r["score"] for r in rows]
+    highs = [r["margin_high"] if has_m and r["margin_high"] is not None else r["score"] for r in rows]
+    ticks = nice_ticks(min(lows), max(highs))
+    return ticks[0], ticks[-1], ticks, (ticks[1] - ticks[0] if len(ticks) > 1 else 1)
+
+
+CELL_W, CELL_H = 240, 28
+
+
+def axis_svg(rows: list[dict]) -> str:
+    """Tick labels for the chart column's header, on the same scale as every row's cell."""
+    a, z, ticks, step = scale_for(rows)
+    X = lambda v: 8 + (v - a) / ((z - a) or 1) * (CELL_W - 16)
+    t = "".join(f'<text x="{X(v):.1f}" y="13" text-anchor="middle" class="tick">{tick_fmt(v, rows[0]["unit"], step)}</text>'
+                for v in ticks)
+    return f'<svg class="chart axis" viewBox="0 0 {CELL_W} 18" width="{CELL_W}" height="18" aria-hidden="true">{t}</svg>'
+
+
+def cell_svg(rows: list[dict], r: dict, bench: str) -> str:
+    """One row's chart cell: gridlines, the leader's band, this row's interval line and score dot."""
+    a, z, ticks, _ = scale_for(rows)
+    leader = rows[0]
+    X = lambda v: 8 + (v - a) / ((z - a) or 1) * (CELL_W - 16)
+    st = status(r, leader)
+    col = color_of(r["model"])
+    y = CELL_H / 2
+    s = [f'<svg class="chart cell" viewBox="0 0 {CELL_W} {CELL_H}" width="{CELL_W}" height="{CELL_H}" aria-hidden="true">']
+    s += [f'<line x1="{X(v):.1f}" y1="0" x2="{X(v):.1f}" y2="{CELL_H}" class="grid"/>' for v in ticks]
+    if leader["margin_low"] is not None:
+        s.append(f'<rect x="{X(leader["margin_low"]):.1f}" y="0" width="{X(leader["margin_high"]) - X(leader["margin_low"]):.1f}" '
+                 f'height="{CELL_H}" class="band"/>')
+    s.append(f'<g class="row {st}">')
+    if r["margin_low"] is not None:
+        s.append(f'<line x1="{X(r["margin_low"]):.1f}" y1="{y}" x2="{X(r["margin_high"]):.1f}" y2="{y}" stroke="{col}" class="ci"/>')
+    s.append(f'<circle cx="{X(r["score"]):.1f}" cy="{y}" r="6" fill="{col}" class="dot"/></g></svg>')
+    return "".join(s)
+
+
 def legend(has_margin: bool = True) -> str:
     if not has_margin:
         return "<p class='chart-note'>No margin published: dots only, so no tie can be judged.</p>"
@@ -143,19 +184,25 @@ def legend(has_margin: bool = True) -> str:
 
 
 def small_multiples(by_bench: dict[str, list[dict]], groups: list[tuple[str, list[str]]], n: int = 5) -> str:
+    """Each card shows the top n models; 'Show all' (no JavaScript needed) opens every row the table shows."""
     out = []
     for label, benches in groups:
         cells = []
         for b in benches:
-            rows = by_bench.get(b, [])[:n]
+            all_rows = by_bench.get(b, [])
+            rows = all_rows[:n]
             if not rows:
                 continue
             has_m = rows[0]["margin_low"] is not None
             src = rows[0]["source_url"]
+            more = ""
+            if len(all_rows) > n:
+                more = (f"<details class='more'><summary>Show all {len(all_rows)}</summary>"
+                        f"<div class='all'>{margin_chart(all_rows, b)}</div></details>")
             cells.append(f"<div class='mini'><p class='mini-t'>{html.escape(b)}</p>"
                          f"<p class='mini-s'>{'95% interval shown' if has_m else 'no margin published'} · "
                          f"<a class='ext' href='{html.escape(src)}'>{html.escape(publisher(src))}</a></p>"
-                         f"{margin_chart(rows, b)}</div>")
+                         f"<div class='top'>{margin_chart(rows, b)}</div>{more}</div>")
         if cells:
             out.append(f"<p class='group'>{html.escape(label)}</p><div class='minis'>{''.join(cells)}</div>")
     out.append(legend(True))
@@ -250,6 +297,31 @@ svg.chart .row:hover .hit,svg.chart .row:focus .hit{fill:color-mix(in srgb,var(-
 .mini-t{margin:0;font-family:var(--serif);font-size:20px;color:var(--ink)} .mini-s{margin:2px 0 0;font-size:13px;color:var(--soft)}
 .mini-s a{color:var(--muted)}
 .group{font-size:14px;color:var(--muted);margin:26px 0 10px}
+.mini{display:flex;flex-direction:column}
+.mini:has(details[open]) .top{display:none}
+details.more{order:3;margin:6px 0 0}
+details.more summary{list-style:none;cursor:pointer;display:inline-flex;align-self:flex-start;width:max-content;font-size:13px;padding:5px 13px;border-radius:9999px;border:1px solid var(--line);color:var(--muted)}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary:hover{border-color:var(--ink);color:var(--ink)}
+details.more[open] summary{font-size:0;padding:5px 13px} details.more[open] summary::after{content:"Show top 5";font-size:13px}
+details.more .all{margin-top:4px}
+.mini .top,.mini .all{order:2} details.more[open]{display:flex;flex-direction:column-reverse}
+/* tables page: one card per benchmark, chart column inside the table */
+.bcard{background:var(--card2);border-radius:20px;padding:22px 24px;margin:20px 0}
+.bcard .area{font-size:13px;color:var(--soft);margin:0}
+.bcard h2{margin:2px 0 10px;font-size:28px}
+.metas{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.metas .pill{font-size:13px;padding:4px 12px}
+.bcard .note{font-size:13px;color:var(--soft);margin:8px 0 0}
+table.combo{display:table;width:100%;background:none;padding:0;border-radius:0;margin:6px 0 0}
+.combo-wrap{overflow-x:auto}
+table.combo th,table.combo td{padding:6px 10px;vertical-align:middle}
+table.combo td.cc,table.combo th.cc{padding:0 6px;width:252px}
+table.combo td.num{font-variant-numeric:tabular-nums}
+table.combo tr.r:hover td{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+svg.chart.cell,svg.chart.axis{display:block;margin:0}
+.vs{font-size:12.5px;color:var(--muted)} .vs.lead{color:var(--ink);font-weight:500}
+.vs.close::before{content:"≈ "}
 .gridcard{padding:16px 18px}
 .gridwrap{overflow-x:auto}
 table.rankgrid{border-collapse:separate;border-spacing:4px;font-size:14px;min-width:720px;width:100%;margin:0;background:none;table-layout:fixed;display:table;padding:0;border-radius:0}

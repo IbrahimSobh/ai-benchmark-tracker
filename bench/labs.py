@@ -3,7 +3,8 @@
 Colours for the first five labs match the Coding Agents Digest tool colours (Claude Code coral = Anthropic,
 Antigravity blue = Google, Codex green = OpenAI), so both sites read alike. Logos are the same files the
 digest uses (docs/assets/logos/, copied from IbrahimSobh/coding-agents-digest): Claude for Anthropic,
-Antigravity for Google, Codex for OpenAI. Labs without a logo there get a coloured dot.
+Antigravity for Google, Codex for OpenAI. The other labs' logos come from the ai-news-reel skill library;
+docs/assets/logos/CREDITS.md lists each file's source and licence. Labs without a logo get a coloured dot.
 Logos are trademarks of their owners and are used only to identify each lab.
 """
 from __future__ import annotations
@@ -15,15 +16,15 @@ LABS = {
     "Anthropic":   {"color": "#e07a5f", "logo": "claude.png"},
     "Google":      {"color": "#5b8def", "logo": "antigravity.png"},
     "OpenAI":      {"color": "#2fb38a", "logo": "codex.png", "fill": True},
-    "Meta":        {"color": "#e3b341", "logo": None},
-    "Moonshot AI": {"color": "#a78bfa", "logo": None},
-    "DeepSeek":    {"color": "#7f9cc7", "logo": None},
-    "xAI":         {"color": "#a3a3a8", "logo": None},
-    "Qwen":        {"color": "#c98fb0", "logo": None},
-    "Zhipu AI":    {"color": "#8fb996", "logo": None},
+    "Meta":        {"color": "#e3b341", "logo": "meta.png"},
+    "Moonshot AI": {"color": "#a78bfa", "logo": "kimi.png", "wide": True},  # official wordmark, unaltered
+    "DeepSeek":    {"color": "#7f9cc7", "logo": "deepseek.png"},
+    "xAI":         {"color": "#a3a3a8", "logo": "xai.png"},
+    "Qwen":        {"color": "#c98fb0", "logo": "qwen.png"},
+    "Zhipu AI":    {"color": "#8fb996", "logo": "zhipu.png"},
     "MiniMax":     {"color": "#c9a77c", "logo": None},
-    "Mistral AI":  {"color": "#d9a066", "logo": None},
-    "Xiaomi":      {"color": "#e09a6b", "logo": None},
+    "Mistral AI":  {"color": "#d9a066", "logo": "mistral.png"},
+    "Xiaomi":      {"color": "#e09a6b", "logo": "xiaomi.png"},
     "Other":       {"color": "#8a8494", "logo": None},
 }
 
@@ -53,6 +54,7 @@ def logo_html(lab: str, size: int = 22) -> str:
     if not info["logo"]:
         return (f"<span class='ldot' style='--lc:{info['color']};width:{size}px;height:{size}px' "
                 f"aria-hidden='true'></span>")
-    cls = "tlogo fill" if info.get("fill") else "tlogo"
-    return (f"<img class='{cls}' src='assets/logos/{info['logo']}' width='{size}' height='{size}' "
+    cls = "tlogo" + (" fill" if info.get("fill") else "") + (" wide" if info.get("wide") else "")
+    width = round(size * 2.2) if info.get("wide") else size  # wordmarks that may not be cropped get a wider tile
+    return (f"<img class='{cls}' src='assets/logos/{info['logo']}' width='{width}' height='{size}' "
             f"alt='' title='{html.escape(lab)}'>")

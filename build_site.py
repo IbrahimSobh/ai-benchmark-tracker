@@ -133,6 +133,12 @@ tr:last-child td{border-bottom:0}
 th{color:var(--muted);font-weight:500;font-size:13px}
 td .tlogo,td .ldot{margin-right:8px}
 details{margin:12px 0;color:var(--muted)}
+.ctag{font-size:13px;color:var(--soft);margin:0 0 4px;text-transform:none}
+.scard{font-family:var(--serif);font-size:21px;line-height:1.5;padding:26px 30px}
+.scard p:not(.ctag){margin:0} .scard .ctag{font-family:"Schibsted Grotesk",system-ui,sans-serif}
+.icards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px;margin-top:16px}
+.icard h3{margin:2px 0 8px;font-size:22px;line-height:1.25} .icard p{margin:0 0 8px} .icard p:last-child{margin-bottom:0}
+.lead-p{color:var(--muted);max-width:760px}
 ul.weeks{list-style:none;padding:0;margin:0}
 ul.weeks li{padding:14px 0;border-bottom:1px solid var(--line);display:flex;gap:16px;flex-wrap:wrap;align-items:baseline}
 ul.weeks .date{font-family:var(--serif);font-size:20px;min-width:120px}
@@ -214,8 +220,18 @@ FOOTER = (
     "to identify each lab.</span></footer>")
 
 
+def new_tab(page_html: str) -> str:
+    """Every link that leaves the site (sources, publishers, GitHub) opens in a new tab."""
+    def fix(m: re.Match) -> str:
+        tag = m.group(0)
+        if "target=" in tag:
+            return tag
+        return tag[:-1] + ' target="_blank" rel="noopener noreferrer">'
+    return re.sub(r"<a\b[^>]*\bhref=['\"]https?://[^>]*>", fix, page_html)
+
+
 def page(title: str, body: str, sub: str, on: str = "") -> str:
-    return (
+    return new_tab(
         "<!doctype html><html lang='en' data-theme='dark'><head><meta charset='utf-8'>"
         "<meta name='viewport' content='width=device-width,initial-scale=1'>"
         f"<title>{html.escape(title)}</title><meta name='description' content='{html.escape(TAGLINE)}'>"
@@ -233,8 +249,32 @@ def md_to_html(text: str) -> str:
     out = re.sub(r'href="(\d{4}-\d{2}-\d{2}-(?:report|insights))\.md"', r'href="\1.html"', out)
     out = re.sub(r">(\d{4}-\d{2}-\d{2})-report\.md<", r">tables for \1<", out)
     out = re.sub(r">(\d{4}-\d{2}-\d{2})-insights\.md<", r">summary and insights for \1<", out)
-    # Source links leave the site: mark them like the digest does.
+    # Source links leave the site: mark them with the arrow, as the digest does.
     return re.sub(r'<a href="(https?://[^"]+)">', r'<a class="ext" href="\1">', out)
+
+
+def insights_cards(md_text: str) -> str:
+    """Summary in one wide card, then one card per numbered insight."""
+    summary = re.search(r"## Summary\s*\n(.*?)(?=\n## |\Z)", md_text, re.S)
+    ins = re.search(r"## Insights\s*\n(.*?)(?=\n## |\Z)", md_text, re.S)
+    out = []
+    if summary and summary.group(1).strip():
+        out.append("<div class='card scard'><p class='ctag'>Summary</p>"
+                   + md_to_html(summary.group(1).strip()) + "</div>")
+    items = re.split(r"\n(?=\d+\.\s)", "\n" + ins.group(1).strip()) if ins else []
+    cards = []
+    for it in (x.strip() for x in items):
+        m = re.match(r"(\d+)\.\s+(.*)", it, re.S)
+        if not m:
+            continue
+        num, body = m.groups()
+        title = re.match(r"\*\*(.+?)\*\*\s*(.*)", body, re.S)
+        head, rest = (title.group(1), title.group(2)) if title else ("", body)
+        cards.append(f"<div class='card icard'><p class='ctag'>Insight {num}</p>"
+                     + (f"<h3>{md_to_html(head)[3:-4]}</h3>" if head else "") + md_to_html(rest.strip()) + "</div>")
+    if cards:
+        out.append("<div class='icards'>" + "".join(cards) + "</div>")
+    return "".join(out)
 
 
 def italic_title(t: str) -> str:
@@ -279,24 +319,101 @@ def overview_charts(by_bench: dict[str, list[dict]], day: str) -> str:
             + charts.small_multiples(by_bench, MULTIPLE_GROUPS))
 
 
-def add_table_charts(page_html: str, by_bench: dict[str, list[dict]]) -> str:
-    """Tables page: a full-size chart above each benchmark's table, and lab logos next to model names."""
-    names = sorted(by_bench, key=len, reverse=True)
-    parts = page_html.split("<h2>")
-    for i, part in enumerate(parts[1:], 1):
-        heading = part.split("</h2>", 1)[0]
-        bench = next((b for b in names if b in heading), None)
-        if bench and by_bench[bench] and "<table" in part:
-            rows = by_bench[bench]
-            chart = (f"<div class='card'>{charts.margin_chart(rows, bench)}</div>"
-                     + charts.legend(rows[0]["margin_low"] is not None))
-            part = part.replace("<table", chart + "<table", 1)
-            models = {r["model"] for r in rows}
-            part = re.sub(r"<td>([^<]+)</td>",
-                          lambda m: (f"<td>{logo_html(lab_of(html.unescape(m.group(1))), 20)}{m.group(1)}</td>"
-                                     if html.unescape(m.group(1)) in models else m.group(0)), part)
-            parts[i] = part
-    return "<h2>".join(parts)
+VS_TEXT = {"lead": "leader", "close": "too close to call", "behind": "behind", "nomargin": "no margin published"}
+
+
+def report_body(day: str, md_text: str, by_bench: dict[str, list[dict]]) -> str:
+    """Tables page, built from the same rows as reports/<date>-report.md: one card per benchmark,
+    with the chart drawn inside the table (a chart column on one shared scale per benchmark)."""
+    import json
+    from tracker import COLLECTORS, CREDIT_LINE, SPREAD_NOTE, baseline_csv
+    full = read_csv(DATA / "clean" / f"{day}.csv")
+    listed = {b: sum(1 for r in full if r["benchmark"] == b) for b, _ in REPORT}
+    prev_file = baseline_csv(day)
+    prev = {(r["benchmark"], r["model"], r["setup"]): r for r in read_csv(prev_file)} if prev_file else {}
+    alerts_file = DATA / "alerts" / f"{day}.json"
+    shown = {b for b, _ in REPORT} | set(COLLECTORS)
+    alerts = [a for a in (json.loads(alerts_file.read_text(encoding="utf-8")) if alerts_file.exists() else [])
+              if a["source"] in shown]
+
+    out = [f"<h1>Frontier AI benchmark tracker: <em>week of {day}</em></h1>",
+           "<p class='lead-p'>" + (f"Changes compare with {prev_file.stem}. " if prev_file else
+                                   "First week: no changes to compare yet. ")
+           + "Every score comes from the linked publisher page. Scores from different benchmarks are not "
+             "comparable with each other. Hover a row for details.</p>",
+           f"<p><a class='pill' href='{day}-insights.html'>Summary and insights</a></p>"]
+    if alerts:
+        out.append("<div class='card'><p class='ctag'>Collection alerts</p><ul>"
+                   + "".join(f"<li><b>{html.escape(a['level'])}</b>, {html.escape(a['source'])}: "
+                             f"{html.escape(a['message'])}</li>" for a in alerts) + "</ul></div>")
+    for bench, area in REPORT:
+        rows = by_bench.get(bench, [])
+        if not rows:
+            out.append(f"<div class='bcard'><p class='area'>{html.escape(area)}</p><h2>{html.escape(bench)}</h2>"
+                       "<p class='muted'>No data this week (see alerts).</p></div>")
+            continue
+        r0, unit = rows[0], rows[0]["unit"]
+        has_m = r0["margin_low"] is not None
+        has_cost = any(r["cost"] is not None for r in rows)
+        basis = next((r["cost_basis"] for r in rows if r["cost_basis"]), "")
+        src = r0["source_url"]
+        metas = [f"<a class='pill ext' href='{html.escape(src)}'>{html.escape(charts.publisher(src))}</a>",
+                 f"<span class='pill'>{html.escape(r0['trust'])}</span>",
+                 f"<span class='pill'>data dated {max(r['source_date'] for r in rows)}</span>",
+                 f"<span class='pill'>{listed[bench]} listed · top {len(rows)} shown</span>"]
+        head = ["#", "Model", "Setup", "Score", f"<th class='cc'>{charts.axis_svg(rows)}</th>"]
+        if has_m:
+            head.append("95% interval")
+        if has_cost:
+            head.append(f"Cost ({html.escape(basis)})")
+        head += ["Change", "Vs. #1"]
+        ths = "".join(h if h.startswith("<th") else f"<th>{h}</th>" for h in head)
+        trs = []
+        for r in rows:
+            st = charts.status(r, r0)
+            p = prev.get((bench, r["model"], r["setup"]))
+            if not prev_file:
+                change = ""
+            elif p is None:
+                change = "new"
+            else:
+                d = r["score"] - p["score"]
+                change = "same" if abs(d) < 1e-9 else (f"{d:+.1f}" if unit != "score" else f"{d:+.3f}")
+            tip = charts.tip_text(r, bench, st, r["rank"])
+            cells = [str(r["rank"] or ""),
+                     f"{logo_html(lab_of(r['model']), 20)}{html.escape(r['model'])}",
+                     html.escape(r["setup"]), charts.fmt(r["score"], unit)]
+            tds = "".join(f"<td{' class=num' if i in (0, 3) else ''}>{c}</td>" for i, c in enumerate(cells))
+            tds += f"<td class='cc'>{charts.cell_svg(rows, r, bench)}</td>"
+            if has_m:
+                tds += (f"<td class='num'>{charts.fmt(r['margin_low'], unit)} to {charts.fmt(r['margin_high'], unit)}</td>"
+                        if r["margin_low"] is not None else "<td></td>")
+            if has_cost:
+                tds += f"<td class='num'>{'$%.2f' % r['cost'] if r['cost'] is not None else ''}</td>"
+            tds += f"<td class='num'>{change}</td><td><span class='vs {st}'>{VS_TEXT[st]}</span></td>"
+            trs.append(f"<tr class='r' title=\"{html.escape(tip)}\" data-tc='{charts.color_of(r['model'])}'>{tds}</tr>")
+        notes = sorted({n.strip() for r in rows for n in r["note"].split(" | ")
+                        if n.strip() and not n.startswith("API price")})
+        extra = []
+        if bench in CREDIT_LINE:
+            extra.append(md_to_html(CREDIT_LINE[bench])[3:-4])
+        if bench in SPREAD_NOTE:
+            close = sum(1 for r in rows[1:] if charts.status(r, r0) == "close")
+            extra.append(f"Top score {charts.fmt(r0['score'], unit)}; {close} other model"
+                         f"{'s are' if close != 1 else ' is'} too close to call with #1.")
+        extra += [("Rows marked * in the source: " if n.startswith("Run with") else "") + html.escape(n) for n in notes]
+        legend = ("Dot = score, line = 95% interval, shaded band = the leader's interval, colour = the model's lab."
+                  if has_m else "No margin published: dots only, so no tie can be judged.")
+        title = html.escape(bench) + (f" <em>{html.escape(r0['version'])}</em>" if r0["version"] else "")
+        out.append(f"<div class='bcard'><p class='area'>{html.escape(area)}</p><h2>{title}</h2>"
+                   f"<div class='metas'>{''.join(metas)}</div>"
+                   f"<div class='combo-wrap'><table class='combo'><tr>{ths}</tr>{''.join(trs)}</table></div>"
+                   f"<p class='note'>{legend}</p>"
+                   + "".join(f"<p class='note'>{x}</p>" for x in extra) + "</div>")
+    method = re.search(r"## Method\s*\n(.*)", md_text, re.S)
+    if method:
+        out.append("<div class='shead'><h2>Method</h2></div><div class='card'>" + md_to_html(method.group(1)) + "</div>")
+    return "".join(out)
 
 
 def strip_h1(text: str) -> str:
@@ -323,14 +440,15 @@ def build() -> None:
             text = src.read_text(encoding="utf-8")
             h1 = re.match(r"# (.*)", text)
             title = h1.group(1) if h1 else f"{TITLE} {d}"
-            body_html = md_to_html(text)
-            body_html = re.sub(r"<h1>.*?</h1>", f"<h1>{italic_title(title)}</h1>", body_html, count=1)
             if kind == "report":
-                body_html = add_table_charts(body_html, by_bench)
-            else:  # charts first, then the written summary and insights in one card
-                body_html = body_html.replace("<h2>Summary</h2>", overview_charts(by_bench, d)
-                                              + "<div class='shead'><h2>Summary and <em>insights</em></h2></div>"
-                                              + "<div class='card'><h2>Summary</h2>", 1) + "</div>"
+                body_html = report_body(d, text, by_bench)
+            else:  # title and source line, then the charts, then one card for the summary and one per insight
+                intro = re.search(r"^Written from .*$", text, re.M)
+                body_html = (f"<h1>{italic_title(title)}</h1>"
+                             + (md_to_html(intro.group(0)).replace("<p>", "<p class='lead-p'>", 1) if intro else "")
+                             + overview_charts(by_bench, d)
+                             + "<div class='shead'><h2>Summary and <em>insights</em></h2></div>"
+                             + insights_cards(text))
             (DOCS / f"{d}-{kind}.html").write_text(page(title, body_html, sub), encoding="utf-8")
 
     body = ["<div class='lede'>Who is <em>really</em> ahead this week?</div>"]
@@ -343,7 +461,7 @@ def build() -> None:
         body.append(f"<div class='shead'><h2>Summary and <em>insights</em></h2>"
                     f"<a class='pill' href='{latest}-insights.html'>Open this week</a></div>")
         if ins.exists():
-            body.append("<div class='card'>" + md_to_html(strip_h1(ins.read_text(encoding="utf-8"))) + "</div>")
+            body.append(insights_cards(ins.read_text(encoding="utf-8")))
         else:
             body.append("<p class='muted'>Insights for this week are not written yet.</p>")
     body.append("<div class='shead' id='weeks'><h2>All weeks</h2></div><ul class='weeks'>")

@@ -22,7 +22,7 @@ Output:
 - `docs/`: the website, built by `python build_site.py` and served by GitHub Pages. Its look follows
   [Coding Agents Digest](https://github.com/IbrahimSobh/coding-agents-digest): same colours, dark/light themes,
   self-hosted Newsreader and Schibsted Grotesk fonts (SIL OFL, `docs/assets/fonts/`) and card tooltips.
-  Lab colours and logos are in `bench/labs.py`; the logos (Claude, Antigravity, Codex) are the digest's files. Charts (rank grid
+  Lab colours and logos are in `bench/labs.py`; logo sources and licences are in `docs/assets/logos/CREDITS.md`. Charts (rank grid
   and score-with-margin charts, `bench/charts.py`) are drawn from `data/clean/` by the script, not by the AI.
 
 ## Weekly automation
