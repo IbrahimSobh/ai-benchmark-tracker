@@ -4,7 +4,8 @@ This file is the only source of the steps: the scheduled routine's prompt just s
 Run these steps in order from the repository root. Stop and report if a step fails.
 
 1. Install dependencies: `python -m pip install -r requirements.txt` (use `python -m pip` so packages go to the same Python that runs the scripts)
-2. Collect and build the tables: `python tracker.py all`
+2. Collect and build the tables: `python tracker.py all` (run it on its own, not piped into `tail` or
+   `head`, so you see its exit code and its last line)
    - This collects from Scale, Artificial Analysis, GDPx and the Arena Hugging Face dataset, and writes
      `data/clean/<date>.csv`, `data/alerts/<date>.json` and `reports/<date>-report.md`,
      where `<date>` is today's UTC date.
@@ -14,11 +15,12 @@ Run these steps in order from the repository root. Stop and report if a step fai
      stop here, do not commit or push, and finish with the one-line summary
      `No new data since <previous date>; nothing published.`
    - If only some collectors failed, still publish: the report's alerts section shows which ones.
-3. Read `reports/<date>-report.md` and write `reports/<date>-insights.md`, following every rule in
-   `prompts/analyze.md`. Use only numbers that appear in the tables file. Earlier reports are
-   in `reports/` if you want to mention changes.
-4. Check the insights: every number in `reports/<date>-insights.md` must appear in
-   `reports/<date>-report.md`. Fix any that do not.
+3. Open `prompts/analyze.md`, read all of it, and follow its steps to write `reports/<date>-insights.md`
+   from `reports/<date>-report.md`.
+4. Check the insights with the script: `python check_insights.py <date>`. It lists every number, link
+   or section that breaks the rules. Fix the insights file (never the tables file) and run it again until
+   it prints "Insights check passed". If it still fails after 3 attempts, do not commit or push: stop and
+   report the problems it lists.
 5. Build the website: `python build_site.py`
 6. `git add data/clean data/alerts reports docs`, commit to the `main` branch and push.
    GitHub Pages publishes `docs/` automatically. Commit message:

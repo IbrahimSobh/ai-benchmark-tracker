@@ -39,10 +39,13 @@ A scheduled Claude task (claude.ai routine) runs **every day at 9:00 Cairo time*
 1. Collect from all sources.
 2. If every row matches the previous run, stop: `tracker.py` prints `NO NEW DATA`, exits with code 3 and
    writes nothing, so nothing is committed or published that day.
-3. Otherwise write the tables file and the AI insights, build the site, commit and push to `main`.
-   GitHub Pages then publishes `docs/`.
+3. Otherwise write the tables file and the AI insights (rules in `prompts/analyze.md`).
+4. Check the insights with `python check_insights.py <date>` (no AI): every number and link must appear in
+   the tables file, and the file must have the right sections. The task fixes and re-checks until it passes;
+   after 3 failed attempts it publishes nothing.
+5. Build the site, commit and push to `main`. GitHub Pages then publishes `docs/`.
 
-Insights are published without manual review; the site footer says they are AI-written. The site header
+The routine uses Claude Haiku 5.5. Insights are published without manual review; the site footer says they are AI-written. The site header
 shows the date of the latest update and the schedule. The task can also run at any time ("Run now" on the
 routine's claude.ai page). A second update on the same day replaces that day's entry. The "Change" column
 compares with the earlier update closest to 7 days back (`baseline_csv` in `tracker.py`), so daily updates
