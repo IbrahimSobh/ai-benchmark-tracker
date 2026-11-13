@@ -1,21 +1,35 @@
-"""SVG charts for the website, drawn straight from the saved data (data/clean/<date>.csv).
+"""SVG / HTML charts for the website, drawn straight from the saved data (data/clean/<date>.csv).
 
 The AI never touches these numbers: every value comes from the same rows the tables show.
+Styling follows the Coding Agents Digest ("editorial paper"): each model wears its lab's colour,
+cards are soft and rounded, and hover tooltips are cards with a border in the lab's colour.
 
-- rank_grid():     models x benchmarks, each cell = the model's rank (ranks, never scores, across benchmarks)
-- margin_chart():  one benchmark: score dots with 95% interval lines and the leader's band
+- rank_grid():       models x benchmarks, each cell = the model's rank (ranks, never scores, across benchmarks)
+- margin_chart():    one benchmark: score dots with 95% interval lines and the leader's band
 - small_multiples(): a grid of small margin charts, one per benchmark, grouped by trust label
+
+Tooltips: every hover target carries data-tip (lines separated by newlines) and data-tc (border colour).
+SVG targets also carry a <title> so the facts still show as a plain browser tooltip without JavaScript.
 """
 from __future__ import annotations
 
 import html
 import math
 
-# Colours come from CSS variables defined in build_site.CSS, so charts follow light/dark mode.
-ROW_H = 22
-LABEL_W = 150
+from .labs import color_of, lab_of, logo_html
+
+ROW_H = 24
+LABEL_W = 160
 PLOT_W = 300
 VALUE_W = 64
+
+PUBLISHERS = {"labs.scale.com": "Scale Labs", "artificialanalysis.ai": "Artificial Analysis",
+              "gdpx.semianalysis.com": "GDPx by SemiAnalysis", "arena.ai": "Arena"}
+
+
+def publisher(url: str) -> str:
+    host = url.split("/")[2] if "//" in url else url
+    return PUBLISHERS.get(host, host)
 
 
 def fmt(v: float, unit: str) -> str:
@@ -40,8 +54,7 @@ def nice_ticks(lo: float, hi: float, target: int = 4) -> list[float]:
     raw = span / target
     mag = 10 ** math.floor(math.log10(raw))
     step = min((m * mag for m in (1, 2, 2.5, 5, 10) if m * mag >= raw), default=10 * mag)
-    start = math.floor(lo / step) * step
-    ticks, t = [], start
+    ticks, t = [], math.floor(lo / step) * step
     while t <= hi + step * 0.001:
         ticks.append(round(t, 10))
         t += step
@@ -59,7 +72,27 @@ def status(row: dict, leader: dict) -> str:
     return "close" if overlap else "behind"
 
 
-def margin_chart(rows: list[dict], title: str = "", width: int | None = None) -> str:
+STATUS_TEXT = {"lead": "Leader", "close": "Too close to call with #1", "behind": "Behind #1",
+               "nomargin": "No margin published"}
+
+
+def tip_text(r: dict, bench: str, st: str, rank: int | None = None) -> str:
+    lines = [f"{r['model']} · {bench}"]
+    if r.get("setup"):
+        lines.append(f"Setup: {r['setup']}")
+    lines.append((f"Rank {rank} · " if rank else "") + f"Score {fmt(r['score'], r['unit'])}")
+    if r["margin_low"] is not None:
+        lines.append(f"95% interval {fmt(r['margin_low'], r['unit'])} to {fmt(r['margin_high'], r['unit'])}")
+    lines.append(STATUS_TEXT[st])
+    lines.append(f"{lab_of(r['model'])} · source: {publisher(r['source_url'])}")
+    return "\n".join(lines)
+
+
+def tip_attrs(text: str, color: str) -> str:
+    return f'data-tip="{html.escape(text)}" data-tc="{color}" tabindex="0"'
+
+
+def margin_chart(rows: list[dict], title: str = "") -> str:
     """Dots for scores, lines for 95% intervals, shaded band for the leader's interval."""
     if not rows:
         return ""
@@ -70,39 +103,43 @@ def margin_chart(rows: list[dict], title: str = "", width: int | None = None) ->
     ticks = nice_ticks(min(lows), max(highs))
     a, z = ticks[0], ticks[-1]
     step = ticks[1] - ticks[0] if len(ticks) > 1 else 1
-    x0 = LABEL_W
-    X = lambda v: x0 + (v - a) / ((z - a) or 1) * PLOT_W
+    X = lambda v: LABEL_W + (v - a) / ((z - a) or 1) * PLOT_W
     H = len(rows) * ROW_H + 30
     W = LABEL_W + PLOT_W + VALUE_W
     leader = rows[0]
     out = [f'<svg class="chart" viewBox="0 0 {W} {H}" width="100%" role="img" '
            f'aria-label="{html.escape(title or "scores")}">']
-    for t in ticks:  # light gridlines with rounded tick labels
+    for t in ticks:
         out.append(f'<line x1="{X(t):.1f}" y1="4" x2="{X(t):.1f}" y2="{len(rows) * ROW_H + 6}" class="grid"/>')
         out.append(f'<text x="{X(t):.1f}" y="{H - 6}" text-anchor="middle" class="tick">{tick_fmt(t, unit, step)}</text>')
     if has_m and leader["margin_low"] is not None:
-        out.append(f'<rect x="{X(leader["margin_low"]):.1f}" y="4" '
+        out.append(f'<rect x="{X(leader["margin_low"]):.1f}" y="4" rx="6" '
                    f'width="{X(leader["margin_high"]) - X(leader["margin_low"]):.1f}" '
                    f'height="{len(rows) * ROW_H}" class="band"/>')
     for i, r in enumerate(rows):
         y = 16 + i * ROW_H
         st = status(r, leader)
+        col = color_of(r["model"])
         name = r["model"] + (f" ({r['setup']})" if r.get("_show_setup") else "")
-        out.append(f'<text x="0" y="{y + 4}" class="lbl">{html.escape(name)}</text>')
+        tip = tip_text(r, title, st, r["rank"])
+        out.append(f'<g class="row {st}" {tip_attrs(tip, col)}><title>{html.escape(tip)}</title>'
+                   f'<rect x="0" y="{y - ROW_H / 2:.1f}" width="{W}" height="{ROW_H}" class="hit"/>'
+                   f'<circle cx="7" cy="{y}" r="5" fill="{col}"/>'
+                   f'<text x="18" y="{y + 4}" class="lbl">{html.escape(name)}</text>')
         if has_m and r["margin_low"] is not None:
-            out.append(f'<line x1="{X(r["margin_low"]):.1f}" y1="{y}" x2="{X(r["margin_high"]):.1f}" y2="{y}" class="ci {st}"/>')
-        out.append(f'<circle cx="{X(r["score"]):.1f}" cy="{y}" r="4.5" class="dot {st}"/>')
-        out.append(f'<text x="{W}" y="{y + 4}" text-anchor="end" class="val">{fmt(r["score"], unit)}</text>')
+            out.append(f'<line x1="{X(r["margin_low"]):.1f}" y1="{y}" x2="{X(r["margin_high"]):.1f}" y2="{y}" '
+                       f'stroke="{col}" class="ci"/>')
+        out.append(f'<circle cx="{X(r["score"]):.1f}" cy="{y}" r="6" fill="{col}" class="dot"/>'
+                   f'<text x="{W}" y="{y + 4}" text-anchor="end" class="val">{fmt(r["score"], unit)}</text></g>')
     out.append("</svg>")
     return "<div class='chartwrap'>" + "".join(out) + "</div>"
 
 
 def legend(has_margin: bool = True) -> str:
     if not has_margin:
-        return "<p class='chart-note'>No margin published: dots only, no tie can be judged.</p>"
-    return ("<p class='chart-note'><span class='key lead'></span>leader "
-            "<span class='key close'></span>too close to call "
-            "<span class='key behind'></span>behind · shaded band = leader's 95% interval</p>")
+        return "<p class='chart-note'>No margin published: dots only, so no tie can be judged.</p>"
+    return ("<p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to "
+            "call · faded = behind · shaded band = the leader's 95% interval · hover for details</p>")
 
 
 def small_multiples(by_bench: dict[str, list[dict]], groups: list[tuple[str, list[str]]], n: int = 5) -> str:
@@ -114,8 +151,10 @@ def small_multiples(by_bench: dict[str, list[dict]], groups: list[tuple[str, lis
             if not rows:
                 continue
             has_m = rows[0]["margin_low"] is not None
+            src = rows[0]["source_url"]
             cells.append(f"<div class='mini'><p class='mini-t'>{html.escape(b)}</p>"
-                         f"<p class='mini-s'>{'95% interval shown' if has_m else 'no margin published'}</p>"
+                         f"<p class='mini-s'>{'95% interval shown' if has_m else 'no margin published'} · "
+                         f"<a class='ext' href='{html.escape(src)}'>{html.escape(publisher(src))}</a></p>"
                          f"{margin_chart(rows, b)}</div>")
         if cells:
             out.append(f"<p class='group'>{html.escape(label)}</p><div class='minis'>{''.join(cells)}</div>")
@@ -133,7 +172,7 @@ def rank_of(rows: list[dict], r: dict) -> int:
 def rank_grid(by_bench: dict[str, list[dict]], columns: list[tuple[str, str]], crowd_from: int,
               n_models: int = 6) -> str:
     """columns: (benchmark, short label). Columns from index crowd_from on are public-vote benchmarks."""
-    best: dict[str, dict[str, tuple[int, bool]]] = {}
+    best: dict[str, dict[str, tuple[int, str, dict]]] = {}
     unranked = set()
     for b, _ in columns:
         rows = by_bench.get(b, [])
@@ -141,69 +180,88 @@ def rank_grid(by_bench: dict[str, list[dict]], columns: list[tuple[str, str]], c
             unranked.add(b)
         leader = rows[0] if rows else None
         for r in rows:
-            rk, tie = rank_of(rows, r), status(r, leader) == "close"
+            rk = rank_of(rows, r)
             cur = best.setdefault(r["model"], {}).get(b)
             if cur is None or rk < cur[0]:  # same model with several setups: keep its best rank
-                best[r["model"]][b] = (rk, tie)
+                best[r["model"]][b] = (rk, status(r, leader), r)
     models = sorted(best, key=lambda m: (-len(best[m]), sum(v[0] for v in best[m].values()) / len(best[m])))
-    # Choose by coverage (appears in most tables), then show the strongest average rank first.
     avg = lambda m: sum(v[0] for v in best[m].values()) / len(best[m])
-    models = sorted(models[:n_models], key=avg)
+    models = sorted(models[:n_models], key=avg)  # choose by coverage, show strongest average rank first
 
-    def cls(rk: int) -> str:
-        return "r1" if rk == 1 else "r2" if rk == 2 else "r3" if rk == 3 else "r4" if rk <= 6 else "r5"
+    def strength(rk: int) -> int:
+        return 100 if rk == 1 else 78 if rk == 2 else 60 if rk == 3 else 40 if rk <= 6 else 22
 
     head = "".join(
         f"<th class='{'crowd' if i == crowd_from else ''}'>{html.escape(lbl)}{'*' if b in unranked else ''}</th>"
         for i, (b, lbl) in enumerate(columns))
     body = []
     for m in models:
+        col = color_of(m)
         cells = []
         for i, (b, _) in enumerate(columns):
             extra = " crowd" if i == crowd_from else ""
             if b in best[m]:
-                rk, tie = best[m][b]
-                cells.append(f"<td class='{cls(rk)}{extra}'>{rk}{' ≈' if tie else ''}</td>")
+                rk, st, r = best[m][b]
+                s = strength(rk)
+                ink = "#17101c" if s >= 60 else "var(--ink)"
+                tip = tip_text(r, b, st, rk)
+                cells.append(f"<td class='rk{extra}' style='background:color-mix(in srgb,{col} {s}%,var(--tile));"
+                             f"color:{ink}' title=\"{html.escape(tip)}\" data-tc='{col}' tabindex='0'>"
+                             f"{rk}{' ≈' if st == 'close' else ''}</td>")
             else:
-                cells.append(f"<td class='r0{extra}'>–</td>")
-        body.append(f"<tr><th class='model'>{html.escape(m)}</th>{''.join(cells)}</tr>")
-    note = ("Darker = higher rank · ≈ too close to call with #1 · – not in the rows the table shows · "
-            "right of the dashed line: public votes")
+                cells.append(f"<td class='r0{extra}' title='{html.escape(m)}: not in the rows this table shows'>–</td>")
+        body.append(f"<tr><th class='model'>{logo_html(lab_of(m), 20)}<span>{html.escape(m)}</span></th>"
+                    f"{''.join(cells)}</tr>")
+    note = ("Stronger tile = higher rank, in the lab's colour · ≈ too close to call with #1 · – not in the rows "
+            "the table shows · right of the dashed line: public votes · hover a tile for details")
     if unranked:
         note += " · * no rank published, ranked by score order"
-    return (f"<div class='gridwrap'><table class='rankgrid'><tr><th></th>{head}</tr>{''.join(body)}</table></div>"
-            f"<p class='chart-note'>{note}</p>")
+    return (f"<div class='card gridcard'><div class='gridwrap'><table class='rankgrid'><tr><th></th>{head}</tr>"
+            f"{''.join(body)}</table></div></div><p class='chart-note'>{note}</p>")
+
+
+def labs_strip(by_bench: dict[str, list[dict]], n: int = 6) -> str:
+    """'Tracking' strip under the headline: the labs that appear most often in this week's tables."""
+    count: dict[str, int] = {}
+    for rows in by_bench.values():
+        for r in rows:
+            lab = lab_of(r["model"])
+            if lab != "Other":
+                count[lab] = count.get(lab, 0) + 1
+    labs = sorted(count, key=lambda l: -count[l])[:n]
+    items = "".join(f"<span class='trk'>{logo_html(l, 28)}{html.escape(l)}</span>" for l in labs)
+    return f"<div class='track'><span class='tk'>Most seen this week</span>{items}</div>"
 
 
 CSS = """
-:root{--lead:#185FA5;--close:#378ADD;--behind:#9a9890;--band:rgba(55,138,221,.13);--gridc:#e7e4dc;
---r1:#0C447C;--r1t:#E6F1FB;--r2:#185FA5;--r2t:#E6F1FB;--r3:#378ADD;--r3t:#042C53;--r4:#B5D4F4;--r4t:#0C447C;--r5:#E6F1FB;--r5t:#0C447C}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lead:#85B7EB;--close:#378ADD;--behind:#7a7871;--band:rgba(133,183,235,.16);--gridc:#2c2c2a;
---r1:#B5D4F4;--r1t:#042C53;--r2:#85B7EB;--r2t:#042C53;--r3:#378ADD;--r3t:#042C53;--r4:#185FA5;--r4t:#E6F1FB;--r5:#0C447C;--r5t:#B5D4F4}}
-:root[data-theme="dark"]{--lead:#85B7EB;--close:#378ADD;--behind:#7a7871;--band:rgba(133,183,235,.16);--gridc:#2c2c2a;
---r1:#B5D4F4;--r1t:#042C53;--r2:#85B7EB;--r2t:#042C53;--r3:#378ADD;--r3t:#042C53;--r4:#185FA5;--r4t:#E6F1FB;--r5:#0C447C;--r5t:#B5D4F4}
 .chartwrap{overflow-x:auto}
-svg.chart{display:block;margin:6px 0}
+svg.chart{display:block;margin:8px 0;overflow:visible}
 @media (max-width:560px){svg.chart{min-width:440px}}
-svg.chart text{font:13px Inter,system-ui,sans-serif}
-svg.chart .lbl{fill:var(--muted)} svg.chart .val{fill:var(--fg)} svg.chart .tick{fill:var(--muted);font-size:12px}
-svg.chart .grid{stroke:var(--gridc);stroke-width:1} svg.chart .band{fill:var(--band)}
-svg.chart .ci{stroke-width:2;stroke-linecap:round} svg.chart .ci.lead{stroke:var(--lead)} svg.chart .ci.close{stroke:var(--close)} svg.chart .ci.behind{stroke:var(--behind)}
-svg.chart .dot.lead{fill:var(--lead)} svg.chart .dot.close{fill:var(--close)} svg.chart .dot.behind{fill:var(--behind)} svg.chart .dot.nomargin{fill:var(--muted)}
-.chart-note{font-size:.8rem;color:var(--muted);margin:4px 0 12px}
-.key{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 8px;vertical-align:-1px}
-.key.lead{background:var(--lead)} .key.close{background:var(--close)} .key.behind{background:var(--behind)}
-.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
-.mini{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.mini-t{margin:0;font-weight:600;font-size:.92rem} .mini-s{margin:0;font-size:.75rem;color:var(--muted)}
-.group{font-size:.85rem;color:var(--muted);margin:18px 0 6px}
+svg.chart text{font:13px "Schibsted Grotesk",system-ui,sans-serif}
+svg.chart .lbl{fill:var(--muted)} svg.chart .val{fill:var(--ink);font-weight:500} svg.chart .tick{fill:var(--soft);font-size:12px}
+svg.chart .grid{stroke:var(--line);stroke-width:1} svg.chart .band{fill:var(--accent);opacity:.14}
+svg.chart .ci{stroke-width:3;stroke-linecap:round} svg.chart .dot{stroke:var(--card2);stroke-width:2}
+svg.chart .row.behind .ci,svg.chart .row.behind .dot{opacity:.33}
+svg.chart .hit{fill:transparent} svg.chart .row{cursor:default;outline:none}
+svg.chart .row:hover .hit,svg.chart .row:focus .hit{fill:color-mix(in srgb,var(--ink) 5%,transparent)}
+.chart-note{font-size:13px;color:var(--soft);margin:10px 0 0}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:16px}
+.mini{background:var(--card2);border-radius:20px;padding:16px 20px}
+.mini-t{margin:0;font-family:var(--serif);font-size:20px;color:var(--ink)} .mini-s{margin:2px 0 0;font-size:13px;color:var(--soft)}
+.mini-s a{color:var(--muted)}
+.group{font-size:14px;color:var(--muted);margin:26px 0 10px}
+.gridcard{padding:16px 18px}
 .gridwrap{overflow-x:auto}
-table.rankgrid{display:table;border-collapse:separate;border-spacing:3px;font-size:.85rem;margin:8px 0;min-width:560px}
-table.rankgrid th,table.rankgrid td{border:0;padding:6px 8px;text-align:center;white-space:nowrap}
-table.rankgrid tr:first-child th{background:none;font-weight:500;color:var(--muted);font-size:.78rem}
-table.rankgrid th.model{background:none;text-align:left;font-weight:500}
-table.rankgrid td{border-radius:4px;font-weight:600}
-.r1{background:var(--r1);color:var(--r1t)} .r2{background:var(--r2);color:var(--r2t)} .r3{background:var(--r3);color:var(--r3t)}
-.r4{background:var(--r4);color:var(--r4t)} .r5{background:var(--r5);color:var(--r5t)} .r0{background:var(--head);color:var(--muted);font-weight:400}
-table.rankgrid .crowd{border-left:2px dashed var(--line)}
+table.rankgrid{border-collapse:separate;border-spacing:4px;font-size:14px;min-width:720px;width:100%;margin:0;background:none;table-layout:fixed;display:table;padding:0;border-radius:0}
+table.rankgrid tr:first-child th:first-child{width:190px}
+@media (max-width:560px){table.rankgrid{min-width:600px;font-size:13px} table.rankgrid tr:first-child th:first-child{width:150px}}
+table.rankgrid th,table.rankgrid td{border:0;padding:0;text-align:center;white-space:nowrap;background:none}
+table.rankgrid tr:first-child th{font-weight:400;color:var(--soft);font-size:12.5px;padding:0 2px 4px;line-height:1.2;white-space:normal}
+table.rankgrid th.model{text-align:left;font-weight:500;color:var(--ink);padding-right:10px}
+table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .ldot{margin-right:8px}
+table.rankgrid td{height:32px;border-radius:9px;font-weight:700;font-size:13px;background:var(--tile)}
+table.rankgrid td.r0{color:var(--soft);font-weight:400}
+table.rankgrid td.rk{cursor:default} table.rankgrid td.rk:hover,table.rankgrid td.rk:focus{outline:2px solid var(--ink);outline-offset:1px}
+table.rankgrid .crowd{position:relative}
+table.rankgrid .crowd::before{content:"";position:absolute;left:-5px;top:-2px;bottom:-2px;border-left:2px dashed var(--line)}
 """

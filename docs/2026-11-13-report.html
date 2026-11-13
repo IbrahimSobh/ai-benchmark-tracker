@@ -1,61 +1,220 @@
-<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Frontier AI benchmark tracker: week of 2026-11-13</title><style>
-:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e1d8;--card:#ffffff;--accent:#2f5d8a;--head:#f3f1ea}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#ecebe6;--muted:#a3a19a;--line:#33322f;--card:#1f1f1d;--accent:#8db6e0;--head:#262624}}
-:root[data-theme="dark"]{--bg:#161615;--fg:#ecebe6;--muted:#a3a19a;--line:#33322f;--card:#1f1f1d;--accent:#8db6e0;--head:#262624}
+<!doctype html><html lang='en' data-theme='dark'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Frontier AI benchmark tracker: week of 2026-11-13</title><meta name='description' content='Which AI models lead coding, agent and work tests, with a source for every number'><script>try{var t=localStorage.getItem('afb-theme');if(t)document.documentElement.dataset.theme=t;else if(matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.dataset.theme='light';}catch(e){}</script><link rel='icon' type='image/svg+xml' href='assets/favicon.svg'><link rel='preload' href='assets/fonts/schibsted-grotesk-latin-wght-normal.woff2' as='font' type='font/woff2' crossorigin><link rel='preload' href='assets/fonts/newsreader-latin-wght-normal.woff2' as='font' type='font/woff2' crossorigin><style>
+:root,:root[data-theme="dark"]{
+  --bg:#17101c; --card:#261b2e; --card2:#211728; --line:#3a2c45; --ink:#f4eef2; --muted:#b9abc2; --soft:#a597b0;
+  --accent:#f3b999; --tile:#2e2238;
+  --serif:Newsreader,Georgia,"Times New Roman",serif; color-scheme:dark}
+:root[data-theme="light"]{
+  --bg:#ffffff; --card:#ffffff; --card2:#f2f2f3; --line:#e6e6e8; --ink:#17191c; --muted:#61656f; --soft:#6b6f79;
+  --accent:#5d2a1a; --tile:#e6e6e9; color-scheme:light}
+@font-face{font-family:"Schibsted Grotesk";font-style:normal;font-weight:400 900;font-display:swap;src:url("assets/fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2")}
+@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url("assets/fonts/newsreader-latin-wght-normal.woff2") format("woff2")}
+@font-face{font-family:Newsreader;font-style:italic;font-weight:200 800;font-display:swap;src:url("assets/fonts/newsreader-latin-wght-italic.woff2") format("woff2")}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:960px;margin:0 auto;padding:32px 16px 64px}
-a{color:var(--accent)}
-h1{font-size:1.9rem;line-height:1.25;margin:0 0 8px}
-h2{font-size:1.25rem;margin:36px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
-.nav{font-size:.9rem;margin-bottom:24px}
-.muted,.nav{color:var(--muted)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px 20px 16px;margin:16px 0}
-table{display:block;overflow-x:auto;border-collapse:collapse;font-size:.88rem;margin:12px 0;max-width:100%}
-th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white-space:nowrap}
-th{background:var(--head);font-weight:600}
-ul.weeks{list-style:none;padding:0}
-ul.weeks li{padding:10px 0;border-bottom:1px solid var(--line)}
-ul.weeks .date{font-weight:600;margin-right:12px}
-footer{margin-top:48px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
-details{margin:12px 0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--ink);text-underline-offset:3px;text-decoration-color:color-mix(in srgb,var(--accent) 70%,transparent)}
+a:hover{text-decoration-color:currentColor}
+a.ext::after{content:"\2197";font-size:.78em;margin-left:2px;opacity:.8}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+::selection{background:color-mix(in srgb,var(--accent) 32%,transparent)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+h1,h2,h3,.lede,.brand{font-family:var(--serif);font-weight:400;text-wrap:balance}
+h1 em,h2 em,.lede em,.brand em{font-style:italic}
+h1{font-size:44px;line-height:1.12;letter-spacing:-.8px;margin:36px 0 10px}
+h2{font-size:30px;line-height:1.2;letter-spacing:-.4px;margin:64px 0 14px}
+h3{font-size:22px;margin:28px 0 8px}
+p,li{text-wrap:pretty}
+.muted{color:var(--muted)}
+/* header */
+header.site{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px)}
+.hbar{display:flex;align-items:center;gap:12px;height:72px}
+.brand{font-size:25px;letter-spacing:-.3px;display:flex;gap:10px;align-items:center;white-space:nowrap;color:var(--ink);text-decoration:none}
+.logo{width:30px;height:30px;flex:none}
+.lg-glass{fill:var(--bg)} .lg-frame{fill:none;stroke:var(--ink);stroke-width:9}
+.lg-bar{transform-box:fill-box;transform-origin:50% 100%;animation:lg-rise 6s ease-in-out infinite}
+.lg-bar.b2{animation-delay:.25s} .lg-bar.b3{animation-delay:.5s}
+@keyframes lg-rise{0%,100%{transform:scaleY(1)}40%{transform:scaleY(.55)}60%{transform:scaleY(1.04)}}
+@media (prefers-reduced-motion:reduce){.lg-bar{animation:none}}
+nav{display:flex;gap:4px;margin-left:auto}
+nav a{color:var(--ink);text-decoration:none;font-size:15px;padding:6px 10px;white-space:nowrap}
+nav a:hover,nav a.on{text-decoration:underline;text-underline-offset:6px}
+.tbtn{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:9999px;width:38px;height:38px;cursor:pointer;flex:none;display:inline-grid;place-items:center;text-decoration:none}
+.tbtn:hover{border-color:var(--ink)}
+.hsub{font-size:14px;color:var(--muted);margin-top:-12px;padding-bottom:12px}
+/* home headline and tracking strip */
+.lede{font-size:72px;line-height:1.08;letter-spacing:-1.8px;text-align:center;max-width:900px;margin:56px auto 0}
+.track{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 24px;margin:28px 0 8px;font-size:15px;color:var(--muted)}
+.track .tk{font-size:14px}
+.track .trk{display:inline-flex;align-items:center;gap:9px;color:var(--ink);font-weight:500;white-space:nowrap}
+.track .tlogo{width:30px;height:30px;padding:5px;border-radius:50%}
+.track .tlogo.fill{padding:0}
+.tlogo{display:inline-block;box-sizing:border-box;padding:3px;border-radius:6px;background:#fff;border:1px solid rgba(128,138,160,.35);vertical-align:middle;object-fit:contain;flex:none}
+.tlogo.fill{padding:0;border-color:transparent}
+.ldot{display:inline-block;border-radius:50%;background:var(--lc);vertical-align:middle;flex:none;transform:scale(.62)}
+/* section heads with a pill on the right */
+.shead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:64px 0 14px}
+.shead h2{margin:0}
+.pill{display:inline-flex;gap:6px;align-items:center;font-size:14px;padding:7px 15px;border-radius:9999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;text-decoration:none}
+a.pill:hover{border-color:var(--ink);color:var(--ink)}
+.card{background:var(--card2);border-radius:20px;padding:22px 26px}
+.card h2{font-size:24px;margin:26px 0 8px} .card h2:first-child{margin-top:4px}
+.card ol{padding-left:22px} .card li{margin:10px 0}
+/* tables (tables page) */
+table{border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overflow-x:auto;max-width:100%;background:var(--card2);border-radius:16px;padding:6px 10px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th{color:var(--muted);font-weight:500;font-size:13px}
+td .tlogo,td .ldot{margin-right:8px}
+details{margin:12px 0;color:var(--muted)}
+ul.weeks{list-style:none;padding:0;margin:0}
+ul.weeks li{padding:14px 0;border-bottom:1px solid var(--line);display:flex;gap:16px;flex-wrap:wrap;align-items:baseline}
+ul.weeks .date{font-family:var(--serif);font-size:20px;min-width:120px}
+/* tooltip card, as on the digest */
+.tip{position:absolute;z-index:50;max-width:300px;background:color-mix(in srgb,var(--tc,transparent) 12%,var(--card));color:var(--ink);border:1.5px solid var(--tc,var(--line));border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.45;box-shadow:0 4px 24px rgba(0,0,0,.18);pointer-events:none}
+.tip b{display:block;margin-bottom:2px} .tip span{display:block;color:var(--muted)} .tip span:last-child{color:var(--soft);font-size:12px;margin-top:3px}
+footer.site{margin:96px auto 36px;padding-top:24px;border-top:1px solid var(--line);font-size:14px;color:var(--soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px}
+footer.site a{color:var(--muted)}
+.logos-note{flex-basis:100%;font-size:12px}
+@media (max-width:760px){
+  .wrap{padding:0 16px} .lede{font-size:44px;letter-spacing:-1px;margin-top:32px} h1{font-size:32px} h2,.shead{margin-top:48px} h2{font-size:24px}
+  .brand{font-size:19px} .tbtn{width:32px;height:32px} nav a{display:none} .hsub{font-size:13px} .card{padding:16px 16px}
+}
+@media (max-width:420px){.brand{font-size:16px;gap:6px} .logo{width:24px;height:24px}}
 
-:root{--lead:#185FA5;--close:#378ADD;--behind:#9a9890;--band:rgba(55,138,221,.13);--gridc:#e7e4dc;
---r1:#0C447C;--r1t:#E6F1FB;--r2:#185FA5;--r2t:#E6F1FB;--r3:#378ADD;--r3t:#042C53;--r4:#B5D4F4;--r4t:#0C447C;--r5:#E6F1FB;--r5t:#0C447C}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lead:#85B7EB;--close:#378ADD;--behind:#7a7871;--band:rgba(133,183,235,.16);--gridc:#2c2c2a;
---r1:#B5D4F4;--r1t:#042C53;--r2:#85B7EB;--r2t:#042C53;--r3:#378ADD;--r3t:#042C53;--r4:#185FA5;--r4t:#E6F1FB;--r5:#0C447C;--r5t:#B5D4F4}}
-:root[data-theme="dark"]{--lead:#85B7EB;--close:#378ADD;--behind:#7a7871;--band:rgba(133,183,235,.16);--gridc:#2c2c2a;
---r1:#B5D4F4;--r1t:#042C53;--r2:#85B7EB;--r2t:#042C53;--r3:#378ADD;--r3t:#042C53;--r4:#185FA5;--r4t:#E6F1FB;--r5:#0C447C;--r5t:#B5D4F4}
 .chartwrap{overflow-x:auto}
-svg.chart{display:block;margin:6px 0}
+svg.chart{display:block;margin:8px 0;overflow:visible}
 @media (max-width:560px){svg.chart{min-width:440px}}
-svg.chart text{font:13px Inter,system-ui,sans-serif}
-svg.chart .lbl{fill:var(--muted)} svg.chart .val{fill:var(--fg)} svg.chart .tick{fill:var(--muted);font-size:12px}
-svg.chart .grid{stroke:var(--gridc);stroke-width:1} svg.chart .band{fill:var(--band)}
-svg.chart .ci{stroke-width:2;stroke-linecap:round} svg.chart .ci.lead{stroke:var(--lead)} svg.chart .ci.close{stroke:var(--close)} svg.chart .ci.behind{stroke:var(--behind)}
-svg.chart .dot.lead{fill:var(--lead)} svg.chart .dot.close{fill:var(--close)} svg.chart .dot.behind{fill:var(--behind)} svg.chart .dot.nomargin{fill:var(--muted)}
-.chart-note{font-size:.8rem;color:var(--muted);margin:4px 0 12px}
-.key{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 8px;vertical-align:-1px}
-.key.lead{background:var(--lead)} .key.close{background:var(--close)} .key.behind{background:var(--behind)}
-.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
-.mini{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.mini-t{margin:0;font-weight:600;font-size:.92rem} .mini-s{margin:0;font-size:.75rem;color:var(--muted)}
-.group{font-size:.85rem;color:var(--muted);margin:18px 0 6px}
+svg.chart text{font:13px "Schibsted Grotesk",system-ui,sans-serif}
+svg.chart .lbl{fill:var(--muted)} svg.chart .val{fill:var(--ink);font-weight:500} svg.chart .tick{fill:var(--soft);font-size:12px}
+svg.chart .grid{stroke:var(--line);stroke-width:1} svg.chart .band{fill:var(--accent);opacity:.14}
+svg.chart .ci{stroke-width:3;stroke-linecap:round} svg.chart .dot{stroke:var(--card2);stroke-width:2}
+svg.chart .row.behind .ci,svg.chart .row.behind .dot{opacity:.33}
+svg.chart .hit{fill:transparent} svg.chart .row{cursor:default;outline:none}
+svg.chart .row:hover .hit,svg.chart .row:focus .hit{fill:color-mix(in srgb,var(--ink) 5%,transparent)}
+.chart-note{font-size:13px;color:var(--soft);margin:10px 0 0}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:16px}
+.mini{background:var(--card2);border-radius:20px;padding:16px 20px}
+.mini-t{margin:0;font-family:var(--serif);font-size:20px;color:var(--ink)} .mini-s{margin:2px 0 0;font-size:13px;color:var(--soft)}
+.mini-s a{color:var(--muted)}
+.group{font-size:14px;color:var(--muted);margin:26px 0 10px}
+.gridcard{padding:16px 18px}
 .gridwrap{overflow-x:auto}
-table.rankgrid{display:table;border-collapse:separate;border-spacing:3px;font-size:.85rem;margin:8px 0;min-width:560px}
-table.rankgrid th,table.rankgrid td{border:0;padding:6px 8px;text-align:center;white-space:nowrap}
-table.rankgrid tr:first-child th{background:none;font-weight:500;color:var(--muted);font-size:.78rem}
-table.rankgrid th.model{background:none;text-align:left;font-weight:500}
-table.rankgrid td{border-radius:4px;font-weight:600}
-.r1{background:var(--r1);color:var(--r1t)} .r2{background:var(--r2);color:var(--r2t)} .r3{background:var(--r3);color:var(--r3t)}
-.r4{background:var(--r4);color:var(--r4t)} .r5{background:var(--r5);color:var(--r5t)} .r0{background:var(--head);color:var(--muted);font-weight:400}
-table.rankgrid .crowd{border-left:2px dashed var(--line)}
-</style></head><body><main><nav class="nav"><a href="index.html">All weeks</a></nav><h1>Frontier AI benchmark tracker: week of 2026-11-13</h1>
+table.rankgrid{border-collapse:separate;border-spacing:4px;font-size:14px;min-width:720px;width:100%;margin:0;background:none;table-layout:fixed;display:table;padding:0;border-radius:0}
+table.rankgrid tr:first-child th:first-child{width:190px}
+@media (max-width:560px){table.rankgrid{min-width:600px;font-size:13px} table.rankgrid tr:first-child th:first-child{width:150px}}
+table.rankgrid th,table.rankgrid td{border:0;padding:0;text-align:center;white-space:nowrap;background:none}
+table.rankgrid tr:first-child th{font-weight:400;color:var(--soft);font-size:12.5px;padding:0 2px 4px;line-height:1.2;white-space:normal}
+table.rankgrid th.model{text-align:left;font-weight:500;color:var(--ink);padding-right:10px}
+table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .ldot{margin-right:8px}
+table.rankgrid td{height:32px;border-radius:9px;font-weight:700;font-size:13px;background:var(--tile)}
+table.rankgrid td.r0{color:var(--soft);font-weight:400}
+table.rankgrid td.rk{cursor:default} table.rankgrid td.rk:hover,table.rankgrid td.rk:focus{outline:2px solid var(--ink);outline-offset:1px}
+table.rankgrid .crowd{position:relative}
+table.rankgrid .crowd::before{content:"";position:absolute;left:-5px;top:-2px;bottom:-2px;border-left:2px dashed var(--line)}
+</style></head><body><header class='site'><div class='wrap hbar'><a class='brand' href='index.html'><svg class='logo' viewBox='0 0 128 128' aria-hidden='true'><rect x='14' y='14' width='100' height='100' rx='28' class='lg-glass'/><rect class='lg-bar b1' x='33' y='60' width='18' height='38' rx='4' fill='#5b8def'/><rect class='lg-bar b2' x='55' y='36' width='18' height='62' rx='4' fill='#e07a5f'/><rect class='lg-bar b3' x='77' y='50' width='18' height='48' rx='4' fill='#2fb38a'/><rect x='14' y='14' width='100' height='100' rx='28' class='lg-frame'/></svg>Frontier AI <em>Benchmarks</em></a><nav><a href='index.html#weeks'>Archive</a></nav><a class='tbtn' href='https://github.com/IbrahimSobh/ai-benchmark-tracker' target='_blank' rel='noopener noreferrer' title='Source on GitHub' aria-label='Source on GitHub (opens in a new tab)'><svg viewBox='0 0 16 16' width='17' height='17' fill='currentColor' aria-hidden='true'><path d='M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'/></svg></a><a class='tbtn' href='https://www.linkedin.com/in/ibrahim-sobh-phd-8681757/' target='_blank' rel='noopener noreferrer' title='Ibrahim Sobh on LinkedIn' aria-label='Ibrahim Sobh on LinkedIn (opens in a new tab)'><svg viewBox='0 0 16 16' width='16' height='16' fill='currentColor' aria-hidden='true'><path d='M0 1.15C0 .52.52 0 1.17 0h13.66C15.48 0 16 .52 16 1.15v13.7c0 .63-.52 1.15-1.17 1.15H1.17C.52 16 0 15.48 0 14.85zm4.83 12.24V6.17H2.43v7.22zM3.63 5.18c.84 0 1.36-.55 1.36-1.25-.02-.71-.52-1.25-1.34-1.25S2.3 3.22 2.3 3.93c0 .7.52 1.25 1.32 1.25zm4.9 8.21V9.36c0-.22.02-.43.08-.59.17-.43.57-.88 1.23-.88.87 0 1.22.66 1.22 1.63v3.87h2.4V9.25c0-2.22-1.18-3.25-2.76-3.25-1.27 0-1.84.7-2.16 1.19v.02h-.02l.02-.02V6.17H6.13c.03.68 0 7.22 0 7.22z'/></svg></a><button type='button' class='tbtn' id='theme' title='Switch light / dark theme' aria-label='Switch theme'><svg viewBox='0 0 16 16' width='16' height='16' aria-hidden='true'><circle cx='8' cy='8' r='6.5' fill='none' stroke='currentColor' stroke-width='1.5'/><path d='M8 1.5a6.5 6.5 0 0 1 0 13z' fill='currentColor'/></svg></button></div><div class='wrap hsub'>Which AI models lead coding, agent and work tests, with a source for every number · week of 2026-11-13</div></header><main class='wrap'><h1>Frontier AI benchmark tracker: <em>week of 2026-11-13</em></h1>
 <p>Collected 2026-11-13. First week: no changes to compare yet. Every score below comes from the linked publisher page. Scores from different benchmarks are not comparable with each other.</p>
 <p>Summary and insights: <a href="2026-11-13-insights.html">summary and insights for 2026-11-13</a> (written by AI from these tables).</p>
 <h2>Coding: SWE Atlas (Overall) v1.1</h2>
-<p>Source: <a href="https://labs.scale.com/leaderboard/swe-atlas">https://labs.scale.com/leaderboard/swe-atlas</a> · Trust: independent · Publisher data dated 2026-11-11 · 28 models listed, top 12 shown</p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="SWE Atlas (Overall)"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">50%</text><line x1="225.0" y1="4" x2="225.0" y2="270" class="grid"/><text x="225.0" y="288" text-anchor="middle" class="tick">60%</text><line x1="300.0" y1="4" x2="300.0" y2="270" class="grid"/><text x="300.0" y="288" text-anchor="middle" class="tick">70%</text><line x1="375.0" y1="4" x2="375.0" y2="270" class="grid"/><text x="375.0" y="288" text-anchor="middle" class="tick">80%</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">90%</text><rect x="342.8" y="4" width="72.0" height="264" class="band"/><text x="0" y="20" class="lbl">Claude Fable 5.2</text><line x1="342.8" y1="16" x2="414.8" y2="16" class="ci lead"/><circle cx="378.8" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">80.5%</text><text x="0" y="42" class="lbl">Claude Opus 5.5</text><line x1="318.0" y1="38" x2="393.0" y2="38" class="ci close"/><circle cx="355.5" cy="38" r="4.5" class="dot close"/><text x="514" y="42" text-anchor="end" class="val">77.4%</text><text x="0" y="64" class="lbl">Claude Fable 5.1</text><line x1="309.0" y1="60" x2="387.0" y2="60" class="ci close"/><circle cx="348.0" cy="60" r="4.5" class="dot close"/><text x="514" y="64" text-anchor="end" class="val">76.4%</text><text x="0" y="86" class="lbl">Gemini 4 Carbon</text><line x1="269.3" y1="82" x2="351.8" y2="82" class="ci close"/><circle cx="310.5" cy="82" r="4.5" class="dot close"/><text x="514" y="86" text-anchor="end" class="val">71.4%</text><text x="0" y="108" class="lbl">Gemini 4 Argon</text><line x1="259.5" y1="104" x2="342.0" y2="104" class="ci behind"/><circle cx="300.7" cy="104" r="4.5" class="dot behind"/><text x="514" y="108" text-anchor="end" class="val">70.1%</text><text x="0" y="130" class="lbl">GPT-6 Astra</text><line x1="253.5" y1="126" x2="337.5" y2="126" class="ci behind"/><circle cx="295.5" cy="126" r="4.5" class="dot behind"/><text x="514" y="130" text-anchor="end" class="val">69.4%</text><text x="0" y="152" class="lbl">Claude Sonnet 5.5</text><line x1="245.2" y1="148" x2="329.2" y2="148" class="ci behind"/><circle cx="287.2" cy="148" r="4.5" class="dot behind"/><text x="514" y="152" text-anchor="end" class="val">68.3%</text><text x="0" y="174" class="lbl">GPT-6.1 Sol</text><line x1="226.5" y1="170" x2="312.0" y2="170" class="ci behind"/><circle cx="269.3" cy="170" r="4.5" class="dot behind"/><text x="514" y="174" text-anchor="end" class="val">65.9%</text><text x="0" y="196" class="lbl">Muse Wonder 1.0</text><line x1="217.5" y1="192" x2="304.5" y2="192" class="ci behind"/><circle cx="261.0" cy="192" r="4.5" class="dot behind"/><text x="514" y="196" text-anchor="end" class="val">64.8%</text><text x="0" y="218" class="lbl">Qwen 3.8</text><line x1="215.3" y1="214" x2="300.8" y2="214" class="ci behind"/><circle cx="258.0" cy="214" r="4.5" class="dot behind"/><text x="514" y="218" text-anchor="end" class="val">64.4%</text><text x="0" y="240" class="lbl">DeepSeek V4.1 Flash</text><line x1="197.3" y1="236" x2="284.2" y2="236" class="ci behind"/><circle cx="240.8" cy="236" r="4.5" class="dot behind"/><text x="514" y="240" text-anchor="end" class="val">62.1%</text><text x="0" y="262" class="lbl">Grok 4.7</text><line x1="197.3" y1="258" x2="284.2" y2="258" class="ci behind"/><circle cx="240.8" cy="258" r="4.5" class="dot behind"/><text x="514" y="262" text-anchor="end" class="val">62.1%</text></svg></div><p class='chart-note'><span class='key lead'></span>leader <span class='key close'></span>too close to call <span class='key behind'></span>behind · shaded band = leader's 95% interval</p><table>
+<p>Source: <a class="ext" href="https://labs.scale.com/leaderboard/swe-atlas">https://labs.scale.com/leaderboard/swe-atlas</a> · Trust: independent · Publisher data dated 2026-11-11 · 28 models listed, top 12 shown</p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="SWE Atlas (Overall)"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">50%</text><line x1="235.0" y1="4" x2="235.0" y2="294" class="grid"/><text x="235.0" y="312" text-anchor="middle" class="tick">60%</text><line x1="310.0" y1="4" x2="310.0" y2="294" class="grid"/><text x="310.0" y="312" text-anchor="middle" class="tick">70%</text><line x1="385.0" y1="4" x2="385.0" y2="294" class="grid"/><text x="385.0" y="312" text-anchor="middle" class="tick">80%</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">90%</text><rect x="352.8" y="4" rx="6" width="72.0" height="288" class="band"/><g class="row lead" data-tip="Claude Fable 5.2 · SWE Atlas (Overall)
+Rank 1 · Score 80.5%
+95% interval 75.7% to 85.3%
+Leader
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.2 · SWE Atlas (Overall)
+Rank 1 · Score 80.5%
+95% interval 75.7% to 85.3%
+Leader
+Anthropic · source: Scale Labs</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#e07a5f"/><text x="18" y="20" class="lbl">Claude Fable 5.2</text><line x1="352.8" y1="16" x2="424.8" y2="16" stroke="#e07a5f" class="ci"/><circle cx="388.8" cy="16" r="6" fill="#e07a5f" class="dot"/><text x="524" y="20" text-anchor="end" class="val">80.5%</text></g><g class="row close" data-tip="Claude Opus 5.5 · SWE Atlas (Overall)
+Rank 2 · Score 77.4%
+95% interval 72.4% to 82.4%
+Too close to call with #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · SWE Atlas (Overall)
+Rank 2 · Score 77.4%
+95% interval 72.4% to 82.4%
+Too close to call with #1
+Anthropic · source: Scale Labs</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#e07a5f"/><text x="18" y="44" class="lbl">Claude Opus 5.5</text><line x1="328.0" y1="40" x2="403.0" y2="40" stroke="#e07a5f" class="ci"/><circle cx="365.5" cy="40" r="6" fill="#e07a5f" class="dot"/><text x="524" y="44" text-anchor="end" class="val">77.4%</text></g><g class="row close" data-tip="Claude Fable 5.1 · SWE Atlas (Overall)
+Rank 3 · Score 76.4%
+95% interval 71.2% to 81.6%
+Too close to call with #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · SWE Atlas (Overall)
+Rank 3 · Score 76.4%
+95% interval 71.2% to 81.6%
+Too close to call with #1
+Anthropic · source: Scale Labs</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#e07a5f"/><text x="18" y="68" class="lbl">Claude Fable 5.1</text><line x1="319.0" y1="64" x2="397.0" y2="64" stroke="#e07a5f" class="ci"/><circle cx="358.0" cy="64" r="6" fill="#e07a5f" class="dot"/><text x="524" y="68" text-anchor="end" class="val">76.4%</text></g><g class="row close" data-tip="Gemini 4 Carbon · SWE Atlas (Overall)
+Rank 4 · Score 71.4%
+95% interval 65.9% to 76.9%
+Too close to call with #1
+Google · source: Scale Labs" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Carbon · SWE Atlas (Overall)
+Rank 4 · Score 71.4%
+95% interval 65.9% to 76.9%
+Too close to call with #1
+Google · source: Scale Labs</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#5b8def"/><text x="18" y="92" class="lbl">Gemini 4 Carbon</text><line x1="279.3" y1="88" x2="361.8" y2="88" stroke="#5b8def" class="ci"/><circle cx="320.5" cy="88" r="6" fill="#5b8def" class="dot"/><text x="524" y="92" text-anchor="end" class="val">71.4%</text></g><g class="row behind" data-tip="Gemini 4 Argon · SWE Atlas (Overall)
+Rank 5 · Score 70.1%
+95% interval 64.6% to 75.6%
+Behind #1
+Google · source: Scale Labs" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Argon · SWE Atlas (Overall)
+Rank 5 · Score 70.1%
+95% interval 64.6% to 75.6%
+Behind #1
+Google · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#5b8def"/><text x="18" y="116" class="lbl">Gemini 4 Argon</text><line x1="269.5" y1="112" x2="352.0" y2="112" stroke="#5b8def" class="ci"/><circle cx="310.7" cy="112" r="6" fill="#5b8def" class="dot"/><text x="524" y="116" text-anchor="end" class="val">70.1%</text></g><g class="row behind" data-tip="GPT-6 Astra · SWE Atlas (Overall)
+Rank 6 · Score 69.4%
+95% interval 63.8% to 75.0%
+Behind #1
+OpenAI · source: Scale Labs" data-tc="#2fb38a" tabindex="0"><title>GPT-6 Astra · SWE Atlas (Overall)
+Rank 6 · Score 69.4%
+95% interval 63.8% to 75.0%
+Behind #1
+OpenAI · source: Scale Labs</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#2fb38a"/><text x="18" y="140" class="lbl">GPT-6 Astra</text><line x1="263.5" y1="136" x2="347.5" y2="136" stroke="#2fb38a" class="ci"/><circle cx="305.5" cy="136" r="6" fill="#2fb38a" class="dot"/><text x="524" y="140" text-anchor="end" class="val">69.4%</text></g><g class="row behind" data-tip="Claude Sonnet 5.5 · SWE Atlas (Overall)
+Rank 7 · Score 68.3%
+95% interval 62.7% to 73.9%
+Behind #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · SWE Atlas (Overall)
+Rank 7 · Score 68.3%
+95% interval 62.7% to 73.9%
+Behind #1
+Anthropic · source: Scale Labs</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#e07a5f"/><text x="18" y="164" class="lbl">Claude Sonnet 5.5</text><line x1="255.2" y1="160" x2="339.2" y2="160" stroke="#e07a5f" class="ci"/><circle cx="297.2" cy="160" r="6" fill="#e07a5f" class="dot"/><text x="524" y="164" text-anchor="end" class="val">68.3%</text></g><g class="row behind" data-tip="GPT-6.1 Sol · SWE Atlas (Overall)
+Rank 8 · Score 65.9%
+95% interval 60.2% to 71.6%
+Behind #1
+OpenAI · source: Scale Labs" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Sol · SWE Atlas (Overall)
+Rank 8 · Score 65.9%
+95% interval 60.2% to 71.6%
+Behind #1
+OpenAI · source: Scale Labs</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#2fb38a"/><text x="18" y="188" class="lbl">GPT-6.1 Sol</text><line x1="236.5" y1="184" x2="322.0" y2="184" stroke="#2fb38a" class="ci"/><circle cx="279.3" cy="184" r="6" fill="#2fb38a" class="dot"/><text x="524" y="188" text-anchor="end" class="val">65.9%</text></g><g class="row behind" data-tip="Muse Wonder 1.0 · SWE Atlas (Overall)
+Rank 9 · Score 64.8%
+95% interval 59.0% to 70.6%
+Behind #1
+Meta · source: Scale Labs" data-tc="#e3b341" tabindex="0"><title>Muse Wonder 1.0 · SWE Atlas (Overall)
+Rank 9 · Score 64.8%
+95% interval 59.0% to 70.6%
+Behind #1
+Meta · source: Scale Labs</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#e3b341"/><text x="18" y="212" class="lbl">Muse Wonder 1.0</text><line x1="227.5" y1="208" x2="314.5" y2="208" stroke="#e3b341" class="ci"/><circle cx="271.0" cy="208" r="6" fill="#e3b341" class="dot"/><text x="524" y="212" text-anchor="end" class="val">64.8%</text></g><g class="row behind" data-tip="Qwen 3.8 · SWE Atlas (Overall)
+Setup: Max
+Rank 10 · Score 64.4%
+95% interval 58.7% to 70.1%
+Behind #1
+Qwen · source: Scale Labs" data-tc="#c98fb0" tabindex="0"><title>Qwen 3.8 · SWE Atlas (Overall)
+Setup: Max
+Rank 10 · Score 64.4%
+95% interval 58.7% to 70.1%
+Behind #1
+Qwen · source: Scale Labs</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#c98fb0"/><text x="18" y="236" class="lbl">Qwen 3.8</text><line x1="225.3" y1="232" x2="310.8" y2="232" stroke="#c98fb0" class="ci"/><circle cx="268.0" cy="232" r="6" fill="#c98fb0" class="dot"/><text x="524" y="236" text-anchor="end" class="val">64.4%</text></g><g class="row behind" data-tip="DeepSeek V4.1 Flash · SWE Atlas (Overall)
+Rank 11 · Score 62.1%
+95% interval 56.3% to 67.9%
+Behind #1
+DeepSeek · source: Scale Labs" data-tc="#7f9cc7" tabindex="0"><title>DeepSeek V4.1 Flash · SWE Atlas (Overall)
+Rank 11 · Score 62.1%
+95% interval 56.3% to 67.9%
+Behind #1
+DeepSeek · source: Scale Labs</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#7f9cc7"/><text x="18" y="260" class="lbl">DeepSeek V4.1 Flash</text><line x1="207.3" y1="256" x2="294.2" y2="256" stroke="#7f9cc7" class="ci"/><circle cx="250.8" cy="256" r="6" fill="#7f9cc7" class="dot"/><text x="524" y="260" text-anchor="end" class="val">62.1%</text></g><g class="row behind" data-tip="Grok 4.7 · SWE Atlas (Overall)
+Rank 11 · Score 62.1%
+95% interval 56.3% to 67.9%
+Behind #1
+xAI · source: Scale Labs" data-tc="#a3a3a8" tabindex="0"><title>Grok 4.7 · SWE Atlas (Overall)
+Rank 11 · Score 62.1%
+95% interval 56.3% to 67.9%
+Behind #1
+xAI · source: Scale Labs</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#a3a3a8"/><text x="18" y="284" class="lbl">Grok 4.7</text><line x1="207.3" y1="280" x2="294.2" y2="280" stroke="#a3a3a8" class="ci"/><circle cx="250.8" cy="280" r="6" fill="#a3a3a8" class="dot"/><text x="524" y="284" text-anchor="end" class="val">62.1%</text></g></svg></div></div><p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to call · faded = behind · shaded band = the leader's 95% interval · hover for details</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -70,7 +229,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td>1</td>
-<td>Claude Fable 5.2</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.2</td>
 <td></td>
 <td>80.5%</td>
 <td>75.7% to 85.3%</td>
@@ -79,7 +238,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>2</td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td></td>
 <td>77.4%</td>
 <td>72.4% to 82.4%</td>
@@ -88,7 +247,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>3</td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td></td>
 <td>76.4%</td>
 <td>71.2% to 81.6%</td>
@@ -97,7 +256,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>4</td>
-<td>Gemini 4 Carbon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Carbon</td>
 <td></td>
 <td>71.4%</td>
 <td>65.9% to 76.9%</td>
@@ -106,7 +265,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>5</td>
-<td>Gemini 4 Argon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Argon</td>
 <td></td>
 <td>70.1%</td>
 <td>64.6% to 75.6%</td>
@@ -115,7 +274,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>6</td>
-<td>GPT-6 Astra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6 Astra</td>
 <td></td>
 <td>69.4%</td>
 <td>63.8% to 75.0%</td>
@@ -124,7 +283,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>7</td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td></td>
 <td>68.3%</td>
 <td>62.7% to 73.9%</td>
@@ -133,7 +292,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>8</td>
-<td>GPT-6.1 Sol</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Sol</td>
 <td></td>
 <td>65.9%</td>
 <td>60.2% to 71.6%</td>
@@ -142,7 +301,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>9</td>
-<td>Muse Wonder 1.0</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder 1.0</td>
 <td></td>
 <td>64.8%</td>
 <td>59.0% to 70.6%</td>
@@ -151,7 +310,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>10</td>
-<td>Qwen 3.8</td>
+<td><span class='ldot' style='--lc:#c98fb0;width:20px;height:20px' aria-hidden='true'></span>Qwen 3.8</td>
 <td>Max</td>
 <td>64.4%</td>
 <td>58.7% to 70.1%</td>
@@ -160,7 +319,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>11</td>
-<td>DeepSeek V4.1 Flash</td>
+<td><span class='ldot' style='--lc:#7f9cc7;width:20px;height:20px' aria-hidden='true'></span>DeepSeek V4.1 Flash</td>
 <td></td>
 <td>62.1%</td>
 <td>56.3% to 67.9%</td>
@@ -169,7 +328,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>11</td>
-<td>Grok 4.7</td>
+<td><span class='ldot' style='--lc:#a3a3a8;width:20px;height:20px' aria-hidden='true'></span>Grok 4.7</td>
 <td></td>
 <td>62.1%</td>
 <td>56.3% to 67.9%</td>
@@ -180,9 +339,127 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </table>
 <p><em>Note: Scale says v1.1 scores are not comparable with v1.0.</em></p>
 <h2>Coding (issue fixing): SWE-Bench Pro V2 (Full)</h2>
-<p>Source: <a href="https://labs.scale.com/leaderboard/swe_bench_pro_public_v2">https://labs.scale.com/leaderboard/swe_bench_pro_public_v2</a> · Trust: independent · Publisher data dated 2026-11-06 · 18 models listed, top 12 shown</p>
+<p>Source: <a class="ext" href="https://labs.scale.com/leaderboard/swe_bench_pro_public_v2">https://labs.scale.com/leaderboard/swe_bench_pro_public_v2</a> · Trust: independent · Publisher data dated 2026-11-06 · 18 models listed, top 12 shown</p>
 <p><em>Top score 99.4%; 3 other models are too close to call with #1.</em></p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="SWE-Bench Pro V2 (Full)"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">94%</text><line x1="250.0" y1="4" x2="250.0" y2="270" class="grid"/><text x="250.0" y="288" text-anchor="middle" class="tick">96%</text><line x1="350.0" y1="4" x2="350.0" y2="270" class="grid"/><text x="350.0" y="288" text-anchor="middle" class="tick">98%</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">100%</text><rect x="400.0" y="4" width="40.0" height="264" class="band"/><text x="0" y="20" class="lbl">Claude Opus 5</text><line x1="400.0" y1="16" x2="440.0" y2="16" class="ci lead"/><circle cx="420.0" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">99.4%</text><text x="0" y="42" class="lbl">Gemini 4 Argon</text><line x1="388.5" y1="38" x2="433.5" y2="38" class="ci close"/><circle cx="411.0" cy="38" r="4.5" class="dot close"/><text x="514" y="42" text-anchor="end" class="val">99.2%</text><text x="0" y="64" class="lbl">Claude Fable 5.1</text><line x1="380.0" y1="60" x2="430.0" y2="60" class="ci close"/><circle cx="405.0" cy="60" r="4.5" class="dot close"/><text x="514" y="64" text-anchor="end" class="val">99.1%</text><text x="0" y="86" class="lbl">Kimi K3</text><line x1="290.0" y1="82" x2="380.0" y2="82" class="ci behind"/><circle cx="335.0" cy="82" r="4.5" class="dot behind"/><text x="514" y="86" text-anchor="end" class="val">97.7%</text><text x="0" y="108" class="lbl">Inkling 2 Small</text><line x1="260.0" y1="104" x2="406.0" y2="104" class="ci close"/><circle cx="333.0" cy="104" r="4.5" class="dot close"/><text x="514" y="108" text-anchor="end" class="val">97.7%</text><text x="0" y="130" class="lbl">GPT-6 Astra</text><line x1="240.0" y1="126" x2="350.0" y2="126" class="ci behind"/><circle cx="295.0" cy="126" r="4.5" class="dot behind"/><text x="514" y="130" text-anchor="end" class="val">96.9%</text><text x="0" y="152" class="lbl">Muse Wonder 1.0</text><line x1="230.5" y1="148" x2="342.5" y2="148" class="ci behind"/><circle cx="286.5" cy="148" r="4.5" class="dot behind"/><text x="514" y="152" text-anchor="end" class="val">96.7%</text><text x="0" y="174" class="lbl">MiniMax M3.1 Flash</text><line x1="220.5" y1="170" x2="336.5" y2="170" class="ci behind"/><circle cx="278.5" cy="170" r="4.5" class="dot behind"/><text x="514" y="174" text-anchor="end" class="val">96.6%</text><text x="0" y="196" class="lbl">GPT-6.1 Sol</text><line x1="193.5" y1="192" x2="317.5" y2="192" class="ci behind"/><circle cx="255.5" cy="192" r="4.5" class="dot behind"/><text x="514" y="196" text-anchor="end" class="val">96.1%</text><text x="0" y="218" class="lbl">Claude Sonnet 5.5</text><line x1="174.5" y1="214" x2="304.5" y2="214" class="ci behind"/><circle cx="239.5" cy="214" r="4.5" class="dot behind"/><text x="514" y="218" text-anchor="end" class="val">95.8%</text><text x="0" y="240" class="lbl">GLM 5.3</text><line x1="165.0" y1="236" x2="295.0" y2="236" class="ci behind"/><circle cx="230.0" cy="236" r="4.5" class="dot behind"/><text x="514" y="240" text-anchor="end" class="val">95.6%</text><text x="0" y="262" class="lbl">GPT-5.6 Sol</text><line x1="155.0" y1="258" x2="295.0" y2="258" class="ci behind"/><circle cx="225.0" cy="258" r="4.5" class="dot behind"/><text x="514" y="262" text-anchor="end" class="val">95.5%</text></svg></div><p class='chart-note'><span class='key lead'></span>leader <span class='key close'></span>too close to call <span class='key behind'></span>behind · shaded band = leader's 95% interval</p><table>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="SWE-Bench Pro V2 (Full)"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">94%</text><line x1="260.0" y1="4" x2="260.0" y2="294" class="grid"/><text x="260.0" y="312" text-anchor="middle" class="tick">96%</text><line x1="360.0" y1="4" x2="360.0" y2="294" class="grid"/><text x="360.0" y="312" text-anchor="middle" class="tick">98%</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">100%</text><rect x="410.0" y="4" rx="6" width="40.0" height="288" class="band"/><g class="row lead" data-tip="Claude Opus 5 · SWE-Bench Pro V2 (Full)
+Setup: Claude Code, xhigh
+Rank 1 · Score 99.4%
+95% interval 99.0% to 99.8%
+Leader
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5 · SWE-Bench Pro V2 (Full)
+Setup: Claude Code, xhigh
+Rank 1 · Score 99.4%
+95% interval 99.0% to 99.8%
+Leader
+Anthropic · source: Scale Labs</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#e07a5f"/><text x="18" y="20" class="lbl">Claude Opus 5</text><line x1="410.0" y1="16" x2="450.0" y2="16" stroke="#e07a5f" class="ci"/><circle cx="430.0" cy="16" r="6" fill="#e07a5f" class="dot"/><text x="524" y="20" text-anchor="end" class="val">99.4%</text></g><g class="row close" data-tip="Gemini 4 Argon · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, high
+Rank 2 · Score 99.2%
+95% interval 98.8% to 99.7%
+Too close to call with #1
+Google · source: Scale Labs" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Argon · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, high
+Rank 2 · Score 99.2%
+95% interval 98.8% to 99.7%
+Too close to call with #1
+Google · source: Scale Labs</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#5b8def"/><text x="18" y="44" class="lbl">Gemini 4 Argon</text><line x1="398.5" y1="40" x2="443.5" y2="40" stroke="#5b8def" class="ci"/><circle cx="421.0" cy="40" r="6" fill="#5b8def" class="dot"/><text x="524" y="44" text-anchor="end" class="val">99.2%</text></g><g class="row close" data-tip="Claude Fable 5.1 · SWE-Bench Pro V2 (Full)
+Setup: Claude Code, high
+Rank 2 · Score 99.1%
+95% interval 98.6% to 99.6%
+Too close to call with #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · SWE-Bench Pro V2 (Full)
+Setup: Claude Code, high
+Rank 2 · Score 99.1%
+95% interval 98.6% to 99.6%
+Too close to call with #1
+Anthropic · source: Scale Labs</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#e07a5f"/><text x="18" y="68" class="lbl">Claude Fable 5.1</text><line x1="390.0" y1="64" x2="440.0" y2="64" stroke="#e07a5f" class="ci"/><circle cx="415.0" cy="64" r="6" fill="#e07a5f" class="dot"/><text x="524" y="68" text-anchor="end" class="val">99.1%</text></g><g class="row behind" data-tip="Kimi K3 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, max
+Rank 3 · Score 97.7%
+95% interval 96.8% to 98.6%
+Behind #1
+Moonshot AI · source: Scale Labs" data-tc="#a78bfa" tabindex="0"><title>Kimi K3 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, max
+Rank 3 · Score 97.7%
+95% interval 96.8% to 98.6%
+Behind #1
+Moonshot AI · source: Scale Labs</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#a78bfa"/><text x="18" y="92" class="lbl">Kimi K3</text><line x1="300.0" y1="88" x2="390.0" y2="88" stroke="#a78bfa" class="ci"/><circle cx="345.0" cy="88" r="6" fill="#a78bfa" class="dot"/><text x="524" y="92" text-anchor="end" class="val">97.7%</text></g><g class="row close" data-tip="Inkling 2 Small · SWE-Bench Pro V2 (Full)
+Rank 4 · Score 97.7%
+95% interval 96.2% to 99.1%
+Too close to call with #1
+Other · source: Scale Labs" data-tc="#8a8494" tabindex="0"><title>Inkling 2 Small · SWE-Bench Pro V2 (Full)
+Rank 4 · Score 97.7%
+95% interval 96.2% to 99.1%
+Too close to call with #1
+Other · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#8a8494"/><text x="18" y="116" class="lbl">Inkling 2 Small</text><line x1="270.0" y1="112" x2="416.0" y2="112" stroke="#8a8494" class="ci"/><circle cx="343.0" cy="112" r="6" fill="#8a8494" class="dot"/><text x="524" y="116" text-anchor="end" class="val">97.7%</text></g><g class="row behind" data-tip="GPT-6 Astra · SWE-Bench Pro V2 (Full)
+Setup: Codex, high
+Rank 5 · Score 96.9%
+95% interval 95.8% to 98.0%
+Behind #1
+OpenAI · source: Scale Labs" data-tc="#2fb38a" tabindex="0"><title>GPT-6 Astra · SWE-Bench Pro V2 (Full)
+Setup: Codex, high
+Rank 5 · Score 96.9%
+95% interval 95.8% to 98.0%
+Behind #1
+OpenAI · source: Scale Labs</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#2fb38a"/><text x="18" y="140" class="lbl">GPT-6 Astra</text><line x1="250.0" y1="136" x2="360.0" y2="136" stroke="#2fb38a" class="ci"/><circle cx="305.0" cy="136" r="6" fill="#2fb38a" class="dot"/><text x="524" y="140" text-anchor="end" class="val">96.9%</text></g><g class="row behind" data-tip="Muse Wonder 1.0 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 5 · Score 96.7%
+95% interval 95.6% to 97.9%
+Behind #1
+Meta · source: Scale Labs" data-tc="#e3b341" tabindex="0"><title>Muse Wonder 1.0 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 5 · Score 96.7%
+95% interval 95.6% to 97.9%
+Behind #1
+Meta · source: Scale Labs</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#e3b341"/><text x="18" y="164" class="lbl">Muse Wonder 1.0</text><line x1="240.5" y1="160" x2="352.5" y2="160" stroke="#e3b341" class="ci"/><circle cx="296.5" cy="160" r="6" fill="#e3b341" class="dot"/><text x="524" y="164" text-anchor="end" class="val">96.7%</text></g><g class="row behind" data-tip="MiniMax M3.1 Flash · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 6 · Score 96.6%
+95% interval 95.4% to 97.7%
+Behind #1
+MiniMax · source: Scale Labs" data-tc="#c9a77c" tabindex="0"><title>MiniMax M3.1 Flash · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 6 · Score 96.6%
+95% interval 95.4% to 97.7%
+Behind #1
+MiniMax · source: Scale Labs</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#c9a77c"/><text x="18" y="188" class="lbl">MiniMax M3.1 Flash</text><line x1="230.5" y1="184" x2="346.5" y2="184" stroke="#c9a77c" class="ci"/><circle cx="288.5" cy="184" r="6" fill="#c9a77c" class="dot"/><text x="524" y="188" text-anchor="end" class="val">96.6%</text></g><g class="row behind" data-tip="GPT-6.1 Sol · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 6 · Score 96.1%
+95% interval 94.9% to 97.3%
+Behind #1
+OpenAI · source: Scale Labs" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Sol · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 6 · Score 96.1%
+95% interval 94.9% to 97.3%
+Behind #1
+OpenAI · source: Scale Labs</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#2fb38a"/><text x="18" y="212" class="lbl">GPT-6.1 Sol</text><line x1="203.5" y1="208" x2="327.5" y2="208" stroke="#2fb38a" class="ci"/><circle cx="265.5" cy="208" r="6" fill="#2fb38a" class="dot"/><text x="524" y="212" text-anchor="end" class="val">96.1%</text></g><g class="row behind" data-tip="Claude Sonnet 5.5 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 7 · Score 95.8%
+95% interval 94.5% to 97.1%
+Behind #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, xhigh
+Rank 7 · Score 95.8%
+95% interval 94.5% to 97.1%
+Behind #1
+Anthropic · source: Scale Labs</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#e07a5f"/><text x="18" y="236" class="lbl">Claude Sonnet 5.5</text><line x1="184.5" y1="232" x2="314.5" y2="232" stroke="#e07a5f" class="ci"/><circle cx="249.5" cy="232" r="6" fill="#e07a5f" class="dot"/><text x="524" y="236" text-anchor="end" class="val">95.8%</text></g><g class="row behind" data-tip="GLM 5.3 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, max
+Rank 7 · Score 95.6%
+95% interval 94.3% to 96.9%
+Behind #1
+Zhipu AI · source: Scale Labs" data-tc="#8fb996" tabindex="0"><title>GLM 5.3 · SWE-Bench Pro V2 (Full)
+Setup: mini-swe-agent, max
+Rank 7 · Score 95.6%
+95% interval 94.3% to 96.9%
+Behind #1
+Zhipu AI · source: Scale Labs</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#8fb996"/><text x="18" y="260" class="lbl">GLM 5.3</text><line x1="175.0" y1="256" x2="305.0" y2="256" stroke="#8fb996" class="ci"/><circle cx="240.0" cy="256" r="6" fill="#8fb996" class="dot"/><text x="524" y="260" text-anchor="end" class="val">95.6%</text></g><g class="row behind" data-tip="GPT-5.6 Sol · SWE-Bench Pro V2 (Full)
+Setup: Codex, xhigh
+Rank 8 · Score 95.5%
+95% interval 94.1% to 96.9%
+Behind #1
+OpenAI · source: Scale Labs" data-tc="#2fb38a" tabindex="0"><title>GPT-5.6 Sol · SWE-Bench Pro V2 (Full)
+Setup: Codex, xhigh
+Rank 8 · Score 95.5%
+95% interval 94.1% to 96.9%
+Behind #1
+OpenAI · source: Scale Labs</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#2fb38a"/><text x="18" y="284" class="lbl">GPT-5.6 Sol</text><line x1="165.0" y1="280" x2="305.0" y2="280" stroke="#2fb38a" class="ci"/><circle cx="235.0" cy="280" r="6" fill="#2fb38a" class="dot"/><text x="524" y="284" text-anchor="end" class="val">95.5%</text></g></svg></div></div><p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to call · faded = behind · shaded band = the leader's 95% interval · hover for details</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -197,7 +474,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td>1</td>
-<td>Claude Opus 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5</td>
 <td>Claude Code, xhigh</td>
 <td>99.4%</td>
 <td>99.0% to 99.8%</td>
@@ -206,7 +483,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>2</td>
-<td>Gemini 4 Argon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Argon</td>
 <td>mini-swe-agent, high</td>
 <td>99.2%</td>
 <td>98.8% to 99.7%</td>
@@ -215,7 +492,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>2</td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td>Claude Code, high</td>
 <td>99.1%</td>
 <td>98.6% to 99.6%</td>
@@ -224,7 +501,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>3</td>
-<td>Kimi K3</td>
+<td><span class='ldot' style='--lc:#a78bfa;width:20px;height:20px' aria-hidden='true'></span>Kimi K3</td>
 <td>mini-swe-agent, max</td>
 <td>97.7%</td>
 <td>96.8% to 98.6%</td>
@@ -233,7 +510,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>4</td>
-<td>Inkling 2 Small</td>
+<td><span class='ldot' style='--lc:#8a8494;width:20px;height:20px' aria-hidden='true'></span>Inkling 2 Small</td>
 <td></td>
 <td>97.7%</td>
 <td>96.2% to 99.1%</td>
@@ -242,7 +519,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>5</td>
-<td>GPT-6 Astra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6 Astra</td>
 <td>Codex, high</td>
 <td>96.9%</td>
 <td>95.8% to 98.0%</td>
@@ -251,7 +528,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>5</td>
-<td>Muse Wonder 1.0</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder 1.0</td>
 <td>mini-swe-agent, xhigh</td>
 <td>96.7%</td>
 <td>95.6% to 97.9%</td>
@@ -260,7 +537,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>6</td>
-<td>MiniMax M3.1 Flash</td>
+<td><span class='ldot' style='--lc:#c9a77c;width:20px;height:20px' aria-hidden='true'></span>MiniMax M3.1 Flash</td>
 <td>mini-swe-agent, xhigh</td>
 <td>96.6%</td>
 <td>95.4% to 97.7%</td>
@@ -269,7 +546,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>6</td>
-<td>GPT-6.1 Sol</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Sol</td>
 <td>mini-swe-agent, xhigh</td>
 <td>96.1%</td>
 <td>94.9% to 97.3%</td>
@@ -278,7 +555,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>7</td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td>mini-swe-agent, xhigh</td>
 <td>95.8%</td>
 <td>94.5% to 97.1%</td>
@@ -287,7 +564,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>7</td>
-<td>GLM 5.3</td>
+<td><span class='ldot' style='--lc:#8fb996;width:20px;height:20px' aria-hidden='true'></span>GLM 5.3</td>
 <td>mini-swe-agent, max</td>
 <td>95.6%</td>
 <td>94.3% to 96.9%</td>
@@ -296,7 +573,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>8</td>
-<td>GPT-5.6 Sol</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-5.6 Sol</td>
 <td>Codex, xhigh</td>
 <td>95.5%</td>
 <td>94.1% to 96.9%</td>
@@ -306,8 +583,102 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tbody>
 </table>
 <h2>Agentic coding: Terminal-Bench 4.0</h2>
-<p>Source: <a href="https://artificialanalysis.ai/evaluations/terminalbench-4-0">https://artificialanalysis.ai/evaluations/terminalbench-4-0</a> · Trust: independent · Publisher data dated 2026-11-12 · 28 models listed, top 12 shown</p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="Terminal-Bench 4.0"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">50%</text><line x1="225.0" y1="4" x2="225.0" y2="270" class="grid"/><text x="225.0" y="288" text-anchor="middle" class="tick">55%</text><line x1="300.0" y1="4" x2="300.0" y2="270" class="grid"/><text x="300.0" y="288" text-anchor="middle" class="tick">60%</text><line x1="375.0" y1="4" x2="375.0" y2="270" class="grid"/><text x="375.0" y="288" text-anchor="middle" class="tick">65%</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">70%</text><text x="0" y="20" class="lbl">Kimi K3.1 Pro</text><circle cx="407.6" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">67.2%</text><text x="0" y="42" class="lbl">Gemini 4 Carbon</text><circle cx="377.3" cy="38" r="4.5" class="dot nomargin"/><text x="514" y="42" text-anchor="end" class="val">65.2%</text><text x="0" y="64" class="lbl">Claude Sonnet 5.5</text><circle cx="354.6" cy="60" r="4.5" class="dot nomargin"/><text x="514" y="64" text-anchor="end" class="val">63.6%</text><text x="0" y="86" class="lbl">Claude Fable 5.2</text><circle cx="294.0" cy="82" r="4.5" class="dot nomargin"/><text x="514" y="86" text-anchor="end" class="val">59.6%</text><text x="0" y="108" class="lbl">Claude Opus 5.5</text><circle cx="294.0" cy="104" r="4.5" class="dot nomargin"/><text x="514" y="108" text-anchor="end" class="val">59.6%</text><text x="0" y="130" class="lbl">GPT-6 Astra</text><circle cx="286.4" cy="126" r="4.5" class="dot nomargin"/><text x="514" y="130" text-anchor="end" class="val">59.1%</text><text x="0" y="152" class="lbl">Muse Wonder Full</text><circle cx="256.1" cy="148" r="4.5" class="dot nomargin"/><text x="514" y="152" text-anchor="end" class="val">57.1%</text><text x="0" y="174" class="lbl">GPT-6.1 Sol</text><circle cx="240.9" cy="170" r="4.5" class="dot nomargin"/><text x="514" y="174" text-anchor="end" class="val">56.1%</text><text x="0" y="196" class="lbl">GPT-6.1 Terra</text><circle cx="233.4" cy="192" r="4.5" class="dot nomargin"/><text x="514" y="196" text-anchor="end" class="val">55.6%</text><text x="0" y="218" class="lbl">Gemini 4 Hydrogen</text><circle cx="203.1" cy="214" r="4.5" class="dot nomargin"/><text x="514" y="218" text-anchor="end" class="val">53.5%</text><text x="0" y="240" class="lbl">Claude Fable 5.1</text><circle cx="180.3" cy="236" r="4.5" class="dot nomargin"/><text x="514" y="240" text-anchor="end" class="val">52.0%</text><text x="0" y="262" class="lbl">Muse Wonder</text><circle cx="180.3" cy="258" r="4.5" class="dot nomargin"/><text x="514" y="262" text-anchor="end" class="val">52.0%</text></svg></div><p class='chart-note'>No margin published: dots only, no tie can be judged.</p><table>
+<p>Source: <a class="ext" href="https://artificialanalysis.ai/evaluations/terminalbench-4-0">https://artificialanalysis.ai/evaluations/terminalbench-4-0</a> · Trust: independent · Publisher data dated 2026-11-12 · 28 models listed, top 12 shown</p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="Terminal-Bench 4.0"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">50%</text><line x1="235.0" y1="4" x2="235.0" y2="294" class="grid"/><text x="235.0" y="312" text-anchor="middle" class="tick">55%</text><line x1="310.0" y1="4" x2="310.0" y2="294" class="grid"/><text x="310.0" y="312" text-anchor="middle" class="tick">60%</text><line x1="385.0" y1="4" x2="385.0" y2="294" class="grid"/><text x="385.0" y="312" text-anchor="middle" class="tick">65%</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">70%</text><g class="row lead" data-tip="Kimi K3.1 Pro · Terminal-Bench 4.0
+Score 67.2%
+Leader
+Moonshot AI · source: Artificial Analysis" data-tc="#a78bfa" tabindex="0"><title>Kimi K3.1 Pro · Terminal-Bench 4.0
+Score 67.2%
+Leader
+Moonshot AI · source: Artificial Analysis</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#a78bfa"/><text x="18" y="20" class="lbl">Kimi K3.1 Pro</text><circle cx="417.6" cy="16" r="6" fill="#a78bfa" class="dot"/><text x="524" y="20" text-anchor="end" class="val">67.2%</text></g><g class="row nomargin" data-tip="Gemini 4 Carbon · Terminal-Bench 4.0
+Setup: High
+Score 65.2%
+No margin published
+Google · source: Artificial Analysis" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Carbon · Terminal-Bench 4.0
+Setup: High
+Score 65.2%
+No margin published
+Google · source: Artificial Analysis</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#5b8def"/><text x="18" y="44" class="lbl">Gemini 4 Carbon</text><circle cx="387.3" cy="40" r="6" fill="#5b8def" class="dot"/><text x="524" y="44" text-anchor="end" class="val">65.2%</text></g><g class="row nomargin" data-tip="Claude Sonnet 5.5 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 63.6%
+No margin published
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 63.6%
+No margin published
+Anthropic · source: Artificial Analysis</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#e07a5f"/><text x="18" y="68" class="lbl">Claude Sonnet 5.5</text><circle cx="364.6" cy="64" r="6" fill="#e07a5f" class="dot"/><text x="524" y="68" text-anchor="end" class="val">63.6%</text></g><g class="row nomargin" data-tip="Claude Fable 5.2 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 59.6%
+No margin published
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.2 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 59.6%
+No margin published
+Anthropic · source: Artificial Analysis</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#e07a5f"/><text x="18" y="92" class="lbl">Claude Fable 5.2</text><circle cx="304.0" cy="88" r="6" fill="#e07a5f" class="dot"/><text x="524" y="92" text-anchor="end" class="val">59.6%</text></g><g class="row nomargin" data-tip="Claude Opus 5.5 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 59.6%
+No margin published
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 59.6%
+No margin published
+Anthropic · source: Artificial Analysis</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#e07a5f"/><text x="18" y="116" class="lbl">Claude Opus 5.5</text><circle cx="304.0" cy="112" r="6" fill="#e07a5f" class="dot"/><text x="524" y="116" text-anchor="end" class="val">59.6%</text></g><g class="row nomargin" data-tip="GPT-6 Astra · Terminal-Bench 4.0
+Setup: Max
+Score 59.1%
+No margin published
+OpenAI · source: Artificial Analysis" data-tc="#2fb38a" tabindex="0"><title>GPT-6 Astra · Terminal-Bench 4.0
+Setup: Max
+Score 59.1%
+No margin published
+OpenAI · source: Artificial Analysis</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#2fb38a"/><text x="18" y="140" class="lbl">GPT-6 Astra</text><circle cx="296.4" cy="136" r="6" fill="#2fb38a" class="dot"/><text x="524" y="140" text-anchor="end" class="val">59.1%</text></g><g class="row nomargin" data-tip="Muse Wonder Full · Terminal-Bench 4.0
+Setup: Max
+Score 57.1%
+No margin published
+Meta · source: Artificial Analysis" data-tc="#e3b341" tabindex="0"><title>Muse Wonder Full · Terminal-Bench 4.0
+Setup: Max
+Score 57.1%
+No margin published
+Meta · source: Artificial Analysis</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#e3b341"/><text x="18" y="164" class="lbl">Muse Wonder Full</text><circle cx="266.1" cy="160" r="6" fill="#e3b341" class="dot"/><text x="524" y="164" text-anchor="end" class="val">57.1%</text></g><g class="row nomargin" data-tip="GPT-6.1 Sol · Terminal-Bench 4.0
+Setup: Max
+Score 56.1%
+No margin published
+OpenAI · source: Artificial Analysis" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Sol · Terminal-Bench 4.0
+Setup: Max
+Score 56.1%
+No margin published
+OpenAI · source: Artificial Analysis</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#2fb38a"/><text x="18" y="188" class="lbl">GPT-6.1 Sol</text><circle cx="250.9" cy="184" r="6" fill="#2fb38a" class="dot"/><text x="524" y="188" text-anchor="end" class="val">56.1%</text></g><g class="row nomargin" data-tip="GPT-6.1 Terra · Terminal-Bench 4.0
+Setup: Max
+Score 55.6%
+No margin published
+OpenAI · source: Artificial Analysis" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Terra · Terminal-Bench 4.0
+Setup: Max
+Score 55.6%
+No margin published
+OpenAI · source: Artificial Analysis</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#2fb38a"/><text x="18" y="212" class="lbl">GPT-6.1 Terra</text><circle cx="243.4" cy="208" r="6" fill="#2fb38a" class="dot"/><text x="524" y="212" text-anchor="end" class="val">55.6%</text></g><g class="row nomargin" data-tip="Gemini 4 Hydrogen · Terminal-Bench 4.0
+Setup: Xhigh
+Score 53.5%
+No margin published
+Google · source: Artificial Analysis" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Hydrogen · Terminal-Bench 4.0
+Setup: Xhigh
+Score 53.5%
+No margin published
+Google · source: Artificial Analysis</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#5b8def"/><text x="18" y="236" class="lbl">Gemini 4 Hydrogen</text><circle cx="213.1" cy="232" r="6" fill="#5b8def" class="dot"/><text x="524" y="236" text-anchor="end" class="val">53.5%</text></g><g class="row nomargin" data-tip="Claude Fable 5.1 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 52.0%
+No margin published
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · Terminal-Bench 4.0
+Setup: Max, Default Fallback
+Score 52.0%
+No margin published
+Anthropic · source: Artificial Analysis</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#e07a5f"/><text x="18" y="260" class="lbl">Claude Fable 5.1</text><circle cx="190.3" cy="256" r="6" fill="#e07a5f" class="dot"/><text x="524" y="260" text-anchor="end" class="val">52.0%</text></g><g class="row nomargin" data-tip="Muse Wonder · Terminal-Bench 4.0
+Setup: Max
+Score 52.0%
+No margin published
+Meta · source: Artificial Analysis" data-tc="#e3b341" tabindex="0"><title>Muse Wonder · Terminal-Bench 4.0
+Setup: Max
+Score 52.0%
+No margin published
+Meta · source: Artificial Analysis</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#e3b341"/><text x="18" y="284" class="lbl">Muse Wonder</text><circle cx="190.3" cy="280" r="6" fill="#e3b341" class="dot"/><text x="524" y="284" text-anchor="end" class="val">52.0%</text></g></svg></div></div><p class='chart-note'>No margin published: dots only, so no tie can be judged.</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -321,7 +692,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td></td>
-<td>Kimi K3.1 Pro</td>
+<td><span class='ldot' style='--lc:#a78bfa;width:20px;height:20px' aria-hidden='true'></span>Kimi K3.1 Pro</td>
 <td></td>
 <td>67.2%</td>
 <td></td>
@@ -329,7 +700,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Gemini 4 Carbon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Carbon</td>
 <td>High</td>
 <td>65.2%</td>
 <td></td>
@@ -337,7 +708,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td>Max, Default Fallback</td>
 <td>63.6%</td>
 <td></td>
@@ -345,7 +716,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Fable 5.2</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.2</td>
 <td>Max, Default Fallback</td>
 <td>59.6%</td>
 <td></td>
@@ -353,7 +724,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td>Max, Default Fallback</td>
 <td>59.6%</td>
 <td></td>
@@ -361,7 +732,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>GPT-6 Astra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6 Astra</td>
 <td>Max</td>
 <td>59.1%</td>
 <td></td>
@@ -369,7 +740,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Muse Wonder Full</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder Full</td>
 <td>Max</td>
 <td>57.1%</td>
 <td></td>
@@ -377,7 +748,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>GPT-6.1 Sol</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Sol</td>
 <td>Max</td>
 <td>56.1%</td>
 <td></td>
@@ -385,7 +756,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>GPT-6.1 Terra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Terra</td>
 <td>Max</td>
 <td>55.6%</td>
 <td></td>
@@ -393,7 +764,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Gemini 4 Hydrogen</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Hydrogen</td>
 <td>Xhigh</td>
 <td>53.5%</td>
 <td></td>
@@ -401,7 +772,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td>Max, Default Fallback</td>
 <td>52.0%</td>
 <td></td>
@@ -409,7 +780,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Muse Wonder</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder</td>
 <td>Max</td>
 <td>52.0%</td>
 <td></td>
@@ -418,8 +789,112 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tbody>
 </table>
 <h2>Agentic tool use: MCP-Atlas</h2>
-<p>Source: <a href="https://labs.scale.com/leaderboard/mcp_atlas">https://labs.scale.com/leaderboard/mcp_atlas</a> · Trust: independent · Publisher data dated 2026-11-06 · 37 models listed, top 12 shown</p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="MCP-Atlas"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">75%</text><line x1="225.0" y1="4" x2="225.0" y2="270" class="grid"/><text x="225.0" y="288" text-anchor="middle" class="tick">80%</text><line x1="300.0" y1="4" x2="300.0" y2="270" class="grid"/><text x="300.0" y="288" text-anchor="middle" class="tick">85%</text><line x1="375.0" y1="4" x2="375.0" y2="270" class="grid"/><text x="375.0" y="288" text-anchor="middle" class="tick">90%</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">95%</text><rect x="358.5" y="4" width="54.0" height="264" class="band"/><text x="0" y="20" class="lbl">Gemini 4 Argon</text><line x1="358.5" y1="16" x2="412.5" y2="16" class="ci lead"/><circle cx="385.5" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">90.7%</text><text x="0" y="42" class="lbl">Muse Spark 1.1</text><line x1="317.2" y1="38" x2="375.7" y2="38" class="ci close"/><circle cx="346.5" cy="38" r="4.5" class="dot close"/><text x="514" y="42" text-anchor="end" class="val">88.1%</text><text x="0" y="64" class="lbl">Claude Fable 5.1</text><line x1="302.3" y1="60" x2="363.8" y2="60" class="ci close"/><circle cx="333.0" cy="60" r="4.5" class="dot close"/><text x="514" y="64" text-anchor="end" class="val">87.2%</text><text x="0" y="86" class="lbl">Claude Opus 5</text><line x1="280.5" y1="82" x2="343.5" y2="82" class="ci behind"/><circle cx="312.0" cy="82" r="4.5" class="dot behind"/><text x="514" y="86" text-anchor="end" class="val">85.8%</text><text x="0" y="108" class="lbl">Claude Opus 5.5</text><line x1="273.0" y1="104" x2="339.0" y2="104" class="ci behind"/><circle cx="306.0" cy="104" r="4.5" class="dot behind"/><text x="514" y="108" text-anchor="end" class="val">85.4%</text><text x="0" y="130" class="lbl">Inkling 2 Small</text><line x1="273.0" y1="126" x2="339.0" y2="126" class="ci behind"/><circle cx="306.0" cy="126" r="4.5" class="dot behind"/><text x="514" y="130" text-anchor="end" class="val">85.4%</text><text x="0" y="152" class="lbl">Qwen3.8 2.4T A95B</text><line x1="258.8" y1="148" x2="326.2" y2="148" class="ci behind"/><circle cx="292.5" cy="148" r="4.5" class="dot behind"/><text x="514" y="152" text-anchor="end" class="val">84.5%</text><text x="0" y="174" class="lbl">GLM 5.3</text><line x1="255.7" y1="170" x2="320.3" y2="170" class="ci behind"/><circle cx="288.0" cy="170" r="4.5" class="dot behind"/><text x="514" y="174" text-anchor="end" class="val">84.2%</text><text x="0" y="196" class="lbl">Gemini 3.5 Flash</text><line x1="244.5" y1="192" x2="313.5" y2="192" class="ci behind"/><circle cx="279.0" cy="192" r="4.5" class="dot behind"/><text x="514" y="196" text-anchor="end" class="val">83.6%</text><text x="0" y="218" class="lbl">Claude Fable 5</text><line x1="240.7" y1="214" x2="308.2" y2="214" class="ci behind"/><circle cx="274.5" cy="214" r="4.5" class="dot behind"/><text x="514" y="218" text-anchor="end" class="val">83.3%</text><text x="0" y="240" class="lbl">Kimi K3</text><line x1="224.3" y1="236" x2="294.7" y2="236" class="ci behind"/><circle cx="259.5" cy="236" r="4.5" class="dot behind"/><text x="514" y="240" text-anchor="end" class="val">82.3%</text><text x="0" y="262" class="lbl">Muse Spark</text><line x1="223.5" y1="258" x2="292.5" y2="258" class="ci behind"/><circle cx="258.0" cy="258" r="4.5" class="dot behind"/><text x="514" y="262" text-anchor="end" class="val">82.2%</text></svg></div><p class='chart-note'><span class='key lead'></span>leader <span class='key close'></span>too close to call <span class='key behind'></span>behind · shaded band = leader's 95% interval</p><table>
+<p>Source: <a class="ext" href="https://labs.scale.com/leaderboard/mcp_atlas">https://labs.scale.com/leaderboard/mcp_atlas</a> · Trust: independent · Publisher data dated 2026-11-06 · 37 models listed, top 12 shown</p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="MCP-Atlas"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">75%</text><line x1="235.0" y1="4" x2="235.0" y2="294" class="grid"/><text x="235.0" y="312" text-anchor="middle" class="tick">80%</text><line x1="310.0" y1="4" x2="310.0" y2="294" class="grid"/><text x="310.0" y="312" text-anchor="middle" class="tick">85%</text><line x1="385.0" y1="4" x2="385.0" y2="294" class="grid"/><text x="385.0" y="312" text-anchor="middle" class="tick">90%</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">95%</text><rect x="368.5" y="4" rx="6" width="54.0" height="288" class="band"/><g class="row lead" data-tip="Gemini 4 Argon · MCP-Atlas
+Rank 1 · Score 90.7%
+95% interval 88.9% to 92.5%
+Leader
+Google · source: Scale Labs" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Argon · MCP-Atlas
+Rank 1 · Score 90.7%
+95% interval 88.9% to 92.5%
+Leader
+Google · source: Scale Labs</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#5b8def"/><text x="18" y="20" class="lbl">Gemini 4 Argon</text><line x1="368.5" y1="16" x2="422.5" y2="16" stroke="#5b8def" class="ci"/><circle cx="395.5" cy="16" r="6" fill="#5b8def" class="dot"/><text x="524" y="20" text-anchor="end" class="val">90.7%</text></g><g class="row close" data-tip="Muse Spark 1.1 · MCP-Atlas
+Rank 2 · Score 88.1%
+95% interval 86.1% to 90.0%
+Too close to call with #1
+Meta · source: Scale Labs" data-tc="#e3b341" tabindex="0"><title>Muse Spark 1.1 · MCP-Atlas
+Rank 2 · Score 88.1%
+95% interval 86.1% to 90.0%
+Too close to call with #1
+Meta · source: Scale Labs</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#e3b341"/><text x="18" y="44" class="lbl">Muse Spark 1.1</text><line x1="327.2" y1="40" x2="385.7" y2="40" stroke="#e3b341" class="ci"/><circle cx="356.5" cy="40" r="6" fill="#e3b341" class="dot"/><text x="524" y="44" text-anchor="end" class="val">88.1%</text></g><g class="row close" data-tip="Claude Fable 5.1 · MCP-Atlas
+Rank 3 · Score 87.2%
+95% interval 85.2% to 89.2%
+Too close to call with #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · MCP-Atlas
+Rank 3 · Score 87.2%
+95% interval 85.2% to 89.2%
+Too close to call with #1
+Anthropic · source: Scale Labs</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#e07a5f"/><text x="18" y="68" class="lbl">Claude Fable 5.1</text><line x1="312.3" y1="64" x2="373.8" y2="64" stroke="#e07a5f" class="ci"/><circle cx="343.0" cy="64" r="6" fill="#e07a5f" class="dot"/><text x="524" y="68" text-anchor="end" class="val">87.2%</text></g><g class="row behind" data-tip="Claude Opus 5 · MCP-Atlas
+Setup: xhigh
+Rank 4 · Score 85.8%
+95% interval 83.7% to 87.9%
+Behind #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5 · MCP-Atlas
+Setup: xhigh
+Rank 4 · Score 85.8%
+95% interval 83.7% to 87.9%
+Behind #1
+Anthropic · source: Scale Labs</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#e07a5f"/><text x="18" y="92" class="lbl">Claude Opus 5</text><line x1="290.5" y1="88" x2="353.5" y2="88" stroke="#e07a5f" class="ci"/><circle cx="322.0" cy="88" r="6" fill="#e07a5f" class="dot"/><text x="524" y="92" text-anchor="end" class="val">85.8%</text></g><g class="row behind" data-tip="Claude Opus 5.5 · MCP-Atlas
+Rank 5 · Score 85.4%
+95% interval 83.2% to 87.6%
+Behind #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · MCP-Atlas
+Rank 5 · Score 85.4%
+95% interval 83.2% to 87.6%
+Behind #1
+Anthropic · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#e07a5f"/><text x="18" y="116" class="lbl">Claude Opus 5.5</text><line x1="283.0" y1="112" x2="349.0" y2="112" stroke="#e07a5f" class="ci"/><circle cx="316.0" cy="112" r="6" fill="#e07a5f" class="dot"/><text x="524" y="116" text-anchor="end" class="val">85.4%</text></g><g class="row behind" data-tip="Inkling 2 Small · MCP-Atlas
+Rank 6 · Score 85.4%
+95% interval 83.2% to 87.6%
+Behind #1
+Other · source: Scale Labs" data-tc="#8a8494" tabindex="0"><title>Inkling 2 Small · MCP-Atlas
+Rank 6 · Score 85.4%
+95% interval 83.2% to 87.6%
+Behind #1
+Other · source: Scale Labs</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#8a8494"/><text x="18" y="140" class="lbl">Inkling 2 Small</text><line x1="283.0" y1="136" x2="349.0" y2="136" stroke="#8a8494" class="ci"/><circle cx="316.0" cy="136" r="6" fill="#8a8494" class="dot"/><text x="524" y="140" text-anchor="end" class="val">85.4%</text></g><g class="row behind" data-tip="Qwen3.8 2.4T A95B · MCP-Atlas
+Setup: xHigh
+Rank 7 · Score 84.5%
+95% interval 82.2% to 86.8%
+Behind #1
+Qwen · source: Scale Labs" data-tc="#c98fb0" tabindex="0"><title>Qwen3.8 2.4T A95B · MCP-Atlas
+Setup: xHigh
+Rank 7 · Score 84.5%
+95% interval 82.2% to 86.8%
+Behind #1
+Qwen · source: Scale Labs</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#c98fb0"/><text x="18" y="164" class="lbl">Qwen3.8 2.4T A95B</text><line x1="268.8" y1="160" x2="336.2" y2="160" stroke="#c98fb0" class="ci"/><circle cx="302.5" cy="160" r="6" fill="#c98fb0" class="dot"/><text x="524" y="164" text-anchor="end" class="val">84.5%</text></g><g class="row behind" data-tip="GLM 5.3 · MCP-Atlas
+Rank 8 · Score 84.2%
+95% interval 82.0% to 86.4%
+Behind #1
+Zhipu AI · source: Scale Labs" data-tc="#8fb996" tabindex="0"><title>GLM 5.3 · MCP-Atlas
+Rank 8 · Score 84.2%
+95% interval 82.0% to 86.4%
+Behind #1
+Zhipu AI · source: Scale Labs</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#8fb996"/><text x="18" y="188" class="lbl">GLM 5.3</text><line x1="265.7" y1="184" x2="330.3" y2="184" stroke="#8fb996" class="ci"/><circle cx="298.0" cy="184" r="6" fill="#8fb996" class="dot"/><text x="524" y="188" text-anchor="end" class="val">84.2%</text></g><g class="row behind" data-tip="Gemini 3.5 Flash · MCP-Atlas
+Setup: high
+Rank 9 · Score 83.6%
+95% interval 81.3% to 85.9%
+Behind #1
+Google · source: Scale Labs" data-tc="#5b8def" tabindex="0"><title>Gemini 3.5 Flash · MCP-Atlas
+Setup: high
+Rank 9 · Score 83.6%
+95% interval 81.3% to 85.9%
+Behind #1
+Google · source: Scale Labs</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#5b8def"/><text x="18" y="212" class="lbl">Gemini 3.5 Flash</text><line x1="254.5" y1="208" x2="323.5" y2="208" stroke="#5b8def" class="ci"/><circle cx="289.0" cy="208" r="6" fill="#5b8def" class="dot"/><text x="524" y="212" text-anchor="end" class="val">83.6%</text></g><g class="row behind" data-tip="Claude Fable 5 · MCP-Atlas
+Rank 10 · Score 83.3%
+95% interval 81.0% to 85.5%
+Behind #1
+Anthropic · source: Scale Labs" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5 · MCP-Atlas
+Rank 10 · Score 83.3%
+95% interval 81.0% to 85.5%
+Behind #1
+Anthropic · source: Scale Labs</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#e07a5f"/><text x="18" y="236" class="lbl">Claude Fable 5</text><line x1="250.7" y1="232" x2="318.2" y2="232" stroke="#e07a5f" class="ci"/><circle cx="284.5" cy="232" r="6" fill="#e07a5f" class="dot"/><text x="524" y="236" text-anchor="end" class="val">83.3%</text></g><g class="row behind" data-tip="Kimi K3 · MCP-Atlas
+Setup: max
+Rank 11 · Score 82.3%
+95% interval 80.0% to 84.6%
+Behind #1
+Moonshot AI · source: Scale Labs" data-tc="#a78bfa" tabindex="0"><title>Kimi K3 · MCP-Atlas
+Setup: max
+Rank 11 · Score 82.3%
+95% interval 80.0% to 84.6%
+Behind #1
+Moonshot AI · source: Scale Labs</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#a78bfa"/><text x="18" y="260" class="lbl">Kimi K3</text><line x1="234.3" y1="256" x2="304.7" y2="256" stroke="#a78bfa" class="ci"/><circle cx="269.5" cy="256" r="6" fill="#a78bfa" class="dot"/><text x="524" y="260" text-anchor="end" class="val">82.3%</text></g><g class="row behind" data-tip="Muse Spark · MCP-Atlas
+Rank 12 · Score 82.2%
+95% interval 79.9% to 84.5%
+Behind #1
+Meta · source: Scale Labs" data-tc="#e3b341" tabindex="0"><title>Muse Spark · MCP-Atlas
+Rank 12 · Score 82.2%
+95% interval 79.9% to 84.5%
+Behind #1
+Meta · source: Scale Labs</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#e3b341"/><text x="18" y="284" class="lbl">Muse Spark</text><line x1="233.5" y1="280" x2="302.5" y2="280" stroke="#e3b341" class="ci"/><circle cx="268.0" cy="280" r="6" fill="#e3b341" class="dot"/><text x="524" y="284" text-anchor="end" class="val">82.2%</text></g></svg></div></div><p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to call · faded = behind · shaded band = the leader's 95% interval · hover for details</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -434,7 +909,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td>1</td>
-<td>Gemini 4 Argon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Argon</td>
 <td></td>
 <td>90.7%</td>
 <td>88.9% to 92.5%</td>
@@ -443,7 +918,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>2</td>
-<td>Muse Spark 1.1</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Spark 1.1</td>
 <td></td>
 <td>88.1%</td>
 <td>86.1% to 90.0%</td>
@@ -452,7 +927,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>3</td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td></td>
 <td>87.2%</td>
 <td>85.2% to 89.2%</td>
@@ -461,7 +936,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>4</td>
-<td>Claude Opus 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5</td>
 <td>xhigh</td>
 <td>85.8%</td>
 <td>83.7% to 87.9%</td>
@@ -470,7 +945,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>5</td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td></td>
 <td>85.4%</td>
 <td>83.2% to 87.6%</td>
@@ -479,7 +954,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>6</td>
-<td>Inkling 2 Small</td>
+<td><span class='ldot' style='--lc:#8a8494;width:20px;height:20px' aria-hidden='true'></span>Inkling 2 Small</td>
 <td></td>
 <td>85.4%</td>
 <td>83.2% to 87.6%</td>
@@ -488,7 +963,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>7</td>
-<td>Qwen3.8 2.4T A95B</td>
+<td><span class='ldot' style='--lc:#c98fb0;width:20px;height:20px' aria-hidden='true'></span>Qwen3.8 2.4T A95B</td>
 <td>xHigh</td>
 <td>84.5%</td>
 <td>82.2% to 86.8%</td>
@@ -497,7 +972,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>8</td>
-<td>GLM 5.3</td>
+<td><span class='ldot' style='--lc:#8fb996;width:20px;height:20px' aria-hidden='true'></span>GLM 5.3</td>
 <td></td>
 <td>84.2%</td>
 <td>82.0% to 86.4%</td>
@@ -506,7 +981,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>9</td>
-<td>Gemini 3.5 Flash</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 3.5 Flash</td>
 <td>high</td>
 <td>83.6%</td>
 <td>81.3% to 85.9%</td>
@@ -515,7 +990,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>10</td>
-<td>Claude Fable 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5</td>
 <td></td>
 <td>83.3%</td>
 <td>81.0% to 85.5%</td>
@@ -524,7 +999,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>11</td>
-<td>Kimi K3</td>
+<td><span class='ldot' style='--lc:#a78bfa;width:20px;height:20px' aria-hidden='true'></span>Kimi K3</td>
 <td>max</td>
 <td>82.3%</td>
 <td>80.0% to 84.6%</td>
@@ -533,7 +1008,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>12</td>
-<td>Muse Spark</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Spark</td>
 <td></td>
 <td>82.2%</td>
 <td>79.9% to 84.5%</td>
@@ -543,8 +1018,124 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tbody>
 </table>
 <h2>Work: GDPval-AA v2.1</h2>
-<p>Source: <a href="https://artificialanalysis.ai/evaluations/gdpval-aa">https://artificialanalysis.ai/evaluations/gdpval-aa</a> · Trust: independent · Publisher data dated 2026-11-09 · 27 models listed, top 12 shown</p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="GDPval-AA"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">1600</text><line x1="250.0" y1="4" x2="250.0" y2="270" class="grid"/><text x="250.0" y="288" text-anchor="middle" class="tick">1700</text><line x1="350.0" y1="4" x2="350.0" y2="270" class="grid"/><text x="350.0" y="288" text-anchor="middle" class="tick">1800</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">1900</text><rect x="390.4" y="4" width="51.7" height="264" class="band"/><text x="0" y="20" class="lbl">Claude Opus 5.5</text><line x1="390.4" y1="16" x2="442.1" y2="16" class="ci lead"/><circle cx="416.3" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">1866</text><text x="0" y="42" class="lbl">Kimi K3.1 Pro</text><line x1="382.7" y1="38" x2="439.0" y2="38" class="ci close"/><circle cx="410.8" cy="38" r="4.5" class="dot close"/><text x="514" y="42" text-anchor="end" class="val">1861</text><text x="0" y="64" class="lbl">Muse Wonder Full</text><line x1="382.2" y1="60" x2="432.0" y2="60" class="ci close"/><circle cx="407.1" cy="60" r="4.5" class="dot close"/><text x="514" y="64" text-anchor="end" class="val">1857</text><text x="0" y="86" class="lbl">Claude Sonnet 5.5</text><line x1="364.3" y1="82" x2="411.3" y2="82" class="ci close"/><circle cx="387.8" cy="82" r="4.5" class="dot close"/><text x="514" y="86" text-anchor="end" class="val">1838</text><text x="0" y="108" class="lbl">Claude Fable 5.2</text><line x1="354.3" y1="104" x2="408.3" y2="104" class="ci close"/><circle cx="381.3" cy="104" r="4.5" class="dot close"/><text x="514" y="108" text-anchor="end" class="val">1831</text><text x="0" y="130" class="lbl">Muse Wonder</text><line x1="297.2" y1="126" x2="343.5" y2="126" class="ci behind"/><circle cx="320.3" cy="126" r="4.5" class="dot behind"/><text x="514" y="130" text-anchor="end" class="val">1770</text><text x="0" y="152" class="lbl">Claude Fable 5.1</text><line x1="294.6" y1="148" x2="332.0" y2="148" class="ci behind"/><circle cx="313.3" cy="148" r="4.5" class="dot behind"/><text x="514" y="152" text-anchor="end" class="val">1763</text><text x="0" y="174" class="lbl">DeepSeek V4.1 Flash 1017</text><line x1="275.0" y1="170" x2="316.6" y2="170" class="ci behind"/><circle cx="295.8" cy="170" r="4.5" class="dot behind"/><text x="514" y="174" text-anchor="end" class="val">1746</text><text x="0" y="196" class="lbl">Gemini 4 Carbon</text><line x1="258.4" y1="192" x2="307.0" y2="192" class="ci behind"/><circle cx="282.7" cy="192" r="4.5" class="dot behind"/><text x="514" y="196" text-anchor="end" class="val">1733</text><text x="0" y="218" class="lbl">Claude Opus 5</text><line x1="261.0" y1="214" x2="298.8" y2="214" class="ci behind"/><circle cx="279.9" cy="214" r="4.5" class="dot behind"/><text x="514" y="218" text-anchor="end" class="val">1730</text><text x="0" y="240" class="lbl">Grok 4.7</text><line x1="246.6" y1="236" x2="287.2" y2="236" class="ci behind"/><circle cx="266.9" cy="236" r="4.5" class="dot behind"/><text x="514" y="240" text-anchor="end" class="val">1717</text><text x="0" y="262" class="lbl">Mimo V2.6 Pro</text><line x1="222.1" y1="258" x2="262.0" y2="258" class="ci behind"/><circle cx="242.0" cy="258" r="4.5" class="dot behind"/><text x="514" y="262" text-anchor="end" class="val">1692</text></svg></div><p class='chart-note'><span class='key lead'></span>leader <span class='key close'></span>too close to call <span class='key behind'></span>behind · shaded band = leader's 95% interval</p><table>
+<p>Source: <a class="ext" href="https://artificialanalysis.ai/evaluations/gdpval-aa">https://artificialanalysis.ai/evaluations/gdpval-aa</a> · Trust: independent · Publisher data dated 2026-11-09 · 27 models listed, top 12 shown</p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="GDPval-AA"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">1600</text><line x1="260.0" y1="4" x2="260.0" y2="294" class="grid"/><text x="260.0" y="312" text-anchor="middle" class="tick">1700</text><line x1="360.0" y1="4" x2="360.0" y2="294" class="grid"/><text x="360.0" y="312" text-anchor="middle" class="tick">1800</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">1900</text><rect x="400.4" y="4" rx="6" width="51.7" height="288" class="band"/><g class="row lead" data-tip="Claude Opus 5.5 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1866
+95% interval 1840 to 1892
+Leader
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1866
+95% interval 1840 to 1892
+Leader
+Anthropic · source: Artificial Analysis</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#e07a5f"/><text x="18" y="20" class="lbl">Claude Opus 5.5</text><line x1="400.4" y1="16" x2="452.1" y2="16" stroke="#e07a5f" class="ci"/><circle cx="426.3" cy="16" r="6" fill="#e07a5f" class="dot"/><text x="524" y="20" text-anchor="end" class="val">1866</text></g><g class="row close" data-tip="Kimi K3.1 Pro · GDPval-AA
+Score 1861
+95% interval 1833 to 1889
+Too close to call with #1
+Moonshot AI · source: Artificial Analysis" data-tc="#a78bfa" tabindex="0"><title>Kimi K3.1 Pro · GDPval-AA
+Score 1861
+95% interval 1833 to 1889
+Too close to call with #1
+Moonshot AI · source: Artificial Analysis</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#a78bfa"/><text x="18" y="44" class="lbl">Kimi K3.1 Pro</text><line x1="392.7" y1="40" x2="449.0" y2="40" stroke="#a78bfa" class="ci"/><circle cx="420.8" cy="40" r="6" fill="#a78bfa" class="dot"/><text x="524" y="44" text-anchor="end" class="val">1861</text></g><g class="row close" data-tip="Muse Wonder Full · GDPval-AA
+Setup: Max
+Score 1857
+95% interval 1832 to 1882
+Too close to call with #1
+Meta · source: Artificial Analysis" data-tc="#e3b341" tabindex="0"><title>Muse Wonder Full · GDPval-AA
+Setup: Max
+Score 1857
+95% interval 1832 to 1882
+Too close to call with #1
+Meta · source: Artificial Analysis</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#e3b341"/><text x="18" y="68" class="lbl">Muse Wonder Full</text><line x1="392.2" y1="64" x2="442.0" y2="64" stroke="#e3b341" class="ci"/><circle cx="417.1" cy="64" r="6" fill="#e3b341" class="dot"/><text x="524" y="68" text-anchor="end" class="val">1857</text></g><g class="row close" data-tip="Claude Sonnet 5.5 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1838
+95% interval 1814 to 1861
+Too close to call with #1
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1838
+95% interval 1814 to 1861
+Too close to call with #1
+Anthropic · source: Artificial Analysis</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#e07a5f"/><text x="18" y="92" class="lbl">Claude Sonnet 5.5</text><line x1="374.3" y1="88" x2="421.3" y2="88" stroke="#e07a5f" class="ci"/><circle cx="397.8" cy="88" r="6" fill="#e07a5f" class="dot"/><text x="524" y="92" text-anchor="end" class="val">1838</text></g><g class="row close" data-tip="Claude Fable 5.2 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1831
+95% interval 1804 to 1858
+Too close to call with #1
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.2 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1831
+95% interval 1804 to 1858
+Too close to call with #1
+Anthropic · source: Artificial Analysis</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#e07a5f"/><text x="18" y="116" class="lbl">Claude Fable 5.2</text><line x1="364.3" y1="112" x2="418.3" y2="112" stroke="#e07a5f" class="ci"/><circle cx="391.3" cy="112" r="6" fill="#e07a5f" class="dot"/><text x="524" y="116" text-anchor="end" class="val">1831</text></g><g class="row behind" data-tip="Muse Wonder · GDPval-AA
+Setup: Max
+Score 1770
+95% interval 1747 to 1793
+Behind #1
+Meta · source: Artificial Analysis" data-tc="#e3b341" tabindex="0"><title>Muse Wonder · GDPval-AA
+Setup: Max
+Score 1770
+95% interval 1747 to 1793
+Behind #1
+Meta · source: Artificial Analysis</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#e3b341"/><text x="18" y="140" class="lbl">Muse Wonder</text><line x1="307.2" y1="136" x2="353.5" y2="136" stroke="#e3b341" class="ci"/><circle cx="330.3" cy="136" r="6" fill="#e3b341" class="dot"/><text x="524" y="140" text-anchor="end" class="val">1770</text></g><g class="row behind" data-tip="Claude Fable 5.1 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1763
+95% interval 1745 to 1782
+Behind #1
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · GDPval-AA
+Setup: Max, Default Fallback
+Score 1763
+95% interval 1745 to 1782
+Behind #1
+Anthropic · source: Artificial Analysis</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#e07a5f"/><text x="18" y="164" class="lbl">Claude Fable 5.1</text><line x1="304.6" y1="160" x2="342.0" y2="160" stroke="#e07a5f" class="ci"/><circle cx="323.3" cy="160" r="6" fill="#e07a5f" class="dot"/><text x="524" y="164" text-anchor="end" class="val">1763</text></g><g class="row behind" data-tip="DeepSeek V4.1 Flash 1017 · GDPval-AA
+Setup: Max
+Score 1746
+95% interval 1725 to 1767
+Behind #1
+DeepSeek · source: Artificial Analysis" data-tc="#7f9cc7" tabindex="0"><title>DeepSeek V4.1 Flash 1017 · GDPval-AA
+Setup: Max
+Score 1746
+95% interval 1725 to 1767
+Behind #1
+DeepSeek · source: Artificial Analysis</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#7f9cc7"/><text x="18" y="188" class="lbl">DeepSeek V4.1 Flash 1017</text><line x1="285.0" y1="184" x2="326.6" y2="184" stroke="#7f9cc7" class="ci"/><circle cx="305.8" cy="184" r="6" fill="#7f9cc7" class="dot"/><text x="524" y="188" text-anchor="end" class="val">1746</text></g><g class="row behind" data-tip="Gemini 4 Carbon · GDPval-AA
+Setup: High
+Score 1733
+95% interval 1708 to 1757
+Behind #1
+Google · source: Artificial Analysis" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Carbon · GDPval-AA
+Setup: High
+Score 1733
+95% interval 1708 to 1757
+Behind #1
+Google · source: Artificial Analysis</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#5b8def"/><text x="18" y="212" class="lbl">Gemini 4 Carbon</text><line x1="268.4" y1="208" x2="317.0" y2="208" stroke="#5b8def" class="ci"/><circle cx="292.7" cy="208" r="6" fill="#5b8def" class="dot"/><text x="524" y="212" text-anchor="end" class="val">1733</text></g><g class="row behind" data-tip="Claude Opus 5 · GDPval-AA
+Setup: Max
+Score 1730
+95% interval 1711 to 1749
+Behind #1
+Anthropic · source: Artificial Analysis" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5 · GDPval-AA
+Setup: Max
+Score 1730
+95% interval 1711 to 1749
+Behind #1
+Anthropic · source: Artificial Analysis</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#e07a5f"/><text x="18" y="236" class="lbl">Claude Opus 5</text><line x1="271.0" y1="232" x2="308.8" y2="232" stroke="#e07a5f" class="ci"/><circle cx="289.9" cy="232" r="6" fill="#e07a5f" class="dot"/><text x="524" y="236" text-anchor="end" class="val">1730</text></g><g class="row behind" data-tip="Grok 4.7 · GDPval-AA
+Setup: Xhigh
+Score 1717
+95% interval 1697 to 1737
+Behind #1
+xAI · source: Artificial Analysis" data-tc="#a3a3a8" tabindex="0"><title>Grok 4.7 · GDPval-AA
+Setup: Xhigh
+Score 1717
+95% interval 1697 to 1737
+Behind #1
+xAI · source: Artificial Analysis</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#a3a3a8"/><text x="18" y="260" class="lbl">Grok 4.7</text><line x1="256.6" y1="256" x2="297.2" y2="256" stroke="#a3a3a8" class="ci"/><circle cx="276.9" cy="256" r="6" fill="#a3a3a8" class="dot"/><text x="524" y="260" text-anchor="end" class="val">1717</text></g><g class="row behind" data-tip="Mimo V2.6 Pro · GDPval-AA
+Score 1692
+95% interval 1672 to 1712
+Behind #1
+Xiaomi · source: Artificial Analysis" data-tc="#e09a6b" tabindex="0"><title>Mimo V2.6 Pro · GDPval-AA
+Score 1692
+95% interval 1672 to 1712
+Behind #1
+Xiaomi · source: Artificial Analysis</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#e09a6b"/><text x="18" y="284" class="lbl">Mimo V2.6 Pro</text><line x1="232.1" y1="280" x2="272.0" y2="280" stroke="#e09a6b" class="ci"/><circle cx="252.0" cy="280" r="6" fill="#e09a6b" class="dot"/><text x="524" y="284" text-anchor="end" class="val">1692</text></g></svg></div></div><p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to call · faded = behind · shaded band = the leader's 95% interval · hover for details</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -559,7 +1150,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td></td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td>Max, Default Fallback</td>
 <td>1866</td>
 <td>1840 to 1892</td>
@@ -568,7 +1159,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Kimi K3.1 Pro</td>
+<td><span class='ldot' style='--lc:#a78bfa;width:20px;height:20px' aria-hidden='true'></span>Kimi K3.1 Pro</td>
 <td></td>
 <td>1861</td>
 <td>1833 to 1889</td>
@@ -577,7 +1168,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Muse Wonder Full</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder Full</td>
 <td>Max</td>
 <td>1857</td>
 <td>1832 to 1882</td>
@@ -586,7 +1177,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td>Max, Default Fallback</td>
 <td>1838</td>
 <td>1814 to 1861</td>
@@ -595,7 +1186,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Fable 5.2</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.2</td>
 <td>Max, Default Fallback</td>
 <td>1831</td>
 <td>1804 to 1858</td>
@@ -604,7 +1195,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Muse Wonder</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder</td>
 <td>Max</td>
 <td>1770</td>
 <td>1747 to 1793</td>
@@ -613,7 +1204,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td>Max, Default Fallback</td>
 <td>1763</td>
 <td>1745 to 1782</td>
@@ -622,7 +1213,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>DeepSeek V4.1 Flash 1017</td>
+<td><span class='ldot' style='--lc:#7f9cc7;width:20px;height:20px' aria-hidden='true'></span>DeepSeek V4.1 Flash 1017</td>
 <td>Max</td>
 <td>1746</td>
 <td>1725 to 1767</td>
@@ -631,7 +1222,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Gemini 4 Carbon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Carbon</td>
 <td>High</td>
 <td>1733</td>
 <td>1708 to 1757</td>
@@ -640,7 +1231,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Opus 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5</td>
 <td>Max</td>
 <td>1730</td>
 <td>1711 to 1749</td>
@@ -649,7 +1240,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Grok 4.7</td>
+<td><span class='ldot' style='--lc:#a3a3a8;width:20px;height:20px' aria-hidden='true'></span>Grok 4.7</td>
 <td>Xhigh</td>
 <td>1717</td>
 <td>1697 to 1737</td>
@@ -658,7 +1249,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Mimo V2.6 Pro</td>
+<td><span class='ldot' style='--lc:#e09a6b;width:20px;height:20px' aria-hidden='true'></span>Mimo V2.6 Pro</td>
 <td></td>
 <td>1692</td>
 <td>1672 to 1712</td>
@@ -668,9 +1259,33 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tbody>
 </table>
 <h2>Work (frontier): GDPx v1.0</h2>
-<p>Source: <a href="https://gdpx.semianalysis.com/">https://gdpx.semianalysis.com/</a> · Trust: independent · Publisher data dated 2026-11-09 · 3 models listed, top 3 shown</p>
-<p><em>Quoted from GDPx by SemiAnalysis (top 3 only); full leaderboard at <a href="https://gdpx.semianalysis.com/">gdpx.semianalysis.com</a>.</em></p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 96" width="100%" role="img" aria-label="GDPx"><line x1="150.0" y1="4" x2="150.0" y2="72" class="grid"/><text x="150.0" y="90" text-anchor="middle" class="tick">10%</text><line x1="225.0" y1="4" x2="225.0" y2="72" class="grid"/><text x="225.0" y="90" text-anchor="middle" class="tick">12%</text><line x1="300.0" y1="4" x2="300.0" y2="72" class="grid"/><text x="300.0" y="90" text-anchor="middle" class="tick">14%</text><line x1="375.0" y1="4" x2="375.0" y2="72" class="grid"/><text x="375.0" y="90" text-anchor="middle" class="tick">16%</text><line x1="450.0" y1="4" x2="450.0" y2="72" class="grid"/><text x="450.0" y="90" text-anchor="middle" class="tick">18%</text><text x="0" y="20" class="lbl">Claude Fable 5.2</text><circle cx="390.0" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">16.4%</text><text x="0" y="42" class="lbl">Claude Opus 5.5</text><circle cx="225.0" cy="38" r="4.5" class="dot nomargin"/><text x="514" y="42" text-anchor="end" class="val">12.0%</text><text x="0" y="64" class="lbl">Gemini 4 Carbon</text><circle cx="183.8" cy="60" r="4.5" class="dot nomargin"/><text x="514" y="64" text-anchor="end" class="val">10.9%</text></svg></div><p class='chart-note'>No margin published: dots only, no tie can be judged.</p><table>
+<p>Source: <a class="ext" href="https://gdpx.semianalysis.com/">https://gdpx.semianalysis.com/</a> · Trust: independent · Publisher data dated 2026-11-09 · 3 models listed, top 3 shown</p>
+<p><em>Quoted from GDPx by SemiAnalysis (top 3 only); full leaderboard at <a class="ext" href="https://gdpx.semianalysis.com/">gdpx.semianalysis.com</a>.</em></p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 102" width="100%" role="img" aria-label="GDPx"><line x1="160.0" y1="4" x2="160.0" y2="78" class="grid"/><text x="160.0" y="96" text-anchor="middle" class="tick">10%</text><line x1="235.0" y1="4" x2="235.0" y2="78" class="grid"/><text x="235.0" y="96" text-anchor="middle" class="tick">12%</text><line x1="310.0" y1="4" x2="310.0" y2="78" class="grid"/><text x="310.0" y="96" text-anchor="middle" class="tick">14%</text><line x1="385.0" y1="4" x2="385.0" y2="78" class="grid"/><text x="385.0" y="96" text-anchor="middle" class="tick">16%</text><line x1="460.0" y1="4" x2="460.0" y2="78" class="grid"/><text x="460.0" y="96" text-anchor="middle" class="tick">18%</text><g class="row lead" data-tip="Claude Fable 5.2 · GDPx
+Setup: Claude Code, Max
+Score 16.4%
+Leader
+Anthropic · source: GDPx by SemiAnalysis" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.2 · GDPx
+Setup: Claude Code, Max
+Score 16.4%
+Leader
+Anthropic · source: GDPx by SemiAnalysis</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#e07a5f"/><text x="18" y="20" class="lbl">Claude Fable 5.2</text><circle cx="400.0" cy="16" r="6" fill="#e07a5f" class="dot"/><text x="524" y="20" text-anchor="end" class="val">16.4%</text></g><g class="row nomargin" data-tip="Claude Opus 5.5 · GDPx
+Setup: Claude Code, Max
+Score 12.0%
+No margin published
+Anthropic · source: GDPx by SemiAnalysis" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · GDPx
+Setup: Claude Code, Max
+Score 12.0%
+No margin published
+Anthropic · source: GDPx by SemiAnalysis</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#e07a5f"/><text x="18" y="44" class="lbl">Claude Opus 5.5</text><circle cx="235.0" cy="40" r="6" fill="#e07a5f" class="dot"/><text x="524" y="44" text-anchor="end" class="val">12.0%</text></g><g class="row nomargin" data-tip="Gemini 4 Carbon · GDPx
+Setup: Antigravity, High
+Score 10.9%
+No margin published
+Google · source: GDPx by SemiAnalysis" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Carbon · GDPx
+Setup: Antigravity, High
+Score 10.9%
+No margin published
+Google · source: GDPx by SemiAnalysis</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#5b8def"/><text x="18" y="68" class="lbl">Gemini 4 Carbon</text><circle cx="193.8" cy="64" r="6" fill="#5b8def" class="dot"/><text x="524" y="68" text-anchor="end" class="val">10.9%</text></g></svg></div></div><p class='chart-note'>No margin published: dots only, so no tie can be judged.</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -685,7 +1300,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td></td>
-<td>Claude Fable 5.2</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.2</td>
 <td>Claude Code, Max</td>
 <td>16.4%</td>
 <td>$88.15</td>
@@ -694,7 +1309,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td>Claude Code, Max</td>
 <td>12.0%</td>
 <td>$51.41</td>
@@ -703,7 +1318,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td></td>
-<td>Gemini 4 Carbon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Carbon</td>
 <td>Antigravity, High</td>
 <td>10.9%</td>
 <td>$16.29</td>
@@ -714,8 +1329,128 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </table>
 <p><em>Note: GDPx by SemiAnalysis</em></p>
 <h2>Real-world agents: Agent Arena</h2>
-<p>Source: <a href="https://arena.ai/leaderboard/agent">https://arena.ai/leaderboard/agent</a> · Trust: crowd-preference · Publisher data dated 2026-11-11 · 59 models listed, top 12 shown</p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="Agent Arena"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">0</text><line x1="225.0" y1="4" x2="225.0" y2="270" class="grid"/><text x="225.0" y="288" text-anchor="middle" class="tick">0.1</text><line x1="300.0" y1="4" x2="300.0" y2="270" class="grid"/><text x="300.0" y="288" text-anchor="middle" class="tick">0.2</text><line x1="375.0" y1="4" x2="375.0" y2="270" class="grid"/><text x="375.0" y="288" text-anchor="middle" class="tick">0.3</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">0.4</text><rect x="348.1" y="4" width="59.0" height="264" class="band"/><text x="0" y="20" class="lbl">Claude Fable 5.2</text><line x1="348.1" y1="16" x2="407.1" y2="16" class="ci lead"/><circle cx="377.6" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">0.303</text><text x="0" y="42" class="lbl">Claude Opus 5.5</text><line x1="281.2" y1="38" x2="311.5" y2="38" class="ci behind"/><circle cx="296.4" cy="38" r="4.5" class="dot behind"/><text x="514" y="42" text-anchor="end" class="val">0.195</text><text x="0" y="64" class="lbl">Gemini 4 Carbon</text><line x1="272.2" y1="60" x2="282.4" y2="60" class="ci behind"/><circle cx="277.4" cy="60" r="4.5" class="dot behind"/><text x="514" y="64" text-anchor="end" class="val">0.170</text><text x="0" y="86" class="lbl">Claude Sonnet 5.5</text><line x1="248.5" y1="82" x2="290.8" y2="82" class="ci behind"/><circle cx="269.6" cy="82" r="4.5" class="dot behind"/><text x="514" y="86" text-anchor="end" class="val">0.160</text><text x="0" y="108" class="lbl">Claude Fable 5.1</text><line x1="245.7" y1="104" x2="276.6" y2="104" class="ci behind"/><circle cx="261.1" cy="104" r="4.5" class="dot behind"/><text x="514" y="108" text-anchor="end" class="val">0.148</text><text x="0" y="130" class="lbl">GPT-6 Astra</text><line x1="243.9" y1="126" x2="274.1" y2="126" class="ci behind"/><circle cx="259.1" cy="126" r="4.5" class="dot behind"/><text x="514" y="130" text-anchor="end" class="val">0.145</text><text x="0" y="152" class="lbl">GPT-6.1 Sol</text><line x1="235.1" y1="148" x2="251.8" y2="148" class="ci behind"/><circle cx="243.4" cy="148" r="4.5" class="dot behind"/><text x="514" y="152" text-anchor="end" class="val">0.125</text><text x="0" y="174" class="lbl">GPT-6.1 Terra</text><line x1="230.5" y1="170" x2="249.4" y2="170" class="ci behind"/><circle cx="240.0" cy="170" r="4.5" class="dot behind"/><text x="514" y="174" text-anchor="end" class="val">0.120</text><text x="0" y="196" class="lbl">Gemini 4 Argon</text><line x1="223.9" y1="192" x2="237.2" y2="192" class="ci behind"/><circle cx="230.5" cy="192" r="4.5" class="dot behind"/><text x="514" y="196" text-anchor="end" class="val">0.107</text><text x="0" y="218" class="lbl">Muse Wonder Full</text><line x1="210.2" y1="214" x2="224.2" y2="214" class="ci behind"/><circle cx="217.2" cy="214" r="4.5" class="dot behind"/><text x="514" y="218" text-anchor="end" class="val">0.090</text><text x="0" y="240" class="lbl">Claude Fable 5</text><line x1="196.1" y1="236" x2="213.4" y2="236" class="ci behind"/><circle cx="204.8" cy="236" r="4.5" class="dot behind"/><text x="514" y="240" text-anchor="end" class="val">0.073</text><text x="0" y="262" class="lbl">Claude Opus 5</text><line x1="194.4" y1="258" x2="214.0" y2="258" class="ci behind"/><circle cx="204.2" cy="258" r="4.5" class="dot behind"/><text x="514" y="262" text-anchor="end" class="val">0.072</text></svg></div><p class='chart-note'><span class='key lead'></span>leader <span class='key close'></span>too close to call <span class='key behind'></span>behind · shaded band = leader's 95% interval</p><table>
+<p>Source: <a class="ext" href="https://arena.ai/leaderboard/agent">https://arena.ai/leaderboard/agent</a> · Trust: crowd-preference · Publisher data dated 2026-11-11 · 59 models listed, top 12 shown</p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="Agent Arena"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">0</text><line x1="235.0" y1="4" x2="235.0" y2="294" class="grid"/><text x="235.0" y="312" text-anchor="middle" class="tick">0.1</text><line x1="310.0" y1="4" x2="310.0" y2="294" class="grid"/><text x="310.0" y="312" text-anchor="middle" class="tick">0.2</text><line x1="385.0" y1="4" x2="385.0" y2="294" class="grid"/><text x="385.0" y="312" text-anchor="middle" class="tick">0.3</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">0.4</text><rect x="358.1" y="4" rx="6" width="59.0" height="288" class="band"/><g class="row lead" data-tip="Claude Fable 5.2 · Agent Arena
+Setup: Max
+Rank 1 · Score 0.303
+95% interval 0.264 to 0.343
+Leader
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.2 · Agent Arena
+Setup: Max
+Rank 1 · Score 0.303
+95% interval 0.264 to 0.343
+Leader
+Anthropic · source: Arena</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#e07a5f"/><text x="18" y="20" class="lbl">Claude Fable 5.2</text><line x1="358.1" y1="16" x2="417.1" y2="16" stroke="#e07a5f" class="ci"/><circle cx="387.6" cy="16" r="6" fill="#e07a5f" class="dot"/><text x="524" y="20" text-anchor="end" class="val">0.303</text></g><g class="row behind" data-tip="Claude Opus 5.5 · Agent Arena
+Setup: Max
+Rank 2 · Score 0.195
+95% interval 0.175 to 0.215
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · Agent Arena
+Setup: Max
+Rank 2 · Score 0.195
+95% interval 0.175 to 0.215
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#e07a5f"/><text x="18" y="44" class="lbl">Claude Opus 5.5</text><line x1="291.2" y1="40" x2="321.5" y2="40" stroke="#e07a5f" class="ci"/><circle cx="306.4" cy="40" r="6" fill="#e07a5f" class="dot"/><text x="524" y="44" text-anchor="end" class="val">0.195</text></g><g class="row behind" data-tip="Gemini 4 Carbon · Agent Arena
+Setup: High
+Rank 3 · Score 0.170
+95% interval 0.163 to 0.177
+Behind #1
+Google · source: Arena" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Carbon · Agent Arena
+Setup: High
+Rank 3 · Score 0.170
+95% interval 0.163 to 0.177
+Behind #1
+Google · source: Arena</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#5b8def"/><text x="18" y="68" class="lbl">Gemini 4 Carbon</text><line x1="282.2" y1="64" x2="292.4" y2="64" stroke="#5b8def" class="ci"/><circle cx="287.4" cy="64" r="6" fill="#5b8def" class="dot"/><text x="524" y="68" text-anchor="end" class="val">0.170</text></g><g class="row behind" data-tip="Claude Sonnet 5.5 · Agent Arena
+Setup: Max
+Rank 4 · Score 0.160
+95% interval 0.131 to 0.188
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · Agent Arena
+Setup: Max
+Rank 4 · Score 0.160
+95% interval 0.131 to 0.188
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#e07a5f"/><text x="18" y="92" class="lbl">Claude Sonnet 5.5</text><line x1="258.5" y1="88" x2="300.8" y2="88" stroke="#e07a5f" class="ci"/><circle cx="279.6" cy="88" r="6" fill="#e07a5f" class="dot"/><text x="524" y="92" text-anchor="end" class="val">0.160</text></g><g class="row behind" data-tip="Claude Fable 5.1 · Agent Arena
+Setup: Max
+Rank 5 · Score 0.148
+95% interval 0.128 to 0.169
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · Agent Arena
+Setup: Max
+Rank 5 · Score 0.148
+95% interval 0.128 to 0.169
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#e07a5f"/><text x="18" y="116" class="lbl">Claude Fable 5.1</text><line x1="255.7" y1="112" x2="286.6" y2="112" stroke="#e07a5f" class="ci"/><circle cx="271.1" cy="112" r="6" fill="#e07a5f" class="dot"/><text x="524" y="116" text-anchor="end" class="val">0.148</text></g><g class="row behind" data-tip="GPT-6 Astra · Agent Arena
+Setup: Max
+Rank 6 · Score 0.145
+95% interval 0.125 to 0.166
+Behind #1
+OpenAI · source: Arena" data-tc="#2fb38a" tabindex="0"><title>GPT-6 Astra · Agent Arena
+Setup: Max
+Rank 6 · Score 0.145
+95% interval 0.125 to 0.166
+Behind #1
+OpenAI · source: Arena</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#2fb38a"/><text x="18" y="140" class="lbl">GPT-6 Astra</text><line x1="253.9" y1="136" x2="284.1" y2="136" stroke="#2fb38a" class="ci"/><circle cx="269.1" cy="136" r="6" fill="#2fb38a" class="dot"/><text x="524" y="140" text-anchor="end" class="val">0.145</text></g><g class="row behind" data-tip="GPT-6.1 Sol · Agent Arena
+Setup: Max
+Rank 7 · Score 0.125
+95% interval 0.113 to 0.136
+Behind #1
+OpenAI · source: Arena" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Sol · Agent Arena
+Setup: Max
+Rank 7 · Score 0.125
+95% interval 0.113 to 0.136
+Behind #1
+OpenAI · source: Arena</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#2fb38a"/><text x="18" y="164" class="lbl">GPT-6.1 Sol</text><line x1="245.1" y1="160" x2="261.9" y2="160" stroke="#2fb38a" class="ci"/><circle cx="253.4" cy="160" r="6" fill="#2fb38a" class="dot"/><text x="524" y="164" text-anchor="end" class="val">0.125</text></g><g class="row behind" data-tip="GPT-6.1 Terra · Agent Arena
+Setup: Max
+Rank 8 · Score 0.120
+95% interval 0.107 to 0.133
+Behind #1
+OpenAI · source: Arena" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Terra · Agent Arena
+Setup: Max
+Rank 8 · Score 0.120
+95% interval 0.107 to 0.133
+Behind #1
+OpenAI · source: Arena</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#2fb38a"/><text x="18" y="188" class="lbl">GPT-6.1 Terra</text><line x1="240.5" y1="184" x2="259.4" y2="184" stroke="#2fb38a" class="ci"/><circle cx="250.0" cy="184" r="6" fill="#2fb38a" class="dot"/><text x="524" y="188" text-anchor="end" class="val">0.120</text></g><g class="row behind" data-tip="Gemini 4 Argon · Agent Arena
+Setup: High
+Rank 9 · Score 0.107
+95% interval 0.099 to 0.116
+Behind #1
+Google · source: Arena" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Argon · Agent Arena
+Setup: High
+Rank 9 · Score 0.107
+95% interval 0.099 to 0.116
+Behind #1
+Google · source: Arena</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#5b8def"/><text x="18" y="212" class="lbl">Gemini 4 Argon</text><line x1="233.9" y1="208" x2="247.2" y2="208" stroke="#5b8def" class="ci"/><circle cx="240.5" cy="208" r="6" fill="#5b8def" class="dot"/><text x="524" y="212" text-anchor="end" class="val">0.107</text></g><g class="row behind" data-tip="Muse Wonder Full · Agent Arena
+Setup: Max
+Rank 10 · Score 0.090
+95% interval 0.080 to 0.099
+Behind #1
+Meta · source: Arena" data-tc="#e3b341" tabindex="0"><title>Muse Wonder Full · Agent Arena
+Setup: Max
+Rank 10 · Score 0.090
+95% interval 0.080 to 0.099
+Behind #1
+Meta · source: Arena</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#e3b341"/><text x="18" y="236" class="lbl">Muse Wonder Full</text><line x1="220.2" y1="232" x2="234.2" y2="232" stroke="#e3b341" class="ci"/><circle cx="227.2" cy="232" r="6" fill="#e3b341" class="dot"/><text x="524" y="236" text-anchor="end" class="val">0.090</text></g><g class="row behind" data-tip="Claude Fable 5 · Agent Arena
+Setup: High
+Rank 11 · Score 0.073
+95% interval 0.061 to 0.085
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5 · Agent Arena
+Setup: High
+Rank 11 · Score 0.073
+95% interval 0.061 to 0.085
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#e07a5f"/><text x="18" y="260" class="lbl">Claude Fable 5</text><line x1="206.1" y1="256" x2="223.4" y2="256" stroke="#e07a5f" class="ci"/><circle cx="214.8" cy="256" r="6" fill="#e07a5f" class="dot"/><text x="524" y="260" text-anchor="end" class="val">0.073</text></g><g class="row behind" data-tip="Claude Opus 5 · Agent Arena
+Setup: Max
+Rank 12 · Score 0.072
+95% interval 0.059 to 0.085
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5 · Agent Arena
+Setup: Max
+Rank 12 · Score 0.072
+95% interval 0.059 to 0.085
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#e07a5f"/><text x="18" y="284" class="lbl">Claude Opus 5</text><line x1="204.4" y1="280" x2="224.0" y2="280" stroke="#e07a5f" class="ci"/><circle cx="214.2" cy="280" r="6" fill="#e07a5f" class="dot"/><text x="524" y="284" text-anchor="end" class="val">0.072</text></g></svg></div></div><p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to call · faded = behind · shaded band = the leader's 95% interval · hover for details</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -731,7 +1466,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td>1</td>
-<td>Claude Fable 5.2</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.2</td>
 <td>Max</td>
 <td>0.303</td>
 <td>0.264 to 0.343</td>
@@ -741,7 +1476,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>2</td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td>Max</td>
 <td>0.195</td>
 <td>0.175 to 0.215</td>
@@ -751,7 +1486,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>3</td>
-<td>Gemini 4 Carbon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Carbon</td>
 <td>High</td>
 <td>0.170</td>
 <td>0.163 to 0.177</td>
@@ -761,7 +1496,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>4</td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td>Max</td>
 <td>0.160</td>
 <td>0.131 to 0.188</td>
@@ -771,7 +1506,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>5</td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td>Max</td>
 <td>0.148</td>
 <td>0.128 to 0.169</td>
@@ -781,7 +1516,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>6</td>
-<td>GPT-6 Astra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6 Astra</td>
 <td>Max</td>
 <td>0.145</td>
 <td>0.125 to 0.166</td>
@@ -791,7 +1526,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>7</td>
-<td>GPT-6.1 Sol</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Sol</td>
 <td>Max</td>
 <td>0.125</td>
 <td>0.113 to 0.136</td>
@@ -801,7 +1536,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>8</td>
-<td>GPT-6.1 Terra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Terra</td>
 <td>Max</td>
 <td>0.120</td>
 <td>0.107 to 0.133</td>
@@ -811,7 +1546,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>9</td>
-<td>Gemini 4 Argon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Argon</td>
 <td>High</td>
 <td>0.107</td>
 <td>0.099 to 0.116</td>
@@ -821,7 +1556,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>10</td>
-<td>Muse Wonder Full</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder Full</td>
 <td>Max</td>
 <td>0.090</td>
 <td>0.080 to 0.099</td>
@@ -831,7 +1566,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>11</td>
-<td>Claude Fable 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5</td>
 <td>High</td>
 <td>0.073</td>
 <td>0.061 to 0.085</td>
@@ -841,7 +1576,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>12</td>
-<td>Claude Opus 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5</td>
 <td>Max</td>
 <td>0.072</td>
 <td>0.059 to 0.085</td>
@@ -853,8 +1588,128 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </table>
 <p><em>Note: Arena leaderboard dataset, CC-BY-4.0</em></p>
 <h2>Human preference (optional): WebDev Arena</h2>
-<p>Source: <a href="https://arena.ai/leaderboard/code/webdev">https://arena.ai/leaderboard/code/webdev</a> · Trust: crowd-preference · Publisher data dated 2026-11-11 · 156 models listed, top 12 shown</p>
-<div class='chartwrap'><svg class="chart" viewBox="0 0 514 294" width="100%" role="img" aria-label="WebDev Arena"><line x1="150.0" y1="4" x2="150.0" y2="270" class="grid"/><text x="150.0" y="288" text-anchor="middle" class="tick">1650</text><line x1="210.0" y1="4" x2="210.0" y2="270" class="grid"/><text x="210.0" y="288" text-anchor="middle" class="tick">1700</text><line x1="270.0" y1="4" x2="270.0" y2="270" class="grid"/><text x="270.0" y="288" text-anchor="middle" class="tick">1750</text><line x1="330.0" y1="4" x2="330.0" y2="270" class="grid"/><text x="330.0" y="288" text-anchor="middle" class="tick">1800</text><line x1="390.0" y1="4" x2="390.0" y2="270" class="grid"/><text x="390.0" y="288" text-anchor="middle" class="tick">1850</text><line x1="450.0" y1="4" x2="450.0" y2="270" class="grid"/><text x="450.0" y="288" text-anchor="middle" class="tick">1900</text><rect x="350.8" y="4" width="49.2" height="264" class="band"/><text x="0" y="20" class="lbl">Claude Fable 5.2</text><line x1="350.8" y1="16" x2="400.0" y2="16" class="ci lead"/><circle cx="375.4" cy="16" r="4.5" class="dot lead"/><text x="514" y="20" text-anchor="end" class="val">1838</text><text x="0" y="42" class="lbl">Claude Opus 5.5</text><line x1="333.5" y1="38" x2="361.7" y2="38" class="ci close"/><circle cx="347.6" cy="38" r="4.5" class="dot close"/><text x="514" y="42" text-anchor="end" class="val">1815</text><text x="0" y="64" class="lbl">Claude Sonnet 5.5 (xHigh)</text><line x1="284.9" y1="60" x2="308.5" y2="60" class="ci behind"/><circle cx="296.8" cy="60" r="4.5" class="dot behind"/><text x="514" y="64" text-anchor="end" class="val">1772</text><text x="0" y="86" class="lbl">Gemini 4 Carbon</text><line x1="273.5" y1="82" x2="310.2" y2="82" class="ci behind"/><circle cx="291.8" cy="82" r="4.5" class="dot behind"/><text x="514" y="86" text-anchor="end" class="val">1768</text><text x="0" y="108" class="lbl">GPT-6 Astra</text><line x1="276.2" y1="104" x2="296.8" y2="104" class="ci behind"/><circle cx="286.6" cy="104" r="4.5" class="dot behind"/><text x="514" y="108" text-anchor="end" class="val">1764</text><text x="0" y="130" class="lbl">GPT-6.1 Sol</text><line x1="250.2" y1="126" x2="273.7" y2="126" class="ci behind"/><circle cx="262.0" cy="126" r="4.5" class="dot behind"/><text x="514" y="130" text-anchor="end" class="val">1743</text><text x="0" y="152" class="lbl">Claude Fable 5.1</text><line x1="250.7" y1="148" x2="269.8" y2="148" class="ci behind"/><circle cx="260.3" cy="148" r="4.5" class="dot behind"/><text x="514" y="152" text-anchor="end" class="val">1742</text><text x="0" y="174" class="lbl">Muse Wonder Full</text><line x1="220.9" y1="170" x2="255.5" y2="170" class="ci behind"/><circle cx="238.2" cy="170" r="4.5" class="dot behind"/><text x="514" y="174" text-anchor="end" class="val">1724</text><text x="0" y="196" class="lbl">Claude Sonnet 5.5 (High)</text><line x1="218.2" y1="192" x2="238.3" y2="192" class="ci behind"/><circle cx="228.2" cy="192" r="4.5" class="dot behind"/><text x="514" y="196" text-anchor="end" class="val">1715</text><text x="0" y="218" class="lbl">Gemini 4 Hydrogen</text><line x1="197.8" y1="214" x2="232.3" y2="214" class="ci behind"/><circle cx="215.0" cy="214" r="4.5" class="dot behind"/><text x="514" y="218" text-anchor="end" class="val">1704</text><text x="0" y="240" class="lbl">Claude Opus 5</text><line x1="191.8" y1="236" x2="206.4" y2="236" class="ci behind"/><circle cx="199.1" cy="236" r="4.5" class="dot behind"/><text x="514" y="240" text-anchor="end" class="val">1691</text><text x="0" y="262" class="lbl">Kimi K3.1 Pro</text><line x1="183.0" y1="258" x2="206.3" y2="258" class="ci behind"/><circle cx="194.6" cy="258" r="4.5" class="dot behind"/><text x="514" y="262" text-anchor="end" class="val">1687</text></svg></div><p class='chart-note'><span class='key lead'></span>leader <span class='key close'></span>too close to call <span class='key behind'></span>behind · shaded band = leader's 95% interval</p><table>
+<p>Source: <a class="ext" href="https://arena.ai/leaderboard/code/webdev">https://arena.ai/leaderboard/code/webdev</a> · Trust: crowd-preference · Publisher data dated 2026-11-11 · 156 models listed, top 12 shown</p>
+<div class='card'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="WebDev Arena"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">1650</text><line x1="220.0" y1="4" x2="220.0" y2="294" class="grid"/><text x="220.0" y="312" text-anchor="middle" class="tick">1700</text><line x1="280.0" y1="4" x2="280.0" y2="294" class="grid"/><text x="280.0" y="312" text-anchor="middle" class="tick">1750</text><line x1="340.0" y1="4" x2="340.0" y2="294" class="grid"/><text x="340.0" y="312" text-anchor="middle" class="tick">1800</text><line x1="400.0" y1="4" x2="400.0" y2="294" class="grid"/><text x="400.0" y="312" text-anchor="middle" class="tick">1850</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">1900</text><rect x="360.8" y="4" rx="6" width="49.2" height="288" class="band"/><g class="row lead" data-tip="Claude Fable 5.2 · WebDev Arena
+Setup: xHigh
+Rank 1 · Score 1838
+95% interval 1817 to 1858
+Leader
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.2 · WebDev Arena
+Setup: xHigh
+Rank 1 · Score 1838
+95% interval 1817 to 1858
+Leader
+Anthropic · source: Arena</title><rect x="0" y="4.0" width="524" height="24" class="hit"/><circle cx="7" cy="16" r="5" fill="#e07a5f"/><text x="18" y="20" class="lbl">Claude Fable 5.2</text><line x1="360.8" y1="16" x2="410.0" y2="16" stroke="#e07a5f" class="ci"/><circle cx="385.4" cy="16" r="6" fill="#e07a5f" class="dot"/><text x="524" y="20" text-anchor="end" class="val">1838</text></g><g class="row close" data-tip="Claude Opus 5.5 · WebDev Arena
+Setup: Max
+Rank 2 · Score 1815
+95% interval 1803 to 1826
+Too close to call with #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5.5 · WebDev Arena
+Setup: Max
+Rank 2 · Score 1815
+95% interval 1803 to 1826
+Too close to call with #1
+Anthropic · source: Arena</title><rect x="0" y="28.0" width="524" height="24" class="hit"/><circle cx="7" cy="40" r="5" fill="#e07a5f"/><text x="18" y="44" class="lbl">Claude Opus 5.5</text><line x1="343.5" y1="40" x2="371.7" y2="40" stroke="#e07a5f" class="ci"/><circle cx="357.6" cy="40" r="6" fill="#e07a5f" class="dot"/><text x="524" y="44" text-anchor="end" class="val">1815</text></g><g class="row behind" data-tip="Claude Sonnet 5.5 · WebDev Arena
+Setup: xHigh
+Rank 3 · Score 1772
+95% interval 1762 to 1782
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · WebDev Arena
+Setup: xHigh
+Rank 3 · Score 1772
+95% interval 1762 to 1782
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="52.0" width="524" height="24" class="hit"/><circle cx="7" cy="64" r="5" fill="#e07a5f"/><text x="18" y="68" class="lbl">Claude Sonnet 5.5 (xHigh)</text><line x1="294.9" y1="64" x2="318.5" y2="64" stroke="#e07a5f" class="ci"/><circle cx="306.8" cy="64" r="6" fill="#e07a5f" class="dot"/><text x="524" y="68" text-anchor="end" class="val">1772</text></g><g class="row behind" data-tip="Gemini 4 Carbon · WebDev Arena
+Setup: High
+Rank 4 · Score 1768
+95% interval 1753 to 1784
+Behind #1
+Google · source: Arena" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Carbon · WebDev Arena
+Setup: High
+Rank 4 · Score 1768
+95% interval 1753 to 1784
+Behind #1
+Google · source: Arena</title><rect x="0" y="76.0" width="524" height="24" class="hit"/><circle cx="7" cy="88" r="5" fill="#5b8def"/><text x="18" y="92" class="lbl">Gemini 4 Carbon</text><line x1="283.5" y1="88" x2="320.2" y2="88" stroke="#5b8def" class="ci"/><circle cx="301.8" cy="88" r="6" fill="#5b8def" class="dot"/><text x="524" y="92" text-anchor="end" class="val">1768</text></g><g class="row behind" data-tip="GPT-6 Astra · WebDev Arena
+Setup: Max
+Rank 5 · Score 1764
+95% interval 1755 to 1772
+Behind #1
+OpenAI · source: Arena" data-tc="#2fb38a" tabindex="0"><title>GPT-6 Astra · WebDev Arena
+Setup: Max
+Rank 5 · Score 1764
+95% interval 1755 to 1772
+Behind #1
+OpenAI · source: Arena</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#2fb38a"/><text x="18" y="116" class="lbl">GPT-6 Astra</text><line x1="286.2" y1="112" x2="306.8" y2="112" stroke="#2fb38a" class="ci"/><circle cx="296.6" cy="112" r="6" fill="#2fb38a" class="dot"/><text x="524" y="116" text-anchor="end" class="val">1764</text></g><g class="row behind" data-tip="GPT-6.1 Sol · WebDev Arena
+Setup: Max
+Rank 6 · Score 1743
+95% interval 1734 to 1753
+Behind #1
+OpenAI · source: Arena" data-tc="#2fb38a" tabindex="0"><title>GPT-6.1 Sol · WebDev Arena
+Setup: Max
+Rank 6 · Score 1743
+95% interval 1734 to 1753
+Behind #1
+OpenAI · source: Arena</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#2fb38a"/><text x="18" y="140" class="lbl">GPT-6.1 Sol</text><line x1="260.2" y1="136" x2="283.7" y2="136" stroke="#2fb38a" class="ci"/><circle cx="272.0" cy="136" r="6" fill="#2fb38a" class="dot"/><text x="524" y="140" text-anchor="end" class="val">1743</text></g><g class="row behind" data-tip="Claude Fable 5.1 · WebDev Arena
+Setup: Max
+Rank 7 · Score 1742
+95% interval 1734 to 1750
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Fable 5.1 · WebDev Arena
+Setup: Max
+Rank 7 · Score 1742
+95% interval 1734 to 1750
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="148.0" width="524" height="24" class="hit"/><circle cx="7" cy="160" r="5" fill="#e07a5f"/><text x="18" y="164" class="lbl">Claude Fable 5.1</text><line x1="260.7" y1="160" x2="279.8" y2="160" stroke="#e07a5f" class="ci"/><circle cx="270.3" cy="160" r="6" fill="#e07a5f" class="dot"/><text x="524" y="164" text-anchor="end" class="val">1742</text></g><g class="row behind" data-tip="Muse Wonder Full · WebDev Arena
+Setup: Max
+Rank 8 · Score 1724
+95% interval 1709 to 1738
+Behind #1
+Meta · source: Arena" data-tc="#e3b341" tabindex="0"><title>Muse Wonder Full · WebDev Arena
+Setup: Max
+Rank 8 · Score 1724
+95% interval 1709 to 1738
+Behind #1
+Meta · source: Arena</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#e3b341"/><text x="18" y="188" class="lbl">Muse Wonder Full</text><line x1="230.9" y1="184" x2="265.5" y2="184" stroke="#e3b341" class="ci"/><circle cx="248.2" cy="184" r="6" fill="#e3b341" class="dot"/><text x="524" y="188" text-anchor="end" class="val">1724</text></g><g class="row behind" data-tip="Claude Sonnet 5.5 · WebDev Arena
+Setup: High
+Rank 9 · Score 1715
+95% interval 1707 to 1724
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Sonnet 5.5 · WebDev Arena
+Setup: High
+Rank 9 · Score 1715
+95% interval 1707 to 1724
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="196.0" width="524" height="24" class="hit"/><circle cx="7" cy="208" r="5" fill="#e07a5f"/><text x="18" y="212" class="lbl">Claude Sonnet 5.5 (High)</text><line x1="228.2" y1="208" x2="248.3" y2="208" stroke="#e07a5f" class="ci"/><circle cx="238.2" cy="208" r="6" fill="#e07a5f" class="dot"/><text x="524" y="212" text-anchor="end" class="val">1715</text></g><g class="row behind" data-tip="Gemini 4 Hydrogen · WebDev Arena
+Setup: High
+Rank 10 · Score 1704
+95% interval 1690 to 1719
+Behind #1
+Google · source: Arena" data-tc="#5b8def" tabindex="0"><title>Gemini 4 Hydrogen · WebDev Arena
+Setup: High
+Rank 10 · Score 1704
+95% interval 1690 to 1719
+Behind #1
+Google · source: Arena</title><rect x="0" y="220.0" width="524" height="24" class="hit"/><circle cx="7" cy="232" r="5" fill="#5b8def"/><text x="18" y="236" class="lbl">Gemini 4 Hydrogen</text><line x1="207.8" y1="232" x2="242.3" y2="232" stroke="#5b8def" class="ci"/><circle cx="225.0" cy="232" r="6" fill="#5b8def" class="dot"/><text x="524" y="236" text-anchor="end" class="val">1704</text></g><g class="row behind" data-tip="Claude Opus 5 · WebDev Arena
+Setup: Max
+Rank 11 · Score 1691
+95% interval 1685 to 1697
+Behind #1
+Anthropic · source: Arena" data-tc="#e07a5f" tabindex="0"><title>Claude Opus 5 · WebDev Arena
+Setup: Max
+Rank 11 · Score 1691
+95% interval 1685 to 1697
+Behind #1
+Anthropic · source: Arena</title><rect x="0" y="244.0" width="524" height="24" class="hit"/><circle cx="7" cy="256" r="5" fill="#e07a5f"/><text x="18" y="260" class="lbl">Claude Opus 5</text><line x1="201.8" y1="256" x2="216.4" y2="256" stroke="#e07a5f" class="ci"/><circle cx="209.1" cy="256" r="6" fill="#e07a5f" class="dot"/><text x="524" y="260" text-anchor="end" class="val">1691</text></g><g class="row behind" data-tip="Kimi K3.1 Pro · WebDev Arena
+Setup: Max
+Rank 12 · Score 1687
+95% interval 1678 to 1697
+Behind #1
+Moonshot AI · source: Arena" data-tc="#a78bfa" tabindex="0"><title>Kimi K3.1 Pro · WebDev Arena
+Setup: Max
+Rank 12 · Score 1687
+95% interval 1678 to 1697
+Behind #1
+Moonshot AI · source: Arena</title><rect x="0" y="268.0" width="524" height="24" class="hit"/><circle cx="7" cy="280" r="5" fill="#a78bfa"/><text x="18" y="284" class="lbl">Kimi K3.1 Pro</text><line x1="193.0" y1="280" x2="216.3" y2="280" stroke="#a78bfa" class="ci"/><circle cx="204.6" cy="280" r="6" fill="#a78bfa" class="dot"/><text x="524" y="284" text-anchor="end" class="val">1687</text></g></svg></div></div><p class='chart-note'>Each colour is the model's lab · full colour = leader or too close to call · faded = behind · shaded band = the leader's 95% interval · hover for details</p><table>
 <thead>
 <tr>
 <th>#</th>
@@ -869,7 +1724,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <tbody>
 <tr>
 <td>1</td>
-<td>Claude Fable 5.2</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.2</td>
 <td>xHigh</td>
 <td>1838</td>
 <td>1817 to 1858</td>
@@ -878,7 +1733,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>2</td>
-<td>Claude Opus 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5.5</td>
 <td>Max</td>
 <td>1815</td>
 <td>1803 to 1826</td>
@@ -887,7 +1742,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>3</td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td>xHigh</td>
 <td>1772</td>
 <td>1762 to 1782</td>
@@ -896,7 +1751,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>4</td>
-<td>Gemini 4 Carbon</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Carbon</td>
 <td>High</td>
 <td>1768</td>
 <td>1753 to 1784</td>
@@ -905,7 +1760,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>5</td>
-<td>GPT-6 Astra</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6 Astra</td>
 <td>Max</td>
 <td>1764</td>
 <td>1755 to 1772</td>
@@ -914,7 +1769,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>6</td>
-<td>GPT-6.1 Sol</td>
+<td><img class='tlogo fill' src='assets/logos/codex.png' width='20' height='20' alt='' title='OpenAI'>GPT-6.1 Sol</td>
 <td>Max</td>
 <td>1743</td>
 <td>1734 to 1753</td>
@@ -923,7 +1778,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>7</td>
-<td>Claude Fable 5.1</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Fable 5.1</td>
 <td>Max</td>
 <td>1742</td>
 <td>1734 to 1750</td>
@@ -932,7 +1787,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>8</td>
-<td>Muse Wonder Full</td>
+<td><span class='ldot' style='--lc:#e3b341;width:20px;height:20px' aria-hidden='true'></span>Muse Wonder Full</td>
 <td>Max</td>
 <td>1724</td>
 <td>1709 to 1738</td>
@@ -941,7 +1796,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>9</td>
-<td>Claude Sonnet 5.5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Sonnet 5.5</td>
 <td>High</td>
 <td>1715</td>
 <td>1707 to 1724</td>
@@ -950,7 +1805,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>10</td>
-<td>Gemini 4 Hydrogen</td>
+<td><img class='tlogo' src='assets/logos/antigravity.png' width='20' height='20' alt='' title='Google'>Gemini 4 Hydrogen</td>
 <td>High</td>
 <td>1704</td>
 <td>1690 to 1719</td>
@@ -959,7 +1814,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>11</td>
-<td>Claude Opus 5</td>
+<td><img class='tlogo' src='assets/logos/claude.png' width='20' height='20' alt='' title='Anthropic'>Claude Opus 5</td>
 <td>Max</td>
 <td>1691</td>
 <td>1685 to 1697</td>
@@ -968,7 +1823,7 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 </tr>
 <tr>
 <td>12</td>
-<td>Kimi K3.1 Pro</td>
+<td><span class='ldot' style='--lc:#a78bfa;width:20px;height:20px' aria-hidden='true'></span>Kimi K3.1 Pro</td>
 <td>Max</td>
 <td>1687</td>
 <td>1678 to 1697</td>
@@ -983,10 +1838,28 @@ table.rankgrid .crowd{border-left:2px dashed var(--line)}
 <li><strong>Trust labels.</strong> <em>independent</em>: a third party ran the models. <em>crowd-preference</em>: ranking from public human votes. Vendor-reported scores are never mixed in.</li>
 <li><strong>Too close to call.</strong> Shown when a model's published 95% interval overlaps the leader's. Where a publisher shows no interval, the table says <em>no margin published</em>.</li>
 <li><strong>GDPx score</strong> is GDPx's own formula (equal weight per domain and per partner) applied to the data GDPx publishes; it matches the numbers on gdpx.semianalysis.com. Credit: GDPx by SemiAnalysis.</li>
-<li><strong>Arena</strong> data comes from Arena's official dataset (<a href="https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset">lmarena-ai/leaderboard-dataset</a>, CC-BY-4.0).</li>
+<li><strong>Arena</strong> data comes from Arena's official dataset (<a class="ext" href="https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset">lmarena-ai/leaderboard-dataset</a>, CC-BY-4.0).</li>
 </ul>
 <details><summary>Model names seen at only one publisher (111)</summary>
 
 Beam 1.0, Beam 1.0 501B A23B, Claude 4 Sonnet, Claude 4.5 Haiku, Claude 4.5 Sonnet, Claude Opus 4.5 20251101, Claude Sonnet 4, Codestral 2405, DeepSeek V3.2 Exp, DeepSeek V4 Flash, DeepSeek V4 Flash Preview, DeepSeek V4 Pro, DeepSeek V4 Pro Preview, DeepSeek V4.1 Flash, DeepSeek V4.1 Flash 1017, DeepSeek V4.1 Flash 20260910, DeepSeek V4.1 Flash 20261017, Devstral, Devstral 2, GLM 5, GPT Oss 120b, GPT-5, GPT-5 2025 08 07, GPT-5.1 Codex, GPT-5.1 Codex Mini, GPT-5.3 Codex, GPT-5.6, GPT-5.6 Luna, GPT-6 Sol, Gemini 2.5 Pro, Gemini 2.5 Pro Preview, Gemini 3 Flash Preview, Gemini 3 Pro Preview, Gemini 3.1 Flash Lite, Gemini 3.1 Flash Lite Preview, Gemini 3.1 Pro, Gemini 3.5 Flash Lite, Gemini 3.6 Flash, Gemini 3.7 Flash, Gemma 3 27b It, Gemma 4 26B A4B, Gemma 4 31B, Granite 4.1 8B, Grok 4 Fast, Grok 4.1, Grok 4.1 Fast, Grok 4.20 Beta, Grok 4.3, Grok 4.5, Grok Code Fast 1, Hy3, Hy3 Preview, Hy4, Hy4 Preview, K2 Horizon 375B A23B, Kat Coder Pro V1, Kimi K2 Instruct, Kimi K2 Thinking Turbo, Kimi K2.6, Kimi K2.7 Code, Laguna M.1, Laguna XS.2, Ling 3.1 Flash 1019, Mercury 2, Mimo V2 Flash, Mimo V2 Pro, Mimo V2.5, Mimo V2.5 Pro, Mimo V2.6 Flash, MiniMax 2.1, MiniMax M2, MiniMax M2.1 Preview, MiniMax M2.5, MiniMax M2.7, Mistral Large 3, Mistral Medium 3.5, Muse Ember 1.0, Muse Glimmer, Muse Spark, Muse Spark 1.2, Muse Wonder 1.0, Nvidia Nemotron 3.5 Super VL 120B A12B, O3 Pro, OpenAI GPT 4o, OpenAI GPT 5, Qwen 3.8, Qwen3 Coder 480B A35B Instruct, Qwen3.5 122B A10B, Qwen3.5 27B, Qwen3.5 35B A3B, Qwen3.5 397B A17B, Qwen3.5 Flash, Qwen3.6 Max Preview, Qwen3.6 Plus, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.8, Qwen3.8 2.4T A95B, Qwen3.8 Flash Next, Qwen3.8 Max, Seed2.1 Pro Preview, Solar Pro 4, Spark X2.6, Step 5 Preview, Tencent Hy4, Trinity Large, U2 Flash, llama3 1 405b Instruct, llama4 Maverick 17b Instruct, qwen3 235b a22b, qwen3 Coder 480b a35b
 
-</details><footer><p>Scores belong to their publishers: <a href="https://labs.scale.com/leaderboard">Scale Labs</a>, <a href="https://artificialanalysis.ai">Artificial Analysis</a>, <a href="https://gdpx.semianalysis.com/">GDPx by SemiAnalysis</a> (top 3 quoted) and <a href="https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset">Arena</a> (CC-BY-4.0). Every table links to its source; check the source for the full and current leaderboard.</p><p>Summaries and insights are written by AI (Claude) from the tables and published automatically.</p></footer></main></body></html>
+</details></main><footer class='wrap site'><span>Updated every Sunday by a Claude scheduled task. Every number links its source. Created by <a href='https://www.linkedin.com/in/ibrahim-sobh-phd-8681757/' target='_blank' rel='noopener noreferrer'>Ibrahim Sobh</a>.</span><span><a class='ext' href='https://labs.scale.com/leaderboard'>Scale Labs</a> · <a class='ext' href='https://artificialanalysis.ai'>Artificial Analysis</a> · <a class='ext' href='https://gdpx.semianalysis.com/'>GDPx by SemiAnalysis</a> (top 3 quoted) · <a class='ext' href='https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset'>Arena</a> (CC-BY-4.0) · <a href='index.html#weeks'>Archive</a> · <a class='ext' href='https://github.com/IbrahimSobh/ai-benchmark-tracker'>Source</a></span><span class='logos-note'>Summaries and insights are written by AI (Claude) from the tables and published automatically. Scores belong to their publishers. Logos are trademarks of their owners and are used only to identify each lab.</span></footer><script>
+(function(){
+  var root=document.documentElement, tb=document.getElementById('theme');
+  function tlabel(){if(tb)tb.setAttribute('aria-label','Switch to '+(root.dataset.theme==='light'?'dark':'light')+' theme')}
+  if(tb)tb.onclick=function(){root.dataset.theme=root.dataset.theme==='light'?'dark':'light';tlabel();try{localStorage.setItem('afb-theme',root.dataset.theme)}catch(e){}};
+  tlabel();
+  // Card tooltips: move each plain title into data-tip so only the styled card shows
+  document.querySelectorAll('[title][data-tc]').forEach(function(el){el.dataset.tip=el.getAttribute('title');el.removeAttribute('title')});
+  document.querySelectorAll('svg [data-tip] > title').forEach(function(t){t.remove()});
+  var tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+  function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function show(el){var L=el.dataset.tip.split('\n');tip.innerHTML='<b>'+esc(L[0])+'</b>'+L.slice(1).map(function(x){return'<span>'+esc(x)+'</span>'}).join('');
+    tip.style.setProperty('--tc',el.dataset.tc||'');tip.hidden=false;var r=el.getBoundingClientRect(),w=tip.offsetWidth,h=tip.offsetHeight;
+    var x=Math.min(Math.max(8,r.left+r.width/2-w/2),innerWidth-w-8),y=r.top-h-8;if(y<64)y=r.bottom+8;tip.style.left=(x+scrollX)+'px';tip.style.top=(y+scrollY)+'px'}
+  function hide(){tip.hidden=true}
+  document.querySelectorAll('[data-tip]').forEach(function(el){el.addEventListener('mouseenter',function(){show(el)});el.addEventListener('mouseleave',hide);el.addEventListener('focus',function(){show(el)});el.addEventListener('blur',hide)});
+  addEventListener('scroll',hide,{passive:true});
+})();
+</script></body></html>

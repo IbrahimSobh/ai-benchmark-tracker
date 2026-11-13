@@ -19,7 +19,10 @@ Output:
 - `reports/<date>-report.md`: the tables file. The script rebuilds it on every run.
 - `reports/<date>-insights.md`: the summary and insights, written by the AI from the tables file
   (rules in `prompts/analyze.md`). The script never touches this file.
-- `docs/`: the website, built by `python build_site.py` and served by GitHub Pages. Charts (rank grid
+- `docs/`: the website, built by `python build_site.py` and served by GitHub Pages. Its look follows
+  [Coding Agents Digest](https://github.com/IbrahimSobh/coding-agents-digest): same colours, dark/light themes,
+  self-hosted Newsreader and Schibsted Grotesk fonts (SIL OFL, `docs/assets/fonts/`) and card tooltips.
+  Lab colours and logos are in `bench/labs.py`; the logos (Claude, Antigravity, Codex) are the digest's files. Charts (rank grid
   and score-with-margin charts, `bench/charts.py`) are drawn from `data/clean/` by the script, not by the AI.
 
 ## Weekly automation
