@@ -4,7 +4,8 @@ Colours for the first five labs match the Coding Agents Digest tool colours (Cla
 Antigravity blue = Google, Codex green = OpenAI), so both sites read alike. Logos are the same files the
 digest uses (docs/assets/logos/, copied from IbrahimSobh/coding-agents-digest): Claude for Anthropic,
 Antigravity for Google, Codex for OpenAI. The other labs' logos come from the ai-news-reel skill library;
-docs/assets/logos/CREDITS.md lists each file's source and licence. Labs without a logo get a coloured dot.
+MiniMax and Inkling logos were supplied by the repo owner. docs/assets/logos/CREDITS.md lists each file's source
+and licence. Labs without a logo get a short text badge instead.
 Logos are trademarks of their owners and are used only to identify each lab.
 """
 from __future__ import annotations
@@ -22,7 +23,8 @@ LABS = {
     "xAI":         {"color": "#a3a3a8", "logo": "xai.png"},
     "Qwen":        {"color": "#c98fb0", "logo": "qwen.png"},
     "Zhipu AI":    {"color": "#8fb996", "logo": "zhipu.png"},
-    "MiniMax":     {"color": "#c9a77c", "logo": None},
+    "MiniMax":     {"color": "#e8506e", "logo": "minimax.png", "fill": True},
+    "Inkling":     {"color": "#5c5560", "logo": "inkling.png", "fill": True, "wide": True},
     "Mistral AI":  {"color": "#d9a066", "logo": "mistral.png"},
     "Xiaomi":      {"color": "#e09a6b", "logo": "xiaomi.png"},
     "Other":       {"color": "#8a8494", "logo": None},
@@ -31,9 +33,9 @@ LABS = {
 # First word(s) of the canonical model name -> lab
 PREFIXES = [
     (r"^Claude\b", "Anthropic"), (r"^(Gemini|Gemma)\b", "Google"), (r"^(GPT|O\d|OpenAI)\b", "OpenAI"),
-    (r"^(Muse|Llama)\b", "Meta"), (r"^Kimi\b", "Moonshot AI"), (r"^DeepSeek\b", "DeepSeek"),
+    (r"^(Muse|Llama)", "Meta"), (r"^Kimi\b", "Moonshot AI"), (r"^DeepSeek\b", "DeepSeek"),
     (r"^Grok\b", "xAI"), (r"^Qwen", "Qwen"), (r"^GLM\b", "Zhipu AI"), (r"^MiniMax\b", "MiniMax"),
-    (r"^(Mistral|Devstral|Codestral)\b", "Mistral AI"), (r"^Mimo\b", "Xiaomi"),
+    (r"^(Mistral|Devstral|Codestral)\b", "Mistral AI"), (r"^Mimo\b", "Xiaomi"), (r"^Inkling\b", "Inkling"),
 ]
 
 
@@ -48,12 +50,23 @@ def color_of(model: str) -> str:
     return LABS[lab_of(model)]["color"]
 
 
-def logo_html(lab: str, size: int = 22) -> str:
-    """The lab's mark on a white tile (as on the digest, visible in both themes), or a coloured dot."""
+def badge_text(lab: str, model: str = "") -> str:
+    """Short text for a lab with no logo: the lab's initials, or for 'Other' the model name's first letters."""
+    if lab == "Other":
+        word = re.sub(r"[^A-Za-z0-9]", "", (model.split() or ["?"])[0]) or "?"
+        return word[:2].capitalize()
+    words = re.findall(r"[A-Za-z0-9]+", lab)
+    return ("".join(w[0] for w in words) if len(words) > 1 else lab[:2]).upper()[:3]
+
+
+def logo_html(lab: str, size: int = 22, model: str = "") -> str:
+    """The lab's mark on a white tile (as on the digest, visible in both themes), or a text badge."""
     info = LABS.get(lab, LABS["Other"])
     if not info["logo"]:
-        return (f"<span class='ldot' style='--lc:{info['color']};width:{size}px;height:{size}px' "
-                f"aria-hidden='true'></span>")
+        name = model if lab == "Other" and model else lab
+        return (f"<span class='lbadge' style='--lc:{info['color']};height:{size}px;min-width:{size}px;"
+                f"font-size:{max(9, round(size * 0.42))}px' title='{html.escape(name)}' aria-hidden='true'>"
+                f"{html.escape(badge_text(lab, model))}</span>")
     cls = "tlogo" + (" fill" if info.get("fill") else "") + (" wide" if info.get("wide") else "")
     width = round(size * 2.2) if info.get("wide") else size  # wordmarks that may not be cropped get a wider tile
     return (f"<img class='{cls}' src='assets/logos/{info['logo']}' width='{width}' height='{size}' "

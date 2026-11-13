@@ -257,7 +257,7 @@ def rank_grid(by_bench: dict[str, list[dict]], columns: list[tuple[str, str]], c
                              f"{rk}{' ≈' if st == 'close' else ''}</td>")
             else:
                 cells.append(f"<td class='r0{extra}' title='{html.escape(m)}: not in the rows this table shows'>–</td>")
-        body.append(f"<tr><th class='model'>{logo_html(lab_of(m), 20)}<span>{html.escape(m)}</span></th>"
+        body.append(f"<tr><th class='model'>{logo_html(lab_of(m), 20, m)}<span>{html.escape(m)}</span></th>"
                     f"{''.join(cells)}</tr>")
     note = ("Stronger tile = higher rank, in the lab's colour · ≈ too close to call with #1 · – not in the rows "
             "the table shows · right of the dashed line: public votes · hover a tile for details")
@@ -330,7 +330,7 @@ table.rankgrid tr:first-child th:first-child{width:190px}
 table.rankgrid th,table.rankgrid td{border:0;padding:0;text-align:center;white-space:nowrap;background:none}
 table.rankgrid tr:first-child th{font-weight:400;color:var(--soft);font-size:12.5px;padding:0 2px 4px;line-height:1.2;white-space:normal}
 table.rankgrid th.model{text-align:left;font-weight:500;color:var(--ink);padding-right:10px}
-table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .ldot{margin-right:8px}
+table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .lbadge{margin-right:8px}
 table.rankgrid td{height:32px;border-radius:9px;font-weight:700;font-size:13px;background:var(--tile)}
 table.rankgrid td.r0{color:var(--soft);font-weight:400}
 table.rankgrid td.rk{cursor:default} table.rankgrid td.rk:hover,table.rankgrid td.rk:focus{outline:2px solid var(--ink);outline-offset:1px}

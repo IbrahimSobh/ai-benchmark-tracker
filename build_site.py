@@ -117,7 +117,7 @@ nav a:hover,nav a.on{text-decoration:underline;text-underline-offset:6px}
 .track .tlogo.fill{padding:0}
 .tlogo{display:inline-block;box-sizing:border-box;padding:3px;border-radius:6px;background:#fff;border:1px solid rgba(128,138,160,.35);vertical-align:middle;object-fit:contain;flex:none}
 .tlogo.fill{padding:0;border-color:transparent}
-.ldot{display:inline-block;border-radius:50%;background:var(--lc);vertical-align:middle;flex:none;transform:scale(.62)}
+.lbadge{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0 3px;border-radius:6px;background:color-mix(in srgb,var(--lc) 22%,transparent);border:1px solid color-mix(in srgb,var(--lc) 60%,transparent);color:var(--ink);font-weight:700;letter-spacing:.2px;line-height:1;vertical-align:middle;flex:none}
 /* section heads with a pill on the right */
 .shead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:64px 0 14px}
 .shead h2{margin:0}
@@ -131,7 +131,7 @@ table{border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overfl
 th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}
 tr:last-child td{border-bottom:0}
 th{color:var(--muted);font-weight:500;font-size:13px}
-td .tlogo,td .ldot{margin-right:8px}
+td .tlogo,td .lbadge{margin-right:8px}
 details{margin:12px 0;color:var(--muted)}
 .ctag{font-size:13px;color:var(--soft);margin:0 0 4px;text-transform:none}
 .scard{font-family:var(--serif);font-size:21px;line-height:1.5;padding:26px 30px}
@@ -381,7 +381,7 @@ def report_body(day: str, md_text: str, by_bench: dict[str, list[dict]]) -> str:
                 change = "same" if abs(d) < 1e-9 else (f"{d:+.1f}" if unit != "score" else f"{d:+.3f}")
             tip = charts.tip_text(r, bench, st, r["rank"])
             cells = [str(r["rank"] or ""),
-                     f"{logo_html(lab_of(r['model']), 20)}{html.escape(r['model'])}",
+                     f"{logo_html(lab_of(r['model']), 20, r['model'])}{html.escape(r['model'])}",
                      html.escape(r["setup"]), charts.fmt(r["score"], unit)]
             tds = "".join(f"<td{' class=num' if i in (0, 3) else ''}>{c}</td>" for i, c in enumerate(cells))
             tds += f"<td class='cc'>{charts.cell_svg(rows, r, bench)}</td>"

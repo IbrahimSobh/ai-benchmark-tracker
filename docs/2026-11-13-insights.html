@@ -50,7 +50,7 @@ nav a:hover,nav a.on{text-decoration:underline;text-underline-offset:6px}
 .track .tlogo.fill{padding:0}
 .tlogo{display:inline-block;box-sizing:border-box;padding:3px;border-radius:6px;background:#fff;border:1px solid rgba(128,138,160,.35);vertical-align:middle;object-fit:contain;flex:none}
 .tlogo.fill{padding:0;border-color:transparent}
-.ldot{display:inline-block;border-radius:50%;background:var(--lc);vertical-align:middle;flex:none;transform:scale(.62)}
+.lbadge{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0 3px;border-radius:6px;background:color-mix(in srgb,var(--lc) 22%,transparent);border:1px solid color-mix(in srgb,var(--lc) 60%,transparent);color:var(--ink);font-weight:700;letter-spacing:.2px;line-height:1;vertical-align:middle;flex:none}
 /* section heads with a pill on the right */
 .shead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:64px 0 14px}
 .shead h2{margin:0}
@@ -64,7 +64,7 @@ table{border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overfl
 th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}
 tr:last-child td{border-bottom:0}
 th{color:var(--muted);font-weight:500;font-size:13px}
-td .tlogo,td .ldot{margin-right:8px}
+td .tlogo,td .lbadge{margin-right:8px}
 details{margin:12px 0;color:var(--muted)}
 .ctag{font-size:13px;color:var(--soft);margin:0 0 4px;text-transform:none}
 .scard{font-family:var(--serif);font-size:21px;line-height:1.5;padding:26px 30px}
@@ -136,7 +136,7 @@ table.rankgrid tr:first-child th:first-child{width:190px}
 table.rankgrid th,table.rankgrid td{border:0;padding:0;text-align:center;white-space:nowrap;background:none}
 table.rankgrid tr:first-child th{font-weight:400;color:var(--soft);font-size:12.5px;padding:0 2px 4px;line-height:1.2;white-space:normal}
 table.rankgrid th.model{text-align:left;font-weight:500;color:var(--ink);padding-right:10px}
-table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .ldot{margin-right:8px}
+table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .lbadge{margin-right:8px}
 table.rankgrid td{height:32px;border-radius:9px;font-weight:700;font-size:13px;background:var(--tile)}
 table.rankgrid td.r0{color:var(--soft);font-weight:400}
 table.rankgrid td.rk{cursor:default} table.rankgrid td.rk:hover,table.rankgrid td.rk:focus{outline:2px solid var(--ink);outline-offset:1px}
@@ -492,11 +492,11 @@ Moonshot AI · source: Scale Labs</title><rect x="0" y="76.0" width="524" height
 Rank 4 · Score 97.7%
 95% interval 96.2% to 99.1%
 Too close to call with #1
-Other · source: Scale Labs" data-tc="#8a8494" tabindex="0"><title>Inkling 2 Small · SWE-Bench Pro V2 (Full)
+Inkling · source: Scale Labs" data-tc="#5c5560" tabindex="0"><title>Inkling 2 Small · SWE-Bench Pro V2 (Full)
 Rank 4 · Score 97.7%
 95% interval 96.2% to 99.1%
 Too close to call with #1
-Other · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#8a8494"/><text x="18" y="116" class="lbl">Inkling 2 Small</text><line x1="175.0" y1="112" x2="394.0" y2="112" stroke="#8a8494" class="ci"/><circle cx="284.5" cy="112" r="6" fill="#8a8494" class="dot"/><text x="524" y="116" text-anchor="end" class="val">97.7%</text></g></svg></div></div><details class='more'><summary>Show all 12</summary><div class='all'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="SWE-Bench Pro V2 (Full)"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">94%</text><line x1="260.0" y1="4" x2="260.0" y2="294" class="grid"/><text x="260.0" y="312" text-anchor="middle" class="tick">96%</text><line x1="360.0" y1="4" x2="360.0" y2="294" class="grid"/><text x="360.0" y="312" text-anchor="middle" class="tick">98%</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">100%</text><rect x="410.0" y="4" rx="6" width="40.0" height="288" class="band"/><g class="row lead" data-tip="Claude Opus 5 · SWE-Bench Pro V2 (Full)
+Inkling · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#5c5560"/><text x="18" y="116" class="lbl">Inkling 2 Small</text><line x1="175.0" y1="112" x2="394.0" y2="112" stroke="#5c5560" class="ci"/><circle cx="284.5" cy="112" r="6" fill="#5c5560" class="dot"/><text x="524" y="116" text-anchor="end" class="val">97.7%</text></g></svg></div></div><details class='more'><summary>Show all 12</summary><div class='all'><div class='chartwrap'><svg class="chart" viewBox="0 0 524 318" width="100%" role="img" aria-label="SWE-Bench Pro V2 (Full)"><line x1="160.0" y1="4" x2="160.0" y2="294" class="grid"/><text x="160.0" y="312" text-anchor="middle" class="tick">94%</text><line x1="260.0" y1="4" x2="260.0" y2="294" class="grid"/><text x="260.0" y="312" text-anchor="middle" class="tick">96%</text><line x1="360.0" y1="4" x2="360.0" y2="294" class="grid"/><text x="360.0" y="312" text-anchor="middle" class="tick">98%</text><line x1="460.0" y1="4" x2="460.0" y2="294" class="grid"/><text x="460.0" y="312" text-anchor="middle" class="tick">100%</text><rect x="410.0" y="4" rx="6" width="40.0" height="288" class="band"/><g class="row lead" data-tip="Claude Opus 5 · SWE-Bench Pro V2 (Full)
 Setup: Claude Code, xhigh
 Rank 1 · Score 99.4%
 95% interval 99.0% to 99.8%
@@ -540,11 +540,11 @@ Moonshot AI · source: Scale Labs</title><rect x="0" y="76.0" width="524" height
 Rank 4 · Score 97.7%
 95% interval 96.2% to 99.1%
 Too close to call with #1
-Other · source: Scale Labs" data-tc="#8a8494" tabindex="0"><title>Inkling 2 Small · SWE-Bench Pro V2 (Full)
+Inkling · source: Scale Labs" data-tc="#5c5560" tabindex="0"><title>Inkling 2 Small · SWE-Bench Pro V2 (Full)
 Rank 4 · Score 97.7%
 95% interval 96.2% to 99.1%
 Too close to call with #1
-Other · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#8a8494"/><text x="18" y="116" class="lbl">Inkling 2 Small</text><line x1="270.0" y1="112" x2="416.0" y2="112" stroke="#8a8494" class="ci"/><circle cx="343.0" cy="112" r="6" fill="#8a8494" class="dot"/><text x="524" y="116" text-anchor="end" class="val">97.7%</text></g><g class="row behind" data-tip="GPT-6 Astra · SWE-Bench Pro V2 (Full)
+Inkling · source: Scale Labs</title><rect x="0" y="100.0" width="524" height="24" class="hit"/><circle cx="7" cy="112" r="5" fill="#5c5560"/><text x="18" y="116" class="lbl">Inkling 2 Small</text><line x1="270.0" y1="112" x2="416.0" y2="112" stroke="#5c5560" class="ci"/><circle cx="343.0" cy="112" r="6" fill="#5c5560" class="dot"/><text x="524" y="116" text-anchor="end" class="val">97.7%</text></g><g class="row behind" data-tip="GPT-6 Astra · SWE-Bench Pro V2 (Full)
 Setup: Codex, high
 Rank 5 · Score 96.9%
 95% interval 95.8% to 98.0%
@@ -569,12 +569,12 @@ Setup: mini-swe-agent, xhigh
 Rank 6 · Score 96.6%
 95% interval 95.4% to 97.7%
 Behind #1
-MiniMax · source: Scale Labs" data-tc="#c9a77c" tabindex="0"><title>MiniMax M3.1 Flash · SWE-Bench Pro V2 (Full)
+MiniMax · source: Scale Labs" data-tc="#e8506e" tabindex="0"><title>MiniMax M3.1 Flash · SWE-Bench Pro V2 (Full)
 Setup: mini-swe-agent, xhigh
 Rank 6 · Score 96.6%
 95% interval 95.4% to 97.7%
 Behind #1
-MiniMax · source: Scale Labs</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#c9a77c"/><text x="18" y="188" class="lbl">MiniMax M3.1 Flash</text><line x1="230.5" y1="184" x2="346.5" y2="184" stroke="#c9a77c" class="ci"/><circle cx="288.5" cy="184" r="6" fill="#c9a77c" class="dot"/><text x="524" y="188" text-anchor="end" class="val">96.6%</text></g><g class="row behind" data-tip="GPT-6.1 Sol · SWE-Bench Pro V2 (Full)
+MiniMax · source: Scale Labs</title><rect x="0" y="172.0" width="524" height="24" class="hit"/><circle cx="7" cy="184" r="5" fill="#e8506e"/><text x="18" y="188" class="lbl">MiniMax M3.1 Flash</text><line x1="230.5" y1="184" x2="346.5" y2="184" stroke="#e8506e" class="ci"/><circle cx="288.5" cy="184" r="6" fill="#e8506e" class="dot"/><text x="524" y="188" text-anchor="end" class="val">96.6%</text></g><g class="row behind" data-tip="GPT-6.1 Sol · SWE-Bench Pro V2 (Full)
 Setup: mini-swe-agent, xhigh
 Rank 6 · Score 96.1%
 95% interval 94.9% to 97.3%
@@ -702,11 +702,11 @@ Anthropic · source: Scale Labs</title><rect x="0" y="100.0" width="524" height=
 Rank 6 · Score 85.4%
 95% interval 83.2% to 87.6%
 Behind #1
-Other · source: Scale Labs" data-tc="#8a8494" tabindex="0"><title>Inkling 2 Small · MCP-Atlas
+Inkling · source: Scale Labs" data-tc="#5c5560" tabindex="0"><title>Inkling 2 Small · MCP-Atlas
 Rank 6 · Score 85.4%
 95% interval 83.2% to 87.6%
 Behind #1
-Other · source: Scale Labs</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#8a8494"/><text x="18" y="140" class="lbl">Inkling 2 Small</text><line x1="283.0" y1="136" x2="349.0" y2="136" stroke="#8a8494" class="ci"/><circle cx="316.0" cy="136" r="6" fill="#8a8494" class="dot"/><text x="524" y="140" text-anchor="end" class="val">85.4%</text></g><g class="row behind" data-tip="Qwen3.8 2.4T A95B · MCP-Atlas
+Inkling · source: Scale Labs</title><rect x="0" y="124.0" width="524" height="24" class="hit"/><circle cx="7" cy="136" r="5" fill="#5c5560"/><text x="18" y="140" class="lbl">Inkling 2 Small</text><line x1="283.0" y1="136" x2="349.0" y2="136" stroke="#5c5560" class="ci"/><circle cx="316.0" cy="136" r="6" fill="#5c5560" class="dot"/><text x="524" y="140" text-anchor="end" class="val">85.4%</text></g><g class="row behind" data-tip="Qwen3.8 2.4T A95B · MCP-Atlas
 Setup: xHigh
 Rank 7 · Score 84.5%
 95% interval 82.2% to 86.8%
