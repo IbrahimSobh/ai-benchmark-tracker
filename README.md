@@ -1,5 +1,7 @@
 # Frontier AI benchmark tracker
 
+**Website: [ibrahimsobh.github.io/ai-benchmark-tracker](https://ibrahimsobh.github.io/ai-benchmark-tracker/)**
+
 A weekly report comparing frontier AI models on coding, agentic and work benchmarks.
 Every number keeps its source link, publisher date and trust label.
 
@@ -17,7 +19,8 @@ Output:
 - `reports/<date>-report.md`: the tables file. The script rebuilds it on every run.
 - `reports/<date>-insights.md`: the summary and insights, written by the AI from the tables file
   (rules in `prompts/analyze.md`). The script never touches this file.
-- `docs/`: the website, built by `python build_site.py` and served by GitHub Pages.
+- `docs/`: the website, built by `python build_site.py` and served by GitHub Pages. Charts (rank grid
+  and score-with-margin charts, `bench/charts.py`) are drawn from `data/clean/` by the script, not by the AI.
 
 ## Weekly automation
 

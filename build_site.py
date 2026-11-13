@@ -14,6 +14,9 @@ from pathlib import Path
 
 import markdown
 
+from bench import charts
+from tracker import DATA, REPORT, TOP_N, TOP_N_OVERRIDE, read_csv
+
 ROOT = Path(__file__).resolve().parent
 REPORTS = ROOT / "reports"
 DOCS = ROOT / "docs"
@@ -58,7 +61,7 @@ def page(title: str, body: str, nav: str = "") -> str:
     return (
         "<!doctype html><html lang='en'><head><meta charset='utf-8'>"
         "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-        f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body><main>"
+        f"<title>{html.escape(title)}</title><style>{CSS}{charts.CSS}</style></head><body><main>"
         f"{nav}{body}{FOOTER}</main></body></html>"
     )
 
@@ -69,6 +72,65 @@ def md_to_html(text: str) -> str:
     out = re.sub(r'href="(\d{4}-\d{2}-\d{2}-(?:report|insights))\.md"', r'href="\1.html"', out)
     out = re.sub(r">(\d{4}-\d{2}-\d{2})-report\.md<", r">tables for \1<", out)
     return re.sub(r">(\d{4}-\d{2}-\d{2})-insights\.md<", r">summary and insights for \1<", out)
+
+
+# Short column labels for the rank grid; the last two are public-vote (Arena) benchmarks.
+GRID_COLUMNS = [
+    ("SWE Atlas (Overall)", "SWE Atlas"), ("SWE-Bench Pro V2 (Full)", "SWE-Bench Pro V2"),
+    ("Terminal-Bench 4.0", "Terminal-Bench"), ("MCP-Atlas", "MCP-Atlas"), ("GDPval-AA", "GDPval-AA"),
+    ("GDPx", "GDPx"), ("Agent Arena", "Agent Arena"), ("WebDev Arena", "WebDev Arena"),
+]
+CROWD_FROM = 6
+MULTIPLE_GROUPS = [
+    ("Independent tests · each chart has its own scale",
+     ["SWE Atlas (Overall)", "SWE-Bench Pro V2 (Full)", "MCP-Atlas", "GDPval-AA"]),
+    ("No margin published · dots only", ["Terminal-Bench 4.0", "GDPx"]),
+    ("Public votes (Arena) · kept separate from the tests", ["Agent Arena", "WebDev Arena"]),
+]
+
+
+def rows_by_bench(day: str) -> dict[str, list[dict]]:
+    """The same rows, in the same order, that the tables file shows for each benchmark."""
+    csv_path = DATA / "clean" / f"{day}.csv"
+    if not csv_path.exists():
+        return {}
+    cur = read_csv(csv_path)
+    out = {}
+    for bench, _ in REPORT:
+        rows = [r for r in cur if r["benchmark"] == bench]
+        rows.sort(key=lambda r: (r["rank"] if r["rank"] is not None else 10**6, -r["score"]))
+        rows = rows[:TOP_N_OVERRIDE.get(bench, TOP_N)]
+        names = [r["model"] for r in rows]
+        for r in rows:  # same model listed twice (different setups): show the setup in charts
+            r["_show_setup"] = names.count(r["model"]) > 1 and bool(r["setup"])
+        out[bench] = rows
+    return out
+
+
+def overview_charts(by_bench: dict[str, list[dict]]) -> str:
+    if not by_bench:
+        return ""
+    return ("<h2>Leaders at a glance</h2>"
+            "<p class='muted'>Each cell is the model's rank on that benchmark. Ranks, not scores, "
+            "because scores from different benchmarks are not comparable.</p>"
+            + charts.rank_grid(by_bench, GRID_COLUMNS, CROWD_FROM)
+            + "<h2>Who is really tied?</h2>"
+            "<p class='muted'>Top models per benchmark: dot = score, line = 95% interval.</p>"
+            + charts.small_multiples(by_bench, MULTIPLE_GROUPS))
+
+
+def add_table_charts(page_html: str, by_bench: dict[str, list[dict]]) -> str:
+    """Put a full-size margin chart directly above each benchmark's table on the tables page."""
+    names = sorted(by_bench, key=len, reverse=True)
+    parts = page_html.split("<h2>")
+    for i, part in enumerate(parts[1:], 1):
+        heading = part.split("</h2>", 1)[0]
+        bench = next((b for b in names if b in heading), None)
+        if bench and by_bench[bench] and "<table" in part:
+            rows = by_bench[bench]
+            chart = charts.margin_chart(rows, bench) + charts.legend(rows[0]["margin_low"] is not None)
+            parts[i] = part.replace("<table", chart + "<table", 1)
+    return "<h2>".join(parts)
 
 
 def strip_h1(text: str) -> str:
@@ -85,13 +147,19 @@ def build() -> None:
                    reverse=True)
     home = '<nav class="nav"><a href="index.html">All weeks</a></nav>'
     for d in dates:
+        by_bench = rows_by_bench(d)
         for kind in ("report", "insights"):
             src = REPORTS / f"{d}-{kind}.md"
             if src.exists():
                 text = src.read_text(encoding="utf-8")
                 h1 = re.match(r"# (.*)", text)
+                body_html = md_to_html(text)
+                if kind == "report":
+                    body_html = add_table_charts(body_html, by_bench)
+                else:  # charts first, then the written summary and insights
+                    body_html = body_html.replace("<h2>Summary</h2>", overview_charts(by_bench) + "<h2>Summary</h2>", 1)
                 (DOCS / f"{d}-{kind}.html").write_text(
-                    page(h1.group(1) if h1 else f"{TITLE} {d}", md_to_html(text), home), encoding="utf-8")
+                    page(h1.group(1) if h1 else f"{TITLE} {d}", body_html, home), encoding="utf-8")
 
     body = [f"<h1>{TITLE}</h1>",
             "<p class='muted'>A weekly view of how frontier AI models compare on coding, agentic and work "
@@ -100,6 +168,7 @@ def build() -> None:
         latest = dates[0]
         ins = REPORTS / f"{latest}-insights.md"
         body.append(f"<h2>Latest: week of {latest}</h2>")
+        body.append(overview_charts(rows_by_bench(latest)).replace("<h2>", "<h3>").replace("</h2>", "</h3>"))
         if ins.exists():
             body.append("<div class='card'>" + md_to_html(strip_h1(ins.read_text(encoding="utf-8"))) + "</div>")
         else:

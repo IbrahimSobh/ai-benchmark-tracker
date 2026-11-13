@@ -85,6 +85,12 @@ def collect(day: str) -> None:
             alerts.append({"level": "error", "source": missing,
                            "message": f"0 rows this week (had rows on {prev.stem})"})
 
+    if not rows:  # every source failed: keep any existing files for this date untouched
+        print("No rows collected from any source; nothing written.")
+        for a in alerts:
+            print(f"  {a['source']}: {a['message']}")
+        sys.exit(1)
+
     (DATA / "clean").mkdir(parents=True, exist_ok=True)
     out = DATA / "clean" / f"{day}.csv"
     with out.open("w", newline="", encoding="utf-8") as f:
