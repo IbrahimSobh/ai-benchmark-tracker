@@ -1,22 +1,34 @@
 # Weekly task: collect, write insights, publish
 
+This file is the only source of the steps: the scheduled routine's prompt just says to follow it.
 Run these steps in order from the repository root. Stop and report if a step fails.
 
 1. Install dependencies: `python -m pip install -r requirements.txt` (use `python -m pip` so packages go to the same Python that runs the scripts)
 2. Collect and build the tables: `python tracker.py all`
-   - This writes `data/clean/<date>.csv`, `data/alerts/<date>.json` and `reports/<date>-report.md`,
-     where `<date>` is today's date.
-   - If every collector failed, the script exits with an error and writes nothing: stop, do not publish.
+   - This collects from Scale, Artificial Analysis, GDPx and the Arena Hugging Face dataset, and writes
+     `data/clean/<date>.csv`, `data/alerts/<date>.json` and `reports/<date>-report.md`,
+     where `<date>` is today's UTC date.
+   - If every collector failed, the script exits with an error and writes nothing: stop, do not commit
+     or push, and report the errors.
+   - If only some collectors failed, still publish: the report's alerts section shows which ones.
 3. Read `reports/<date>-report.md` and write `reports/<date>-insights.md`, following every rule in
-   `prompts/analyze.md`. Use only numbers that appear in the tables file.
+   `prompts/analyze.md`. Use only numbers that appear in the tables file. Earlier weeks' reports are
+   in `reports/` if you want to mention changes.
 4. Check the insights: every number in `reports/<date>-insights.md` must appear in
    `reports/<date>-report.md`. Fix any that do not.
 5. Build the website: `python build_site.py`
-6. Commit `data/clean/`, `data/alerts/`, `reports/` and `docs/` to the `main` branch and push.
+6. `git add data/clean data/alerts reports docs`, commit to the `main` branch and push.
    GitHub Pages publishes `docs/` automatically. Commit message:
    - If `reports/<date>-report.md` has a "Collection alerts" section: first line
      `Weekly update <date> ⚠ <N> collection alerts`, then one line per alert copied from that section,
      so the alerts show in the GitHub commit list.
    - Otherwise: `Weekly update <date>`.
+   - If pushing to `main` is refused, push the same commit to a branch named `weekly-update-<date>`
+     and say so in the final summary.
 
-Never commit `data/raw/` (it is in `.gitignore`).
+Rules:
+- Never commit `data/raw/` (it is in `.gitignore`; it holds copies of publishers' pages).
+- Never edit `reports/<date>-report.md` by hand; only the script writes it.
+
+Finish with a short summary: rows collected per source, alerts, the headline of the insights, and
+whether the push to `main` succeeded.
