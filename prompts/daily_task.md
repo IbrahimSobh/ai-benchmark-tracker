@@ -16,7 +16,8 @@ Run these steps in order from the repository root. Stop and report if a step fai
      `No new data since <previous date>; nothing published.`
    - If only some collectors failed, still publish: the report's alerts section shows which ones.
 3. Open `prompts/analyze.md`, read all of it, and follow its steps to write `reports/<date>-insights.md`
-   from `reports/<date>-report.md`.
+   from `reports/<date>-report.md`. If that insights file already exists (an earlier run today), write it
+   again from scratch: the tables may have changed.
 4. Check the insights with the script: `python check_insights.py <date>`. It lists every number, link
    or section that breaks the rules. Fix the insights file (never the tables file) and run it again until
    it prints "Insights check passed". If it still fails after 3 attempts, do not commit or push: stop and
