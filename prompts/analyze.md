@@ -26,6 +26,6 @@ Rules (all must hold):
 4. If the table says "no margin published", do not claim a clear gap unless the difference is large, and say no margin is published.
 5. Never compare scores across different benchmarks (a % on one is not a % on another). Comparing a model's rank across benchmarks is fine.
 6. Keep trust labels apart: never combine crowd-preference rankings (Arena) with independent test scores into one claim.
-7. Mention every collection alert that affects a table you discuss.
+7. Mention a collection alert only if it appears in the "Collection alerts" section of the tables file and affects a table you discuss. Never cite alerts from data/alerts/ that the tables file does not show.
 8. Plain language for LinkedIn readers. Define each benchmark in a few words the first time you name it.
 9. GDPx: quote only what the tables file shows, and credit "GDPx by SemiAnalysis".
