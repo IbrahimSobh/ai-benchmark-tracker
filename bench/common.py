@@ -94,6 +94,17 @@ def json_after(text: str, marker: str):
     return value
 
 
+def board_failed(alerts: list | None, collector: str, benchmark: str, board: str, e: Exception) -> None:
+    """Record one broken board so the collector can keep its other boards.
+
+    Call inside `except`. With no alert list (a collector run on its own), the error is raised again.
+    """
+    if alerts is None:
+        raise e
+    alerts.append({"level": "error", "source": collector, "benchmark": benchmark,
+                   "message": f"{board} failed, other boards kept: {type(e).__name__}: {e}"})
+
+
 def require_rows(rows: list, source: str, minimum: int = 3) -> list:
     if len(rows) < minimum:
         raise CollectorAlert(f"{source}: only {len(rows)} rows (expected at least {minimum})")

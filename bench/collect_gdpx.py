@@ -21,7 +21,7 @@ from .names import canonicalize
 BASE = "https://gdpx.semianalysis.com"
 
 
-def collect(day: str) -> list[Row]:
+def collect(day: str, alerts: list | None = None) -> list[Row]:  # one board: a failure raises
     home = fetch(BASE + "/")
     save_raw(day, "gdpx_home.html", home)
     scripts = sorted(set(re.findall(r'src="(/_next/static/[^"]+\.js)"', home)))

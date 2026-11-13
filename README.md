@@ -51,6 +51,20 @@ shorten the week-to-week comparison.
 | GDPx v1.0 | SemiAnalysis | site's own JSON + GDPx's published formula | none published | independent |
 | Agent Arena, WebDev Arena | Arena | official Hugging Face dataset (CC-BY-4.0) | 95% CI | crowd-preference |
 
+### If a source page changes its format
+
+- **One broken board never hides the others:** each board or page is collected on its own. A failure
+  becomes an alert ("… failed, other boards kept") and the publisher's other boards still appear.
+- **Sanity checks** (`sanity_check` in `tracker.py`) catch pages that still parse but give wrong numbers:
+  - a score outside its unit's range (0–100 %, 500–3000 Elo, −1 to 1 score): the row is dropped;
+  - a score outside its own margin;
+  - a unit change, or a top score more than 2× larger or smaller than in the previous run;
+  - fewer than half of the previous run's rows;
+  - margins missing when the previous run had them.
+- **Alerts reach the commit list:** when the tables file has alerts, the weekly commit message starts
+  with `⚠ <N> collection alerts` and lists them (`prompts/weekly_task.md`).
+- If every source fails, nothing is written and the site keeps last week's data.
+
 No source needs Playwright. arena.ai pages sit behind a Cloudflare bot check, so the
 Arena collector uses Arena's official dataset instead of the website.
 

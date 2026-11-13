@@ -47,6 +47,10 @@ CREDIT_LINE = {"GDPx": "Quoted from GDPx by SemiAnalysis (top 3 only); full lead
 # how many models are too close to call, using only numbers from the table itself.
 SPREAD_NOTE = {"SWE-Bench Pro V2 (Full)"}
 STALE_DAYS = 30
+# Sanity checks on collected numbers, to catch a page change that still parses but gives wrong values.
+SCORE_RANGE = {"%": (0.0, 100.0), "Elo": (500.0, 3000.0), "score": (-1.0, 1.0)}
+MIN_ROW_SHARE = 0.5   # alert if a benchmark has fewer than half of the previous run's rows
+MAX_TOP_RATIO = 2.0   # alert if the top score is more than 2x larger or smaller than in the previous run
 FIELDS = [f.name for f in dataclasses.fields(Row)]
 
 
@@ -56,7 +60,7 @@ def collect(day: str) -> None:
     alerts: list[dict] = []
     for name, fn in COLLECTORS.items():
         try:
-            got = fn(day)
+            got = fn(day, alerts)  # a broken board is recorded in `alerts`; the other boards are kept
             rows += got
             print(f"  {name}: {len(got)} rows")
         except Exception as e:  # one broken source must not stop the others
@@ -79,11 +83,14 @@ def collect(day: str) -> None:
 
     # A benchmark that existed last week but is missing now is an alert too.
     prev = previous_csv(day)
+    prev_rows = read_csv(prev) if prev else []
     if prev:
-        before = {r["benchmark"] for r in read_csv(prev)}
+        before = {r["benchmark"] for r in prev_rows}
         for missing in sorted(before - {r.benchmark for r in rows}):
             alerts.append({"level": "error", "source": missing,
                            "message": f"0 rows this week (had rows on {prev.stem})"})
+
+    rows = sanity_check(rows, prev_rows, prev.stem if prev else "", alerts)
 
     if not rows:  # every source failed: keep any existing files for this date untouched
         print("No rows collected from any source; nothing written.")
@@ -101,6 +108,47 @@ def collect(day: str) -> None:
     (DATA / "alerts").mkdir(parents=True, exist_ok=True)
     (DATA / "alerts" / f"{day}.json").write_text(json.dumps(alerts, indent=2), encoding="utf-8")
     print(f"Wrote {out} ({len(rows)} rows, {len(alerts)} alerts)")
+
+
+def sanity_check(rows: list[Row], prev_rows: list[dict], prev_day: str, alerts: list[dict]) -> list[Row]:
+    """Catch numbers that parse but look wrong (for example, a unit or field changed on the page).
+
+    Rows with an impossible score are dropped; everything else only raises an alert.
+    """
+    def warn(bench: str, msg: str) -> None:
+        alerts.append({"level": "warning", "source": bench, "message": msg})
+
+    kept: list[Row] = []
+    for bench in sorted({r.benchmark for r in rows}):
+        cur = [r for r in rows if r.benchmark == bench]
+        unit = cur[0].unit
+        lo, hi = SCORE_RANGE.get(unit, (float("-inf"), float("inf")))
+        bad = [r for r in cur if not lo <= r.score <= hi]
+        if bad:
+            warn(bench, f"{len(bad)} row(s) dropped: score outside {lo:g} to {hi:g} {unit} "
+                        f"(for example {bad[0].model} = {bad[0].score:g}); the page format may have changed")
+            cur = [r for r in cur if r not in bad]
+        flipped = [r for r in cur if r.margin_low is not None and r.margin_high is not None
+                   and not r.margin_low <= r.score <= r.margin_high]
+        if flipped:
+            warn(bench, f"{len(flipped)} row(s) have a score outside their own margin "
+                        f"(for example {flipped[0].model}); margins may be read wrongly")
+        kept += cur
+
+        old = [r for r in prev_rows if r["benchmark"] == bench]
+        if not old or not cur:
+            continue
+        if old[0]["unit"] != unit:
+            warn(bench, f"unit changed from {old[0]['unit']} to {unit} since {prev_day}")
+        if len(cur) < MIN_ROW_SHARE * len(old):
+            warn(bench, f"only {len(cur)} rows, down from {len(old)} on {prev_day}")
+        if any(r["margin_low"] is not None for r in old) and all(r.margin_low is None for r in cur):
+            warn(bench, f"margins missing this week (published on {prev_day}); "
+                        "'too close to call' cannot be judged")
+        top_now, top_old = max(r.score for r in cur), max(r["score"] for r in old)
+        if unit in ("%", "Elo") and top_now > 0 and top_old > 0 and                 not 1 / MAX_TOP_RATIO <= top_now / top_old <= MAX_TOP_RATIO:
+            warn(bench, f"top score {top_now:g} vs {top_old:g} on {prev_day}; the scale may have changed")
+    return kept
 
 
 # ---------------------------------------------------------------- helpers
@@ -184,7 +232,10 @@ def report(day: str | None = None) -> Path:
 
     # Show alerts for tables in the report and whole-collector failures; all alerts stay in data/alerts/.
     shown = {b for b, _ in REPORT} | set(COLLECTORS)
-    alerts = [a for a in alerts if a["source"] in shown]
+    alerts = [a for a in alerts if a["source"] in shown
+              # a broken board shows only if one of its tables is in the report
+              and ("benchmark" not in a or any(b.startswith(a["benchmark"] + " (") or b == a["benchmark"]
+                                               for b, _ in REPORT))]
     if alerts:
         L.append("## Collection alerts\n")
         for a in alerts:

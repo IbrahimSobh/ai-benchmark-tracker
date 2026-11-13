@@ -12,7 +12,11 @@ Run these steps in order from the repository root. Stop and report if a step fai
 4. Check the insights: every number in `reports/<date>-insights.md` must appear in
    `reports/<date>-report.md`. Fix any that do not.
 5. Build the website: `python build_site.py`
-6. Commit `data/clean/`, `data/alerts/`, `reports/` and `docs/` to the `main` branch with the message
-   `Weekly update <date>` and push. GitHub Pages publishes `docs/` automatically.
+6. Commit `data/clean/`, `data/alerts/`, `reports/` and `docs/` to the `main` branch and push.
+   GitHub Pages publishes `docs/` automatically. Commit message:
+   - If `reports/<date>-report.md` has a "Collection alerts" section: first line
+     `Weekly update <date> ⚠ <N> collection alerts`, then one line per alert copied from that section,
+     so the alerts show in the GitHub commit list.
+   - Otherwise: `Weekly update <date>`.
 
 Never commit `data/raw/` (it is in `.gitignore`).

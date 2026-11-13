@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import re
 
-from .common import INDEPENDENT, CollectorAlert, Row, fetch, next_flight, require_rows, save_raw
+from .common import INDEPENDENT, CollectorAlert, Row, board_failed, fetch, next_flight, require_rows, save_raw
 from .names import canonicalize
 
 BOARDS = [
@@ -33,39 +33,46 @@ def _entry_lists(flight: str):
         yield (labels[-1] if labels else ""), entries
 
 
-def collect(day: str) -> list[Row]:
+def collect(day: str, alerts: list | None = None) -> list[Row]:
     rows: list[Row] = []
     for slug, bench, board_version, board_note in BOARDS:
-        url = f"https://labs.scale.com/leaderboard/{slug}"
-        html = fetch(url)
-        save_raw(day, f"scale_{slug}.html", html)
-        flight = next_flight(html)
-        footnotes = sorted(set(re.findall(r'"text":"(\*[^"]{3,120})"', flight)))
-        board_rows = []
-        for label, entries in _entry_lists(flight):
-            variant = label.replace(bench, "").strip(" ()-") if label else ""
-            name = f"{bench} ({variant})" if variant else bench
-            newest = max(e.get("createdAt", "")[:10] for e in entries)
-            for e in entries:
-                if e.get("deprecated"):
-                    continue
-                model, setup = canonicalize(e["model"])
-                ci = e.get("confidenceInterval_upper")
-                notes = [board_note] if board_note else []
-                if e["model"].strip().endswith("*") and footnotes:
-                    notes.append(footnotes[0].lstrip("*").strip())
-                if e.get("contaminationMessage"):
-                    notes.append("Contamination: " + e["contaminationMessage"])
-                board_rows.append(Row(
-                    benchmark=name, version=board_version, model=model,  # Scale's per-row "version" field is an API route, not used
-                    model_raw=e["model"], setup=setup, score=float(e["score"]), unit="%",
-                    margin_low=(e["score"] - ci) if ci else None,
-                    margin_high=(e["score"] + ci) if ci else None,
-                    cost=None, cost_basis="", rank=e.get("rank"), source_url=url,
-                    trust=INDEPENDENT, source_date=newest, collected=day,
-                    note=" | ".join(notes),
-                ))
-        if not board_rows:
-            raise CollectorAlert(f"Scale {slug}: no leaderboard entries found")
-        rows += board_rows
-    return require_rows(rows, "Scale")
+        try:
+            rows += _board(day, slug, bench, board_version, board_note)
+        except Exception as e:  # one broken board must not hide the others
+            board_failed(alerts, "Scale", bench, f"Scale board {slug}", e)
+    return rows
+
+
+def _board(day: str, slug: str, bench: str, board_version: str, board_note: str) -> list[Row]:
+    url = f"https://labs.scale.com/leaderboard/{slug}"
+    html = fetch(url)
+    save_raw(day, f"scale_{slug}.html", html)
+    flight = next_flight(html)
+    footnotes = sorted(set(re.findall(r'"text":"(\*[^"]{3,120})"', flight)))
+    board_rows: list[Row] = []
+    for label, entries in _entry_lists(flight):
+        variant = label.replace(bench, "").strip(" ()-") if label else ""
+        name = f"{bench} ({variant})" if variant else bench
+        newest = max(e.get("createdAt", "")[:10] for e in entries)
+        for e in entries:
+            if e.get("deprecated"):
+                continue
+            model, setup = canonicalize(e["model"])
+            ci = e.get("confidenceInterval_upper")
+            notes = [board_note] if board_note else []
+            if e["model"].strip().endswith("*") and footnotes:
+                notes.append(footnotes[0].lstrip("*").strip())
+            if e.get("contaminationMessage"):
+                notes.append("Contamination: " + e["contaminationMessage"])
+            board_rows.append(Row(
+                benchmark=name, version=board_version, model=model,  # Scale's per-row "version" field is an API route, not used
+                model_raw=e["model"], setup=setup, score=float(e["score"]), unit="%",
+                margin_low=(e["score"] - ci) if ci else None,
+                margin_high=(e["score"] + ci) if ci else None,
+                cost=None, cost_basis="", rank=e.get("rank"), source_url=url,
+                trust=INDEPENDENT, source_date=newest, collected=day,
+                note=" | ".join(notes),
+            ))
+    if not board_rows:
+        raise CollectorAlert(f"Scale {slug}: no leaderboard entries found")
+    return require_rows(board_rows, f"Scale {slug}")

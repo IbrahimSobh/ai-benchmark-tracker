@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import re
 
-from .common import INDEPENDENT, Row, fetch, json_after, next_flight, require_rows, save_raw
+from .common import INDEPENDENT, Row, board_failed, fetch, json_after, next_flight, require_rows, save_raw
 from .names import canonicalize
 
 PAGES = [
@@ -17,38 +17,45 @@ PAGES = [
 ]
 
 
-def collect(day: str) -> list[Row]:
+def collect(day: str, alerts: list | None = None) -> list[Row]:
     rows: list[Row] = []
-    for slug, bench, field, unit, ci_field in PAGES:
-        url = f"https://artificialanalysis.ai/evaluations/{slug}"
-        html = fetch(url)
-        save_raw(day, f"aa_{slug}.html", html)
-        title = re.search(r"<title>([^<|]+)", html)
-        version = ""
-        if title:
-            v = re.search(r"\bv(\d+(?:\.\d+)*)\b", title.group(1))
-            version = f"v{v.group(1)}" if v else ""
-        models = json_after(next_flight(html), '"initialModels":')
-        newest = max((m.get("releaseDate") or "") for m in models)
-        page_rows = []
-        for m in models:
-            val = m.get(field)
-            if val is None:
-                continue
-            model, setup = canonicalize(m["name"])
-            low = high = None
-            if ci_field and isinstance(m.get(ci_field), dict):
-                low = m[ci_field].get("lower95ci")
-                high = m[ci_field].get("upper95ci")
-            score = val * 100 if unit == "%" else val
-            pin, pout = m.get("price1mInputTokens"), m.get("price1mOutputTokens")
-            page_rows.append(Row(
-                benchmark=bench, version=version, model=model, model_raw=m["name"],
-                setup=setup, score=round(score, 2), unit=unit, margin_low=low, margin_high=high,
-                cost=None, cost_basis="", rank=None, source_url=url, trust=INDEPENDENT,
-                source_date=newest, collected=day,
-                note=(f"API price ${pin}/${pout} per 1M input/output tokens" if pin is not None else ""),
-            ))
-        # Artificial Analysis publishes no rank number, so rank stays empty (ties exist).
-        rows += require_rows(page_rows, f"Artificial Analysis {slug}")
+    for page in PAGES:
+        try:
+            rows += _page(day, *page)
+        except Exception as e:  # one broken page must not hide the other
+            board_failed(alerts, "Artificial Analysis", page[1], f"Artificial Analysis page {page[0]}", e)
     return rows
+
+
+def _page(day: str, slug: str, bench: str, field: str, unit: str, ci_field: str | None) -> list[Row]:
+    url = f"https://artificialanalysis.ai/evaluations/{slug}"
+    html = fetch(url)
+    save_raw(day, f"aa_{slug}.html", html)
+    title = re.search(r"<title>([^<|]+)", html)
+    version = ""
+    if title:
+        v = re.search(r"\bv(\d+(?:\.\d+)*)\b", title.group(1))
+        version = f"v{v.group(1)}" if v else ""
+    models = json_after(next_flight(html), '"initialModels":')
+    newest = max((m.get("releaseDate") or "") for m in models)
+    page_rows = []
+    for m in models:
+        val = m.get(field)
+        if val is None:
+            continue
+        model, setup = canonicalize(m["name"])
+        low = high = None
+        if ci_field and isinstance(m.get(ci_field), dict):
+            low = m[ci_field].get("lower95ci")
+            high = m[ci_field].get("upper95ci")
+        score = val * 100 if unit == "%" else val
+        pin, pout = m.get("price1mInputTokens"), m.get("price1mOutputTokens")
+        page_rows.append(Row(
+            benchmark=bench, version=version, model=model, model_raw=m["name"],
+            setup=setup, score=round(score, 2), unit=unit, margin_low=low, margin_high=high,
+            cost=None, cost_basis="", rank=None, source_url=url, trust=INDEPENDENT,
+            source_date=newest, collected=day,
+            note=(f"API price ${pin}/${pout} per 1M input/output tokens" if pin is not None else ""),
+        ))
+    # Artificial Analysis publishes no rank number, so rank stays empty (ties exist).
+    return require_rows(page_rows, f"Artificial Analysis {slug}")
