@@ -8,7 +8,8 @@ Fails (exit code 1) and lists every problem when:
 - a link points somewhere the tables file never links (except the GDPx home page and the tables file itself);
 - the title, the "Written from" line, the Summary or the Insights section is missing or misdated;
 - there are not 3 or 4 numbered insights, or an insight has no source link;
-- the summary is longer than 5 sentences.
+- the summary is longer than 5 sentences;
+- the tables file says "First update" but the insights do not say so.
 The daily task runs this after writing the insights, fixes every problem, and runs it again.
 """
 from __future__ import annotations
@@ -54,6 +55,10 @@ def check(day: str) -> list[str]:
         for i, item in enumerate(items, 1):
             if "](http" not in item:
                 problems.append(f"insight {i} has no source link")
+
+    # Rule 10 of prompts/analyze.md: say so when there is nothing to compare yet
+    if "First update: no changes to compare yet" in rep and "first update" not in ins.lower():
+        problems.append("the tables file says this is the first update; say 'first update, nothing to compare yet'")
 
     # Links: only pages the tables file links to
     rep_links = set(re.findall(r"\]\((https?://[^)\s]+)\)", rep)) | set(re.findall(r"https?://[^\s)|>]+", rep))
