@@ -2,6 +2,8 @@
 
 **Website: [ibrahimsobh.github.io/ai-benchmark-tracker](https://ibrahimsobh.github.io/ai-benchmark-tracker/)**
 
+[![Frontier AI Benchmarks: who is really ahead in AI this week? Eight leaderboards on one page, ties flagged, every number sourced](announcement/frontier-ai-benchmarks-linkedin.png)](https://ibrahimsobh.github.io/ai-benchmark-tracker/)
+
 A weekly report comparing frontier AI models on coding, agentic and work benchmarks.
 Every number keeps its source link, publisher date and trust label.
 

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Frontier AI Benchmarks: LinkedIn poster</title>
+<style>
+@font-face{font-family:"Schibsted Grotesk";font-weight:400 900;src:url("../docs/assets/fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2")}
+@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;src:url("../docs/assets/fonts/newsreader-latin-wght-normal.woff2") format("woff2")}
+@font-face{font-family:Newsreader;font-style:italic;font-weight:200 800;src:url("../docs/assets/fonts/newsreader-latin-wght-italic.woff2") format("woff2")}
+:root{--bg:#17101c;--card:#261b2e;--card2:#211728;--line:#3a2c45;--ink:#f4eef2;--muted:#b9abc2;--soft:#a597b0;--accent:#f3b999}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1600px;height:900px;overflow:hidden;background:var(--bg);color:var(--ink);font:16px/1.45 "Schibsted Grotesk",sans-serif;position:relative}
+.left{position:absolute;left:64px;top:44px;width:650px}
+.brand{display:flex;align-items:center;gap:12px;font-family:Newsreader,serif;font-size:30px;letter-spacing:-.3px}
+.brand em{font-style:italic}
+.brand svg{width:40px;height:40px}
+h1{font-family:Newsreader,serif;font-weight:400;font-size:70px;line-height:1.0;letter-spacing:-2px;margin:24px 0 12px}
+h1 em{font-style:italic;color:var(--accent)}
+.lede{font-size:19px;color:var(--muted);max-width:600px}
+.vals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 0}
+.val{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:11px 15px}
+.val b{display:block;font-family:Newsreader,serif;font-weight:400;font-size:22px;line-height:1.15;margin-bottom:3px}
+.val span{font-size:13.5px;color:var(--muted)}
+.scope{margin-top:18px}
+.scope .k{font-size:14px;color:var(--soft);margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);color:var(--ink);white-space:nowrap}
+.chip i{font-style:normal;color:var(--soft);margin-right:5px}
+.chip.v{border-style:dashed}
+.url{position:absolute;left:64px;bottom:36px;display:flex;align-items:center;gap:12px;font-size:19px}
+.url .p{background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:999px;font-weight:600}
+.url .s{color:var(--soft);font-size:15px}
+/* right: product shots */
+.shot{position:absolute;border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.09),0 30px 60px -18px rgba(0,0,0,.75)}
+.shot img{display:block;width:100%}
+.bar{height:26px;display:flex;align-items:center;gap:6px;padding:0 12px}
+.bar i{width:9px;height:9px;border-radius:50%;background:#5a4a66;display:block}
+.dark .bar{background:#21172a}
+.light .bar{background:#ececef} .light .bar i{background:#c9c9cf}
+.dark{left:772px;top:70px;width:790px;transform:rotate(-1deg)}
+.light{left:848px;top:448px;width:690px;transform:rotate(.8deg)}
+.tag{position:absolute;font-size:13px;padding:5px 12px;border-radius:999px;font-weight:600}
+.tag.d{left:792px;top:34px;background:var(--card);border:1px solid var(--line);color:var(--muted)}
+.tag.l{left:868px;top:412px;background:#fff;color:#17191c;border:1px solid #e6e6e8}
+.tip{position:absolute;left:1292px;top:660px;width:270px;background:#fbf0f1;border:2px solid #e07a5f;border-radius:14px;padding:11px 13px;color:#17191c;font-size:13px;line-height:1.45;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.tip b{display:block;font-size:14px;margin-bottom:2px}
+.tip span{display:block;color:#61656f}
+.tip span:last-child{color:#6b6f79;font-size:12px;margin-top:2px}
+.call{position:absolute;font-family:Newsreader,serif;font-style:italic;font-size:21px;color:var(--accent);white-space:nowrap}
+.call svg{position:absolute}
+</style></head>
+<body>
+
+<div class="left">
+  <div class="brand"><svg viewBox="0 0 128 128"><rect x="14" y="14" width="100" height="100" rx="28" fill="#17101c"/><rect x="33" y="60" width="18" height="38" rx="4" fill="#5b8def"/><rect x="55" y="36" width="18" height="62" rx="4" fill="#e07a5f"/><rect x="77" y="50" width="18" height="48" rx="4" fill="#2fb38a"/><rect x="14" y="14" width="100" height="100" rx="28" fill="none" stroke="#f4eef2" stroke-width="9"/></svg>Frontier AI <em>Benchmarks</em></div>
+  <h1>Who is <em>really</em><br>ahead in AI<br>this week?</h1>
+  <p class="lede">Eight trusted leaderboards on one page, every Sunday. Honest about ties, with a source link for every number.</p>
+  <div class="vals">
+    <div class="val"><b>8 benchmarks, 4 publishers</b><span>Scale Labs · Artificial Analysis · SemiAnalysis · Arena</span></div>
+    <div class="val"><b>"Too close to call"</b><span>Ties flagged from the published 95% margins, never guessed</span></div>
+    <div class="val"><b>Every number sourced</b><span>Hover any score: interval, lab, and a link to the publisher</span></div>
+    <div class="val"><b>Updated every Sunday</b><span>Collected automatically; insights use only numbers on the page</span></div>
+  </div>
+  <div class="scope">
+    <p class="k">What we track</p>
+    <div class="chips">
+      <span class="chip"><i>Coding</i>SWE Atlas</span>
+      <span class="chip"><i>Coding</i>SWE-Bench Pro V2</span>
+      <span class="chip"><i>Agentic coding</i>Terminal-Bench 4.0</span>
+      <span class="chip"><i>Tool use</i>MCP-Atlas</span>
+      <span class="chip"><i>Work</i>GDPval-AA</span>
+      <span class="chip"><i>Frontier work</i>GDPx</span>
+      <span class="chip v"><i>Public votes</i>Agent Arena</span>
+      <span class="chip v"><i>Public votes</i>WebDev Arena</span>
+    </div>
+  </div>
+</div>
+
+<div class="url"><span class="p">ibrahimsobh.github.io/ai-benchmark-tracker</span><span class="s">Free · open source · dark and light</span></div>
+
+<span class="tag d">◐ Dark</span>
+<div class="shot dark"><div class="bar"><i></i><i></i><i></i></div><img src="c-grid-dark.png" alt=""></div>
+<span class="tag l">◑ Light</span>
+<div class="shot light"><div class="bar"><i></i><i></i><i></i></div><img src="c-table-light.png" alt=""></div>
+<div class="tip"><b>Claude Fable 5.1 · SWE Atlas</b><span>Rank 3 · Score 76.4%</span><span>95% interval 71.2% to 81.6%</span><span>Too close to call with #1</span><span>Anthropic · source: Scale Labs ↗</span></div>
+
+<div class="call" style="left:1180px;top:28px">ranks across all 8, at one glance<svg width="40" height="30" style="left:-44px;top:8px" viewBox="0 0 40 30"><path d="M38 6 C 28 6, 14 12, 8 26" fill="none" stroke="#f3b999" stroke-width="2.2" stroke-linecap="round"/><path d="M3 20 L8 27 L14 21" fill="none" stroke="#f3b999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="call" style="left:1180px;top:414px">the chart lives inside the table<svg width="40" height="34" style="left:-44px;top:10px" viewBox="0 0 40 34"><path d="M38 6 C 26 8, 16 16, 12 30" fill="none" stroke="#f3b999" stroke-width="2.2" stroke-linecap="round"/><path d="M6 24 L12 31 L18 25" fill="none" stroke="#f3b999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</body></html>

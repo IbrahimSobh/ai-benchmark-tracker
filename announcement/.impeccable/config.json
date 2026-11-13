@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "italic-serif-display",
+        "value": "*",
+        "files": [
+          "announcement/poster.html"
+        ],
+        "createdAt": "2026-11-13T05:53:06.545Z",
+        "reason": "Claude: the user asked to adopt the Coding Agents Digest design system, whose headings are Newsreader with one italic word"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "announcement/poster.html"
+        ],
+        "createdAt": "2026-11-13T05:53:06.782Z",
+        "reason": "Claude: only the 70px display headline uses line-height 1.0 (display type); body text is 1.45"
+      }
+    ]
+  }
+}
