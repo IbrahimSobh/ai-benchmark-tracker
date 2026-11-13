@@ -2,16 +2,20 @@
 
 **Website: [ibrahimsobh.github.io/ai-benchmark-tracker](https://ibrahimsobh.github.io/ai-benchmark-tracker/)**
 
-[![Frontier AI Benchmarks: who is really ahead in AI this week? Eight leaderboards on one page, ties flagged, every number sourced](announcement/frontier-ai-benchmarks-linkedin.png)](https://ibrahimsobh.github.io/ai-benchmark-tracker/)
+[![Frontier AI Benchmarks: who is really ahead in AI right now? Eight leaderboards on one page, ties flagged, every number sourced](announcement/frontier-ai-benchmarks-linkedin.png)](https://ibrahimsobh.github.io/ai-benchmark-tracker/)
 
-A weekly report comparing frontier AI models on coding, agentic and work benchmarks.
+A tracker comparing frontier AI models on coding, agentic and work benchmarks.
 Every number keeps its source link, publisher date and trust label.
+
+**Schedule:** checked every day at 9:00 Cairo time. A new update is published only when a publisher's
+data has changed, so the site's "last updated" date can be a few days old. Each update is dated.
 
 ## Run it
 
 ```
 pip install -r requirements.txt
-python tracker.py all        # collect + report
+python tracker.py all        # collect + report (exit code 3 = no new data, nothing written)
+python tracker.py all --force   # write a new update even if the data did not change
 ```
 
 Output:
@@ -27,16 +31,22 @@ Output:
   Lab colours and logos are in `bench/labs.py`; logo sources and licences are in `docs/assets/logos/CREDITS.md`. Charts (rank grid
   and score-with-margin charts, `bench/charts.py`) are drawn from `data/clean/` by the script, not by the AI.
 
-## Weekly automation
+## Daily automation
 
-A scheduled Claude task runs every week and follows `prompts/weekly_task.md`: collect, write the
-insights, build the site, commit and push. GitHub Pages then publishes `docs/`. Insights are published
-without manual review; the site footer says they are AI-written.
+A scheduled Claude task (claude.ai routine) runs **every day at 9:00 Cairo time** and follows
+`prompts/daily_task.md`:
 
-The task can also run at any time ("Run now" on the routine's claude.ai page). Each run date gets its
-own entry; a second run on the same day replaces that day's entry. The "Change" column compares with
-the earlier run closest to 7 days back (`baseline_csv` in `tracker.py`), so extra manual runs never
-shorten the week-to-week comparison.
+1. Collect from all sources.
+2. If every row matches the previous run, stop: `tracker.py` prints `NO NEW DATA`, exits with code 3 and
+   writes nothing, so nothing is committed or published that day.
+3. Otherwise write the tables file and the AI insights, build the site, commit and push to `main`.
+   GitHub Pages then publishes `docs/`.
+
+Insights are published without manual review; the site footer says they are AI-written. The site header
+shows the date of the latest update and the schedule. The task can also run at any time ("Run now" on the
+routine's claude.ai page). A second update on the same day replaces that day's entry. The "Change" column
+compares with the earlier update closest to 7 days back (`baseline_csv` in `tracker.py`), so daily updates
+never shorten the week-to-week comparison.
 
 ## Sources and how each is collected
 
@@ -61,9 +71,9 @@ shorten the week-to-week comparison.
   - a unit change, or a top score more than 2× larger or smaller than in the previous run;
   - fewer than half of the previous run's rows;
   - margins missing when the previous run had them.
-- **Alerts reach the commit list:** when the tables file has alerts, the weekly commit message starts
-  with `⚠ <N> collection alerts` and lists them (`prompts/weekly_task.md`).
-- If every source fails, nothing is written and the site keeps last week's data.
+- **Alerts reach the commit list:** when the tables file has alerts, the update's commit message starts
+  with `⚠ <N> collection alerts` and lists them (`prompts/daily_task.md`).
+- If every source fails, nothing is written and the site keeps the latest update.
 
 No source needs Playwright. arena.ai pages sit behind a Cloudflare bot check, so the
 Arena collector uses Arena's official dataset instead of the website.
@@ -72,7 +82,7 @@ Arena collector uses Arena's official dataset instead of the website.
 
 `bench/names.py` splits each raw name into a canonical model name and a setup
 (effort, harness). Fix mismatches in `model_aliases.json`; the report re-applies names
-to past weeks too. The report lists names seen at only one publisher, to spot missing aliases.
+to past updates too. The report lists names seen at only one publisher, to spot missing aliases.
 
 ## Known caveats (checked 2026-11-13)
 

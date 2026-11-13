@@ -1,14 +1,17 @@
-"""Weekly benchmark tracker.
+"""Frontier AI benchmark tracker (checked daily; a new entry only when a publisher's data changed).
 
   python tracker.py collect   # fetch all sources -> data/raw/<date>/, data/clean/<date>.csv, data/alerts/<date>.json
-  python tracker.py report    # build reports/<date>-report.md from the newest clean CSV (+ last week's for changes)
+  python tracker.py report    # build reports/<date>-report.md from the newest clean CSV (+ the run ~7 days back)
   python tracker.py all       # both
+  add --force to write a new entry even when the data matches the previous run
+Exit code 3 from collect/all means "no new data": nothing was written.
 """
 from __future__ import annotations
 
 import csv
 import dataclasses
 import datetime as dt
+import io
 import json
 import sys
 import traceback
@@ -47,6 +50,7 @@ CREDIT_LINE = {"GDPx": "Quoted from GDPx by SemiAnalysis (top 3 only); full lead
 # how many models are too close to call, using only numbers from the table itself.
 SPREAD_NOTE = {"SWE-Bench Pro V2 (Full)"}
 STALE_DAYS = 30
+NO_NEW_DATA = 3       # exit code of `collect` when nothing changed since the previous run
 # Sanity checks on collected numbers, to catch a page change that still parses but gives wrong values.
 SCORE_RANGE = {"%": (0.0, 100.0), "Elo": (500.0, 3000.0), "score": (-1.0, 1.0)}
 MIN_ROW_SHARE = 0.5   # alert if a benchmark has fewer than half of the previous run's rows
@@ -55,7 +59,7 @@ FIELDS = [f.name for f in dataclasses.fields(Row)]
 
 
 # ---------------------------------------------------------------- collect
-def collect(day: str) -> None:
+def collect(day: str, force: bool = False) -> None:
     rows: list[Row] = []
     alerts: list[dict] = []
     for name, fn in COLLECTORS.items():
@@ -81,14 +85,14 @@ def collect(day: str) -> None:
             alerts.append({"level": "warning", "source": bench,
                            "message": f"newest data dated {newest}, older than {STALE_DAYS} days"})
 
-    # A benchmark that existed last week but is missing now is an alert too.
+    # A benchmark that existed in the previous run but is missing now is an alert too.
     prev = previous_csv(day)
     prev_rows = read_csv(prev) if prev else []
     if prev:
         before = {r["benchmark"] for r in prev_rows}
         for missing in sorted(before - {r.benchmark for r in rows}):
             alerts.append({"level": "error", "source": missing,
-                           "message": f"0 rows this week (had rows on {prev.stem})"})
+                           "message": f"0 rows in this run (had rows on {prev.stem})"})
 
     rows = sanity_check(rows, prev_rows, prev.stem if prev else "", alerts)
 
@@ -98,16 +102,30 @@ def collect(day: str) -> None:
             print(f"  {a['source']}: {a['message']}")
         sys.exit(1)
 
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=FIELDS, lineterminator="\n")
+    w.writeheader()
+    for r in rows:
+        w.writerow(dataclasses.asdict(r))
+    text = buf.getvalue()
+
+    # Daily checks publish only when a publisher's data changed since the previous run.
+    if prev and not force and data_signature(text) == data_signature(prev.read_text(encoding="utf-8")):
+        print(f"NO NEW DATA: every row matches the previous run ({prev.stem}); nothing written.")
+        sys.exit(NO_NEW_DATA)
+
     (DATA / "clean").mkdir(parents=True, exist_ok=True)
     out = DATA / "clean" / f"{day}.csv"
-    with out.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=FIELDS)
-        w.writeheader()
-        for r in rows:
-            w.writerow(dataclasses.asdict(r))
+    out.write_text(text, encoding="utf-8", newline="")
     (DATA / "alerts").mkdir(parents=True, exist_ok=True)
     (DATA / "alerts" / f"{day}.json").write_text(json.dumps(alerts, indent=2), encoding="utf-8")
     print(f"Wrote {out} ({len(rows)} rows, {len(alerts)} alerts)")
+
+
+def data_signature(csv_text: str) -> list[tuple]:
+    """The data in a clean CSV, ignoring row order and the 'collected' date, for change detection."""
+    rows = csv.DictReader(io.StringIO(csv_text))
+    return sorted(tuple(v for k, v in r.items() if k != "collected") for r in rows)
 
 
 def sanity_check(rows: list[Row], prev_rows: list[dict], prev_day: str, alerts: list[dict]) -> list[Row]:
@@ -143,7 +161,7 @@ def sanity_check(rows: list[Row], prev_rows: list[dict], prev_day: str, alerts: 
         if len(cur) < MIN_ROW_SHARE * len(old):
             warn(bench, f"only {len(cur)} rows, down from {len(old)} on {prev_day}")
         if any(r["margin_low"] is not None for r in old) and all(r.margin_low is None for r in cur):
-            warn(bench, f"margins missing this week (published on {prev_day}); "
+            warn(bench, f"margins missing in this run (published on {prev_day}); "
                         "'too close to call' cannot be judged")
         top_now, top_old = max(r.score for r in cur), max(r["score"] for r in old)
         if unit in ("%", "Elo") and top_now > 0 and top_old > 0 and                 not 1 / MAX_TOP_RATIO <= top_now / top_old <= MAX_TOP_RATIO:
@@ -159,7 +177,7 @@ def read_csv(p: Path) -> list[dict]:
         for k in ("score", "margin_low", "margin_high", "cost"):
             r[k] = float(r[k]) if r[k] not in ("", None) else None
         r["rank"] = int(r["rank"]) if r["rank"] else None
-        # Re-apply today's name rules so alias fixes also correct past weeks.
+        # Re-apply today's name rules so alias fixes also correct past updates.
         r["model"] = canonicalize(r["model_raw"])[0]
     return rows
 
@@ -221,9 +239,9 @@ def report(day: str | None = None) -> Path:
     alerts = json.loads(alerts_file.read_text(encoding="utf-8")) if alerts_file.exists() else []
 
     L: list[str] = []
-    L.append(f"# Frontier AI benchmark tracker: week of {day}\n")
+    L.append(f"# Frontier AI benchmark tracker: update of {day}\n")
     L.append(f"Collected {day}. "
-             + (f"Changes compare with {prev_file.stem}." if prev_file else "First week: no changes to compare yet.")
+             + (f"Changes compare with {prev_file.stem}." if prev_file else "First update: no changes to compare yet.")
              + " Every score below comes from the linked publisher page. Scores from different "
                "benchmarks are not comparable with each other.\n")
     # The summary and insights live in a separate file the AI writes, so re-running this never erases them.
@@ -245,7 +263,7 @@ def report(day: str | None = None) -> Path:
     for bench, area in REPORT:
         rows = [r for r in cur if r["benchmark"] == bench]
         if not rows:
-            L.append(f"## {area}: {bench}\n\n_No data this week (see alerts)._\n")
+            L.append(f"## {area}: {bench}\n\n_No data in this update (see alerts)._\n")
             continue
         rows.sort(key=lambda r: (r["rank"] if r["rank"] is not None else 10**6, -r["score"]))
         unit, url, trust = rows[0]["unit"], rows[0]["source_url"], rows[0]["trust"]
@@ -326,9 +344,10 @@ def report(day: str | None = None) -> Path:
 
 
 if __name__ == "__main__":
-    cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    cmd = args[0] if args else "all"
     d = today()
     if cmd in ("collect", "all"):
-        collect(d)
+        collect(d, force="--force" in sys.argv)
     if cmd in ("report", "all"):
         report()

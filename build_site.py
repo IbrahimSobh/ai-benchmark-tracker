@@ -31,6 +31,10 @@ REPO = "https://github.com/IbrahimSobh/ai-benchmark-tracker"
 LINKEDIN = "https://www.linkedin.com/in/ibrahim-sobh-phd-8681757/"
 AUTHOR = "Ibrahim Sobh"
 TAGLINE = "Which AI models lead coding, agent and work tests, with a source for every number"
+# One schedule rule, used in the header, footer and README: checked daily, published only when data changes.
+SCHEDULE = "checked daily at 9:00 Cairo time"
+SCHEDULE_LONG = ("Checked every day at 9:00 Cairo time by a Claude scheduled task. A new update is published only "
+                 "when a publisher's data has changed, so the date of the latest update can be a few days old.")
 
 # Brand mark: the digest's rounded line style, with three podium bars in the lab colours.
 # The bars rise and settle in a slow loop (stopped for readers who prefer reduced motion).
@@ -150,9 +154,28 @@ footer.site a{color:var(--muted)}
 .logos-note{flex-basis:100%;font-size:12px}
 @media (max-width:760px){
   .wrap{padding:0 16px} .lede{font-size:44px;letter-spacing:-1px;margin-top:32px} h1{font-size:32px} h2,.shead{margin-top:48px} h2{font-size:24px}
-  .brand{font-size:19px} .tbtn{width:32px;height:32px} nav a{display:none} .hsub{font-size:13px} .card{padding:16px 16px}
+  .brand{font-size:19px} .tbtn{width:32px;height:32px} .hbar{gap:6px} nav a{font-size:14px;padding:4px 6px} .hsub{font-size:13px} .card{padding:16px 16px}
 }
-@media (max-width:420px){.brand{font-size:16px;gap:6px} .logo{width:24px;height:24px}}
+@media (max-width:420px){.brand{font-size:15px;gap:5px} .logo{width:22px;height:22px} .hbar{gap:4px} .tbtn{width:30px;height:30px} nav a{padding:4px 4px}}
+/* tables page on phones: rank, model and score on one line, the chart on its own line, details below */
+@media (max-width:640px){
+  .bcard{padding:18px 16px}
+  .combo-wrap{overflow:visible}
+  table.combo,table.combo tbody{display:block}
+  table.combo tr{display:flex;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line);padding:6px 0 6px 28px}
+  table.combo tr:first-child{border-bottom:0;padding:0 0 0 28px}
+  table.combo tr:first-child th{display:none}
+  table.combo tr:first-child th.cc{display:block;flex:1 0 100%;width:auto;padding:0}
+  table.combo td{border:0;padding:2px 0}
+  table.combo td.c-rk{flex:0 0 28px;margin-left:-28px;color:var(--soft)}
+  table.combo td.c-md{flex:1 1 auto;min-width:0;font-weight:500}
+  table.combo td.c-sc{flex:0 0 auto;font-weight:600;padding-left:8px}
+  table.combo td.cc{order:4;flex:1 0 100%;width:auto;padding:0}
+  table.combo td.c-st,table.combo td.c-ci,table.combo td.c-co,table.combo td.c-ch,table.combo td.c-vs{order:5;font-size:12.5px;color:var(--muted);padding-right:12px}
+  table.combo td:empty{display:none}
+  table.combo td[data-l]:not(:empty)::before{content:attr(data-l);color:var(--soft)}
+  table.combo svg.chart.cell,table.combo svg.chart.axis{width:100%;height:auto;min-width:0}
+}
 """
 
 THEME_INIT = ("<script>try{var t=localStorage.getItem('afb-theme');if(t)document.documentElement.dataset.theme=t;"
@@ -176,6 +199,14 @@ SCRIPT = """<script>
   function hide(){tip.hidden=true}
   document.querySelectorAll('[data-tip]').forEach(function(el){el.addEventListener('mouseenter',function(){show(el)});el.addEventListener('mouseleave',hide);el.addEventListener('focus',function(){show(el)});el.addEventListener('blur',hide)});
   addEventListener('scroll',hide,{passive:true});
+  // Rank-grid tile -> that benchmark's chart card: open "Show all" if the model is not in the top 5, then highlight its row
+  document.querySelectorAll('a.go').forEach(function(a){a.addEventListener('click',function(){
+    var card=document.querySelector(a.getAttribute('href'));if(!card)return;hide();
+    var m=a.dataset.model,sel=function(box){return box?[].filter.call(box.querySelectorAll('g.row'),function(g){return g.dataset.model===m}):[]};
+    var rows=sel(card.querySelector('.top')),d=card.querySelector('details.more');
+    if(d){if(!rows.length){d.open=true;rows=sel(card.querySelector('.all'))}else{d.open=false}}
+    rows.forEach(function(g){g.classList.remove('flash');void g.getBoundingClientRect();g.classList.add('flash')});
+  })});
 })();
 </script>"""
 
@@ -208,7 +239,7 @@ def header(sub: str, on: str = "") -> str:
 
 
 FOOTER = (
-    "<footer class='wrap site'><span>Updated every Sunday by a Claude scheduled task. Every number links its source. "
+    "<footer class='wrap site'><span>" + SCHEDULE_LONG + " Every number links its source. "
     f"Created by <a href='{LINKEDIN}' target='_blank' rel='noopener noreferrer'>{AUTHOR}</a>.</span>"
     "<span><a class='ext' href='https://labs.scale.com/leaderboard'>Scale Labs</a> · "
     "<a class='ext' href='https://artificialanalysis.ai'>Artificial Analysis</a> · "
@@ -308,7 +339,7 @@ def overview_charts(by_bench: dict[str, list[dict]], day: str) -> str:
     if not by_bench:
         return ""
     n = sum(1 for b, _ in GRID_COLUMNS if by_bench.get(b))
-    return (f"<div class='shead'><h2>Leaders at a glance · week of {day}</h2>"
+    return (f"<div class='shead'><h2>Leaders at a glance · update of {day}</h2>"
             f"<span class='pill'>{n} benchmarks · 4 publishers</span></div>"
             "<p class='muted'>Each tile is the model's rank on that benchmark. Ranks, not scores, because "
             "scores from different benchmarks are not comparable.</p>"
@@ -336,9 +367,9 @@ def report_body(day: str, md_text: str, by_bench: dict[str, list[dict]]) -> str:
     alerts = [a for a in (json.loads(alerts_file.read_text(encoding="utf-8")) if alerts_file.exists() else [])
               if a["source"] in shown]
 
-    out = [f"<h1>Frontier AI benchmark tracker: <em>week of {day}</em></h1>",
+    out = [f"<h1>Frontier AI benchmark tracker: <em>update of {day}</em></h1>",
            "<p class='lead-p'>" + (f"Changes compare with {prev_file.stem}. " if prev_file else
-                                   "First week: no changes to compare yet. ")
+                                   "First update: no changes to compare yet. ")
            + "Every score comes from the linked publisher page. Scores from different benchmarks are not "
              "comparable with each other. Hover a row for details.</p>",
            f"<p><a class='pill' href='{day}-insights.html'>Summary and insights</a></p>"]
@@ -350,7 +381,7 @@ def report_body(day: str, md_text: str, by_bench: dict[str, list[dict]]) -> str:
         rows = by_bench.get(bench, [])
         if not rows:
             out.append(f"<div class='bcard'><p class='area'>{html.escape(area)}</p><h2>{html.escape(bench)}</h2>"
-                       "<p class='muted'>No data this week (see alerts).</p></div>")
+                       "<p class='muted'>No data in this update (see alerts).</p></div>")
             continue
         r0, unit = rows[0], rows[0]["unit"]
         has_m = r0["margin_low"] is not None
@@ -383,14 +414,16 @@ def report_body(day: str, md_text: str, by_bench: dict[str, list[dict]]) -> str:
             cells = [str(r["rank"] or ""),
                      f"{logo_html(lab_of(r['model']), 20, r['model'])}{html.escape(r['model'])}",
                      html.escape(r["setup"]), charts.fmt(r["score"], unit)]
-            tds = "".join(f"<td{' class=num' if i in (0, 3) else ''}>{c}</td>" for i, c in enumerate(cells))
+            cls = ["num c-rk", "c-md", "c-st", "num c-sc"]  # c-* classes drive the phone layout
+            tds = "".join(f"<td class='{k}'>{c}</td>" for k, c in zip(cls, cells))
             tds += f"<td class='cc'>{charts.cell_svg(rows, r, bench)}</td>"
             if has_m:
-                tds += (f"<td class='num'>{charts.fmt(r['margin_low'], unit)} to {charts.fmt(r['margin_high'], unit)}</td>"
-                        if r["margin_low"] is not None else "<td></td>")
+                tds += (f"<td class='num c-ci' data-l='95% interval '>{charts.fmt(r['margin_low'], unit)} to "
+                        f"{charts.fmt(r['margin_high'], unit)}</td>" if r["margin_low"] is not None else "<td class='c-ci'></td>")
             if has_cost:
-                tds += f"<td class='num'>{'$%.2f' % r['cost'] if r['cost'] is not None else ''}</td>"
-            tds += f"<td class='num'>{change}</td><td><span class='vs {st}'>{VS_TEXT[st]}</span></td>"
+                tds += f"<td class='num c-co' data-l='Cost '>{'$%.2f' % r['cost'] if r['cost'] is not None else ''}</td>"
+            tds += (f"<td class='num c-ch' data-l='Change '>{change}</td>"
+                    f"<td class='c-vs'><span class='vs {st}'>{VS_TEXT[st]}</span></td>")
             trs.append(f"<tr class='r' title=\"{html.escape(tip)}\" data-tc='{charts.color_of(r['model'])}'>{tds}</tr>")
         notes = sorted({n.strip() for r in rows for n in r["note"].split(" | ")
                         if n.strip() and not n.startswith("API price")})
@@ -432,7 +465,7 @@ def build() -> None:
                    reverse=True)
     for d in dates:
         by_bench = rows_by_bench(d)
-        sub = f"{TAGLINE} · week of {d}"
+        sub = f"{TAGLINE} · update of {d} · {SCHEDULE}"
         for kind in ("report", "insights"):
             src = REPORTS / f"{d}-{kind}.md"
             if not src.exists():
@@ -451,7 +484,7 @@ def build() -> None:
                              + insights_cards(text))
             (DOCS / f"{d}-{kind}.html").write_text(page(title, body_html, sub), encoding="utf-8")
 
-    body = ["<div class='lede'>Who is <em>really</em> ahead this week?</div>"]
+    body = ["<div class='lede'>Who is <em>really</em> ahead right now?</div>"]
     if dates:
         latest = dates[0]
         by_bench = rows_by_bench(latest)
@@ -459,21 +492,21 @@ def build() -> None:
         body.append(overview_charts(by_bench, latest))
         ins = REPORTS / f"{latest}-insights.md"
         body.append(f"<div class='shead'><h2>Summary and <em>insights</em></h2>"
-                    f"<a class='pill' href='{latest}-insights.html'>Open this week</a></div>")
+                    f"<a class='pill' href='{latest}-insights.html'>Open latest</a></div>")
         if ins.exists():
             body.append(insights_cards(ins.read_text(encoding="utf-8")))
         else:
-            body.append("<p class='muted'>Insights for this week are not written yet.</p>")
-    body.append("<div class='shead' id='weeks'><h2>All weeks</h2></div><ul class='weeks'>")
+            body.append("<p class='muted'>Insights for this update are not written yet.</p>")
+    body.append("<div class='shead' id='weeks'><h2>All updates</h2></div><ul class='weeks'>")
     for d in dates:
         links = [f"<a href='{d}-insights.html'>Summary and insights</a>"] if (REPORTS / f"{d}-insights.md").exists() else []
         if (REPORTS / f"{d}-report.md").exists():
             links.append(f"<a href='{d}-report.html'>Tables</a>")
         body.append(f"<li><span class='date'>{d}</span>{' · '.join(links)}</li>")
     body.append("</ul>")
-    sub = f"{TAGLINE} · next update Sunday"
+    sub = f"{TAGLINE} · last updated {latest} · {SCHEDULE}" if dates else f"{TAGLINE} · {SCHEDULE}"
     (DOCS / "index.html").write_text(page(TITLE, "".join(body), sub), encoding="utf-8")
-    print(f"Built {DOCS} ({len(dates)} weeks)")
+    print(f"Built {DOCS} ({len(dates)} updates)")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Weekly task: collect, write insights, publish
+# Daily task: check for new data, write insights, publish
 
 This file is the only source of the steps: the scheduled routine's prompt just says to follow it.
 Run these steps in order from the repository root. Stop and report if a step fails.
@@ -10,9 +10,12 @@ Run these steps in order from the repository root. Stop and report if a step fai
      where `<date>` is today's UTC date.
    - If every collector failed, the script exits with an error and writes nothing: stop, do not commit
      or push, and report the errors.
+   - If the script prints `NO NEW DATA` (exit code 3), every publisher's data matches the previous run:
+     stop here, do not commit or push, and finish with the one-line summary
+     `No new data since <previous date>; nothing published.`
    - If only some collectors failed, still publish: the report's alerts section shows which ones.
 3. Read `reports/<date>-report.md` and write `reports/<date>-insights.md`, following every rule in
-   `prompts/analyze.md`. Use only numbers that appear in the tables file. Earlier weeks' reports are
+   `prompts/analyze.md`. Use only numbers that appear in the tables file. Earlier reports are
    in `reports/` if you want to mention changes.
 4. Check the insights: every number in `reports/<date>-insights.md` must appear in
    `reports/<date>-report.md`. Fix any that do not.
@@ -20,10 +23,10 @@ Run these steps in order from the repository root. Stop and report if a step fai
 6. `git add data/clean data/alerts reports docs`, commit to the `main` branch and push.
    GitHub Pages publishes `docs/` automatically. Commit message:
    - If `reports/<date>-report.md` has a "Collection alerts" section: first line
-     `Weekly update <date> ⚠ <N> collection alerts`, then one line per alert copied from that section,
+     `Update <date> ⚠ <N> collection alerts`, then one line per alert copied from that section,
      so the alerts show in the GitHub commit list.
-   - Otherwise: `Weekly update <date>`.
-   - If pushing to `main` is refused, push the same commit to a branch named `weekly-update-<date>`
+   - Otherwise: `Update <date>`.
+   - If pushing to `main` is refused, push the same commit to a branch named `update-<date>`
      and say so in the final summary.
 
 Rules:

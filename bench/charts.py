@@ -14,6 +14,7 @@ SVG targets also carry a <title> so the facts still show as a plain browser tool
 from __future__ import annotations
 
 import html
+import re
 import math
 
 from .labs import color_of, lab_of, logo_html
@@ -88,6 +89,11 @@ def tip_text(r: dict, bench: str, st: str, rank: int | None = None) -> str:
     return "\n".join(lines)
 
 
+def bench_id(bench: str) -> str:
+    """Anchor id of a benchmark's chart card, so rank-grid tiles can link to it."""
+    return "b-" + re.sub(r"[^a-z0-9]+", "-", bench.lower()).strip("-")
+
+
 def tip_attrs(text: str, color: str) -> str:
     return f'data-tip="{html.escape(text)}" data-tc="{color}" tabindex="0"'
 
@@ -122,7 +128,7 @@ def margin_chart(rows: list[dict], title: str = "") -> str:
         col = color_of(r["model"])
         name = r["model"] + (f" ({r['setup']})" if r.get("_show_setup") else "")
         tip = tip_text(r, title, st, r["rank"])
-        out.append(f'<g class="row {st}" {tip_attrs(tip, col)}><title>{html.escape(tip)}</title>'
+        out.append(f'<g class="row {st}" data-model="{html.escape(r["model"])}" {tip_attrs(tip, col)}><title>{html.escape(tip)}</title>'
                    f'<rect x="0" y="{y - ROW_H / 2:.1f}" width="{W}" height="{ROW_H}" class="hit"/>'
                    f'<circle cx="7" cy="{y}" r="5" fill="{col}"/>'
                    f'<text x="18" y="{y + 4}" class="lbl">{html.escape(name)}</text>')
@@ -199,7 +205,7 @@ def small_multiples(by_bench: dict[str, list[dict]], groups: list[tuple[str, lis
             if len(all_rows) > n:
                 more = (f"<details class='more'><summary>Show all {len(all_rows)}</summary>"
                         f"<div class='all'>{margin_chart(all_rows, b)}</div></details>")
-            cells.append(f"<div class='mini'><p class='mini-t'>{html.escape(b)}</p>"
+            cells.append(f"<div class='mini' id='{bench_id(b)}'><p class='mini-t'>{html.escape(b)}</p>"
                          f"<p class='mini-s'>{'95% interval shown' if has_m else 'no margin published'} · "
                          f"<a class='ext' href='{html.escape(src)}'>{html.escape(publisher(src))}</a></p>"
                          f"<div class='top'>{margin_chart(rows, b)}</div>{more}</div>")
@@ -253,22 +259,26 @@ def rank_grid(by_bench: dict[str, list[dict]], columns: list[tuple[str, str]], c
                 ink = "#17101c" if s >= 60 else "var(--ink)"
                 tip = tip_text(r, b, st, rk)
                 cells.append(f"<td class='rk{extra}' style='background:color-mix(in srgb,{col} {s}%,var(--tile));"
-                             f"color:{ink}' title=\"{html.escape(tip)}\" data-tc='{col}' tabindex='0'>"
-                             f"{rk}{' ≈' if st == 'close' else ''}</td>")
+                             f"color:{ink}' title=\"{html.escape(tip)}\" data-tc='{col}'>"
+                             f"<a class='go' href='#{bench_id(b)}' data-model=\"{html.escape(m)}\" "
+                             f"aria-label=\"{html.escape(m)}, rank {rk} on {html.escape(b)}: open its chart\">"
+                             f"{rk}{' ≈' if st == 'close' else ''}</a></td>")
             else:
                 cells.append(f"<td class='r0{extra}' title='{html.escape(m)}: not in the rows this table shows'>–</td>")
         body.append(f"<tr><th class='model'>{logo_html(lab_of(m), 20, m)}<span>{html.escape(m)}</span></th>"
                     f"{''.join(cells)}</tr>")
     note = ("Stronger tile = higher rank, in the lab's colour · ≈ too close to call with #1 · – not in the rows "
-            "the table shows · right of the dashed line: public votes · hover a tile for details")
+            "the table shows · right of the dashed line: public votes · hover a tile for details, click it to "
+            "open that benchmark's chart")
     if unranked:
         note += " · * no rank published, ranked by score order"
-    return (f"<div class='card gridcard'><div class='gridwrap'><table class='rankgrid'><tr><th></th>{head}</tr>"
+    return (f"<p class='swipe'>Swipe sideways to see all {len(columns)} benchmarks →</p>"
+            f"<div class='card gridcard'><div class='gridwrap'><table class='rankgrid'><tr><th></th>{head}</tr>"
             f"{''.join(body)}</table></div></div><p class='chart-note'>{note}</p>")
 
 
 def labs_strip(by_bench: dict[str, list[dict]], n: int = 6) -> str:
-    """'Tracking' strip under the headline: the labs that appear most often in this week's tables."""
+    """'Tracking' strip under the headline: the labs that appear most often in the latest update's tables."""
     count: dict[str, int] = {}
     for rows in by_bench.values():
         for r in rows:
@@ -277,7 +287,7 @@ def labs_strip(by_bench: dict[str, list[dict]], n: int = 6) -> str:
                 count[lab] = count.get(lab, 0) + 1
     labs = sorted(count, key=lambda l: -count[l])[:n]
     items = "".join(f"<span class='trk'>{logo_html(l, 28)}{html.escape(l)}</span>" for l in labs)
-    return f"<div class='track'><span class='tk'>Most seen this week</span>{items}</div>"
+    return f"<div class='track'><span class='tk'>Most seen in the latest update</span>{items}</div>"
 
 
 CSS = """
@@ -333,7 +343,16 @@ table.rankgrid th.model{text-align:left;font-weight:500;color:var(--ink);padding
 table.rankgrid th.model>*{vertical-align:middle} table.rankgrid th.model .tlogo,table.rankgrid th.model .lbadge{margin-right:8px}
 table.rankgrid td{height:32px;border-radius:9px;font-weight:700;font-size:13px;background:var(--tile)}
 table.rankgrid td.r0{color:var(--soft);font-weight:400}
-table.rankgrid td.rk{cursor:default} table.rankgrid td.rk:hover,table.rankgrid td.rk:focus{outline:2px solid var(--ink);outline-offset:1px}
+table.rankgrid td.rk{padding:0} table.rankgrid td.rk:hover,table.rankgrid td.rk:focus-within{outline:2px solid var(--ink);outline-offset:1px}
+table.rankgrid a.go{display:flex;align-items:center;justify-content:center;height:100%;min-height:32px;color:inherit;text-decoration:none;border-radius:9px;outline:none}
+table.rankgrid th.model{position:sticky;left:0;z-index:1;background:var(--card2)}
+table.rankgrid tr:first-child th:first-child{position:sticky;left:0;z-index:1;background:var(--card2)}
+.swipe{display:none;font-size:13px;color:var(--soft);margin:0 0 6px}
+@media (max-width:760px){.swipe{display:block}}
+.mini{scroll-margin-top:120px}
+svg.chart .row.flash .hit{animation:flash 2.4s ease-out}
+@keyframes flash{0%,40%{fill:color-mix(in srgb,var(--accent) 30%,transparent)}100%{fill:transparent}}
+@media (prefers-reduced-motion:reduce){svg.chart .row.flash .hit{animation:none;fill:color-mix(in srgb,var(--accent) 22%,transparent)}}
 table.rankgrid .crowd{position:relative}
 table.rankgrid .crowd::before{content:"";position:absolute;left:-5px;top:-2px;bottom:-2px;border-left:2px dashed var(--line)}
 """

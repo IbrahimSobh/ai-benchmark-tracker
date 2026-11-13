@@ -1,12 +1,12 @@
-# Prompt: write the summary and insights for a weekly report
+# Prompt: write the summary and insights for an update
 
-Read this week's tables file `reports/<date>-report.md` (and earlier tables files, if they exist).
+Read the latest tables file `reports/<date>-report.md` (and earlier tables files, if they exist).
 Write a separate file `reports/<date>-insights.md`. Never edit the tables file: the script rebuilds it.
 
 The insights file has this shape:
 
 ```
-# Frontier AI benchmarks: summary and insights, week of <date>
+# Frontier AI benchmarks: summary and insights, update of <date>
 
 Written from [<date>-report.md](<date>-report.md) (data collected <date>). If that tables file is collected again, check these insights still match.
 
