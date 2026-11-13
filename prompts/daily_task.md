@@ -29,8 +29,11 @@ Run these steps in order from the repository root. Stop and report if a step fai
      `Update <date> ⚠ <N> collection alerts`, then one line per alert copied from that section,
      so the alerts show in the GitHub commit list.
    - Otherwise: `Update <date>`.
-   - If pushing to `main` is refused, push the same commit to a branch named `update-<date>`
-     and say so in the final summary.
+   - Push with `git push origin HEAD:main`. If it is refused as non-fast-forward, run
+     `git pull --rebase origin main` (never force-push), re-run `python check_insights.py <date>`,
+     and push again. Try this up to 3 times.
+   - Only if all 3 attempts are refused, push the same commit to a branch named `update-<date>`
+     and say so in the final summary, with the exact error.
 
 Rules:
 - Never commit `data/raw/` (it is in `.gitignore`; it holds copies of publishers' pages).
