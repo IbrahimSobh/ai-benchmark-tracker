@@ -1,0 +1,22 @@
+[
+  {
+    "level": "warning",
+    "source": "SWE-Bench Pro (Private)",
+    "message": "newest data dated 2026-07-09, older than 30 days"
+  },
+  {
+    "level": "warning",
+    "source": "SWE-Bench Pro (Public)",
+    "message": "newest data dated 2026-07-09, older than 30 days"
+  },
+  {
+    "level": "error",
+    "source": "SWE-Bench Pro (Private Dataset)",
+    "message": "0 rows in this run (had rows on 2026-11-16)"
+  },
+  {
+    "level": "error",
+    "source": "SWE-Bench Pro (Public Dataset)",
+    "message": "0 rows in this run (had rows on 2026-11-16)"
+  }
+]
